@@ -12,6 +12,7 @@ import { Slide06 } from "./components/Slide06";
 import { Slide07Model } from "./components/Slide07Model";
 import { Slide08DesignSystem } from "./components/Slide08DesignSystem";
 import { Slide09Stack } from "./components/Slide09Stack";
+import { Slide10TeamComposition } from "./components/Slide10TeamComposition";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 
@@ -27,12 +28,6 @@ const LOGO_IDLE_Y_RANGE = 0.36;
 const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
 const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
-  {
-    number: "10",
-    eyebrow: "Dimensionamento de Time",
-    title: "Composição da equipa",
-    body: "Crescimento progressivo, dimensionado pelo volume e criticidade dos projetos.",
-  },
   { number: "11", eyebrow: "AAAA", title: "Papéis e responsabilidades", body: "AAA" },
   {
     number: "12",
@@ -560,13 +555,22 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDES 10–16 ─────────────── */}
-        {currentSlide >= 9 && currentSlide <= 15 && (
+        {/* ─────────────── SLIDE 10 ─────────────── */}
+        {currentSlide === 9 && (
+          <Slide10TeamComposition
+            key="slide-10"
+            scaleX={scaleX}
+            scaleY={scaleY}
+          />
+        )}
+
+        {/* ─────────────── SLIDES 11–16 ─────────────── */}
+        {currentSlide >= 10 && currentSlide <= 15 && (
           <StandardPlanSlide
             key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}
             scaleY={scaleY}
-            {...STANDARD_PLAN_SLIDES[currentSlide - 9]}
+            {...STANDARD_PLAN_SLIDES[currentSlide - 10]}
           />
         )}
 
