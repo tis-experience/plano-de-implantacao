@@ -4,6 +4,10 @@ import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import { ROLES } from "./rolesData";
 import { RolesModal } from "./RolesModal";
+import {
+  INTERACTIVE_HOVER_BOX_SHADOW,
+  INTERACTIVE_HOVER_TRANSITION,
+} from "../constants/interactiveShadow";
 
 interface Props {
   scaleX: number;
@@ -120,7 +124,8 @@ function RoleRow({
         cursor: "pointer",
         textAlign: "left",
         boxSizing: "border-box",
-        transition: "background-color 0.15s ease, padding 0.15s ease",
+        boxShadow: active ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        transition: `${INTERACTIVE_HOVER_TRANSITION}, padding 0.24s ease`,
       }}
     >
       <motion.div
