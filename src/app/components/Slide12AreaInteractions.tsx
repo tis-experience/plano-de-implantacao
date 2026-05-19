@@ -7,6 +7,7 @@ import {
   AREA_INTERACTIONS_PAGE_COUNT,
   type AreaInteractionItem,
 } from "./areaInteractionsData";
+import { Slide12InteractionMap } from "./Slide12InteractionMap";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -15,7 +16,23 @@ import {
 interface Props {
   scaleX: number;
   scaleY: number;
+  onDragAreaHover?: (active: boolean) => void;
 }
+
+const PAGE_HEADERS = [
+  {
+    title: "Interações com as demais áreas",
+    body: "Experience Engineering como conexão entre negócio, utilizador e tecnologia.",
+  },
+  {
+    title: "Mapa de interações",
+    body: "Áreas com as quais Experience Engineering interage e o tipo de relação em cada caso.",
+  },
+  {
+    title: "Interações com as demais áreas",
+    body: "Experience Engineering como conexão entre negócio, utilizador e tecnologia.",
+  },
+] as const;
 
 type Metrics = {
   vx: (n: number) => number;
@@ -401,7 +418,7 @@ function InteractionGrid({ page, metrics }: { page: number; metrics: Metrics }) 
   );
 }
 
-export function Slide12AreaInteractions({ scaleX, scaleY }: Props) {
+export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Props) {
   const s = Math.min(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
   const vy = (n: number) => n * scaleY;
@@ -429,6 +446,8 @@ export function Slide12AreaInteractions({ scaleX, scaleY }: Props) {
     lastWheelRef.current = now;
     setPage(event.deltaY > 0 ? page + 1 : page - 1);
   };
+
+  const header = PAGE_HEADERS[page];
 
   return (
     <motion.div
@@ -480,7 +499,7 @@ export function Slide12AreaInteractions({ scaleX, scaleY }: Props) {
               color: NAVY,
             }}
           >
-            Interações com as demais áreas
+            {header.title}
           </p>
         </div>
         <p
@@ -492,23 +511,27 @@ export function Slide12AreaInteractions({ scaleX, scaleY }: Props) {
             color: INK,
           }}
         >
-          Experience Engineering como conexão entre negócio, utilizador e tecnologia.
+          {header.body}
         </p>
       </motion.div>
 
       <AnimatePresence mode="wait" custom={pageDirection}>
-        <motion.div
-          key={page}
-          initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-22) }}
-          transition={{ duration: reducedMotion ? 0 : PAGE_TRANSITION_SECONDS, ease: EASE }}
-          style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-        >
-          <motion.div style={{ pointerEvents: "auto" }}>
-            <InteractionGrid page={page} metrics={metrics} />
+        {page === 1 ? (
+          <Slide12InteractionMap key="map" metrics={metrics} onDragAreaHover={onDragAreaHover} />
+        ) : (
+          <motion.div
+            key={page}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-22) }}
+            transition={{ duration: reducedMotion ? 0 : PAGE_TRANSITION_SECONDS, ease: EASE }}
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+          >
+            <motion.div style={{ pointerEvents: "auto" }}>
+              <InteractionGrid page={page} metrics={metrics} />
+            </motion.div>
           </motion.div>
-        </motion.div>
+        )}
       </AnimatePresence>
 
       <motion.div
