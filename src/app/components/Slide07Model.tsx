@@ -13,6 +13,7 @@ import earlyQuestionMark from "../../assets/slide07/early-question-mark.svg";
 import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
 import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
 import growthRenew from "../../assets/slide07/growth-renew.svg";
+import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -569,6 +570,8 @@ function Footer({ metrics }: { metrics: Metrics }) {
   );
 }
 
+const SLIDE_07_PAGE_COUNT = 3;
+
 function VerticalNav({
   page,
   setPage,
@@ -579,15 +582,13 @@ function VerticalNav({
   metrics: Metrics;
 }) {
   const { vx, vy, vs } = metrics;
-  const canGoUp = page > 0;
-  const canGoDown = page < 2;
   const handleContainerClick = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
 
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientY - rect.top) / rect.height;
-    if (ratio < 0.37 && canGoUp) setPage(page - 1);
-    if (ratio > 0.63 && canGoDown) setPage(page + 1);
+    if (ratio < 0.37) setPage(cycleVerticalPage(page, -1, SLIDE_07_PAGE_COUNT));
+    if (ratio > 0.63) setPage(cycleVerticalPage(page, 1, SLIDE_07_PAGE_COUNT));
   };
 
   return (
@@ -620,7 +621,7 @@ function VerticalNav({
           ariaLabel="Página anterior do slide 7"
           onClick={(event) => {
             stopEvent(event);
-            if (canGoUp) setPage(page - 1);
+            setPage(cycleVerticalPage(page, -1, SLIDE_07_PAGE_COUNT));
           }}
           size={40}
         >
@@ -628,7 +629,7 @@ function VerticalNav({
         </NavArrowButton>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
-          {[0, 1, 2].map((dot) => (
+          {Array.from({ length: SLIDE_07_PAGE_COUNT }).map((_, dot) => (
             <NavDotButton
               key={dot}
               active={page === dot}
@@ -645,7 +646,7 @@ function VerticalNav({
           ariaLabel="Próxima página do slide 7"
           onClick={(event) => {
             stopEvent(event);
-            if (canGoDown) setPage(page + 1);
+            setPage(cycleVerticalPage(page, 1, SLIDE_07_PAGE_COUNT));
           }}
           size={40}
         >
@@ -1765,10 +1766,10 @@ export function Slide07Model({ scaleX, scaleY }: Slide07ModelProps) {
   const { vy } = metrics;
 
   const setPage = (next: number) => {
-    const clamped = Math.max(0, Math.min(2, next));
-    if (clamped === page) return;
-    setPageDirection(clamped > page ? 1 : -1);
-    setPageState(clamped);
+    const { target, direction } = resolveVerticalPage(next, page, SLIDE_07_PAGE_COUNT);
+    if (direction === 0) return;
+    setPageDirection(direction);
+    setPageState(target);
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {

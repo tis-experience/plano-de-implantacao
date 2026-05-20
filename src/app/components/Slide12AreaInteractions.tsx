@@ -12,6 +12,7 @@ import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
 } from "../constants/interactiveShadow";
+import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
 
 interface Props {
   scaleX: number;
@@ -214,10 +215,6 @@ function VerticalNavArrow({ direction }: { direction: "up" | "down" }) {
   );
 }
 
-function cycleVerticalPage(current: number, delta: number) {
-  return (current + delta + AREA_INTERACTIONS_PAGE_COUNT) % AREA_INTERACTIONS_PAGE_COUNT;
-}
-
 function VerticalNav({
   page,
   setPage,
@@ -233,8 +230,8 @@ function VerticalNav({
     event.stopPropagation();
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientY - rect.top) / rect.height;
-    if (ratio < 0.37) setPage(cycleVerticalPage(page, -1));
-    if (ratio > 0.63) setPage(cycleVerticalPage(page, 1));
+    if (ratio < 0.37) setPage(cycleVerticalPage(page, -1, AREA_INTERACTIONS_PAGE_COUNT));
+    if (ratio > 0.63) setPage(cycleVerticalPage(page, 1, AREA_INTERACTIONS_PAGE_COUNT));
   };
 
   return (
@@ -262,13 +259,13 @@ function VerticalNav({
         ariaLabel="Secção anterior"
         onClick={(event) => {
           stopEvent(event);
-          setPage(cycleVerticalPage(page, -1));
+          setPage(cycleVerticalPage(page, -1, AREA_INTERACTIONS_PAGE_COUNT));
         }}
       >
         <VerticalNavArrow direction="up" />
       </NavArrowButton>
       <motion.div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
-        {Array.from({ length: pageCount }).map((_, index) => (
+        {Array.from({ length: AREA_INTERACTIONS_PAGE_COUNT }).map((_, index) => (
           <NavDotButton
             key={index}
             active={index === page}
@@ -284,7 +281,7 @@ function VerticalNav({
         ariaLabel="Próxima secção"
         onClick={(event) => {
           stopEvent(event);
-          setPage(cycleVerticalPage(page, 1));
+          setPage(cycleVerticalPage(page, 1, AREA_INTERACTIONS_PAGE_COUNT));
         }}
       >
         <VerticalNavArrow direction="down" />
@@ -527,12 +524,9 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
   const [pageDirection, setPageDirection] = useState(0);
 
   const setPage = (next: number) => {
-    const count = AREA_INTERACTIONS_PAGE_COUNT;
-    const target = ((next % count) + count) % count;
-    if (target === page) return;
-
-    const delta = (target - page + count) % count;
-    setPageDirection(delta === 1 ? 1 : -1);
+    const { target, direction } = resolveVerticalPage(next, page, AREA_INTERACTIONS_PAGE_COUNT);
+    if (direction === 0) return;
+    setPageDirection(direction);
     setPageState(target);
   };
 
