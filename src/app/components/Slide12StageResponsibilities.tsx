@@ -199,12 +199,14 @@ export function Slide12StageResponsibilities({ metrics }: { metrics: Metrics }) 
           gridColumn: "1 / -1",
           display: "flex",
           alignItems: "center",
+          justifyContent: "center",
           gap: vx(8),
           padding: `${vy(12)}px ${vx(24)}px ${vy(12)}px ${vx(16)}px`,
           borderRadius: vs(16),
           backgroundColor: BANNER_BG,
           border: `${vs(1)}px solid ${BANNER_BORDER}`,
           boxSizing: "border-box",
+          textAlign: "center",
         }}
       >
         <img src={infoIcon} alt="" aria-hidden style={{ width: vs(24), height: vs(24), flexShrink: 0 }} />
@@ -213,9 +215,11 @@ export function Slide12StageResponsibilities({ metrics }: { metrics: Metrics }) 
             margin: 0,
             fontFamily: "'Bronkoh-Bold', sans-serif",
             fontSize: vs(20),
-            lineHeight: `${vs(32)}px`,
+            lineHeight: "120%",
             color: NAVY,
             whiteSpace: "nowrap",
+            verticalAlign: "middle",
+            textAlign: "center",
           }}
         >
           {STAGE_RESPONSIBILITIES_FOOTNOTE}
