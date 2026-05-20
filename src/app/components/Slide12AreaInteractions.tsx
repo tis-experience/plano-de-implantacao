@@ -214,6 +214,10 @@ function VerticalNavArrow({ direction }: { direction: "up" | "down" }) {
   );
 }
 
+function cycleVerticalPage(current: number, delta: number) {
+  return (current + delta + AREA_INTERACTIONS_PAGE_COUNT) % AREA_INTERACTIONS_PAGE_COUNT;
+}
+
 function VerticalNav({
   page,
   setPage,
@@ -224,16 +228,13 @@ function VerticalNav({
   metrics: Metrics;
 }) {
   const { vx, vy } = metrics;
-  const pageCount = AREA_INTERACTIONS_PAGE_COUNT;
-  const canGoUp = page > 0;
-  const canGoDown = page < pageCount - 1;
 
   const handleContainerClick = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientY - rect.top) / rect.height;
-    if (ratio < 0.37 && canGoUp) setPage(page - 1);
-    if (ratio > 0.63 && canGoDown) setPage(page + 1);
+    if (ratio < 0.37) setPage(cycleVerticalPage(page, -1));
+    if (ratio > 0.63) setPage(cycleVerticalPage(page, 1));
   };
 
   return (
@@ -261,7 +262,7 @@ function VerticalNav({
         ariaLabel="Secção anterior"
         onClick={(event) => {
           stopEvent(event);
-          if (canGoUp) setPage(page - 1);
+          setPage(cycleVerticalPage(page, -1));
         }}
       >
         <VerticalNavArrow direction="up" />
@@ -283,7 +284,7 @@ function VerticalNav({
         ariaLabel="Próxima secção"
         onClick={(event) => {
           stopEvent(event);
-          if (canGoDown) setPage(page + 1);
+          setPage(cycleVerticalPage(page, 1));
         }}
       >
         <VerticalNavArrow direction="down" />
@@ -526,10 +527,13 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
   const [pageDirection, setPageDirection] = useState(0);
 
   const setPage = (next: number) => {
-    const clamped = Math.max(0, Math.min(AREA_INTERACTIONS_PAGE_COUNT - 1, next));
-    if (clamped === page) return;
-    setPageDirection(clamped > page ? 1 : -1);
-    setPageState(clamped);
+    const count = AREA_INTERACTIONS_PAGE_COUNT;
+    const target = ((next % count) + count) % count;
+    if (target === page) return;
+
+    const delta = (target - page + count) % count;
+    setPageDirection(delta === 1 ? 1 : -1);
+    setPageState(target);
   };
 
   const handleWheel: WheelEventHandler<HTMLDivElement> = (event) => {
@@ -539,7 +543,7 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
     const now = window.performance.now();
     if (now - lastWheelRef.current < 650) return;
     lastWheelRef.current = now;
-    setPage(event.deltaY > 0 ? page + 1 : page - 1);
+    setPage(page + (event.deltaY > 0 ? 1 : -1));
   };
 
   const header = PAGE_HEADERS[page];
