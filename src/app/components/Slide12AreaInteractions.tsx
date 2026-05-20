@@ -8,6 +8,7 @@ import {
   type AreaInteractionItem,
 } from "./areaInteractionsData";
 import { Slide12InteractionMap } from "./Slide12InteractionMap";
+import { Slide12StageResponsibilities } from "./Slide12StageResponsibilities";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -30,8 +31,8 @@ const PAGE_HEADERS = [
     body: "Áreas com as quais Experience Engineering interage e o tipo de relação em cada caso.",
   },
   {
-    title: "Interações com as demais áreas",
-    body: "Experience Engineering como conexão entre negócio, utilizador e tecnologia.",
+    title: "Responsáveis por etapa",
+    body: "Em cada etapa do projecto, uma área conduz o trabalho, outras contribuem e uma terceira valida o resultado antes da fase seguinte.",
   },
 ] as const;
 
@@ -376,12 +377,6 @@ function InteractionCard({
   );
 }
 
-function isCardVisible(cardIndex: number, page: number) {
-  if (page === 0) return true;
-  if (page === 1) return cardIndex < 2;
-  return cardIndex >= 2;
-}
-
 function Slide12Header({
   header,
   metrics,
@@ -477,7 +472,7 @@ function Slide12Header({
   );
 }
 
-function InteractionGrid({ page, metrics }: { page: number; metrics: Metrics }) {
+function InteractionGrid({ metrics }: { metrics: Metrics }) {
   const { vx, vy } = metrics;
 
   return (
@@ -504,7 +499,7 @@ function InteractionGrid({ page, metrics }: { page: number; metrics: Metrics }) 
             minHeight: vy(270),
           }}
         >
-          <InteractionCard item={item} index={index} visible={isCardVisible(index, page)} metrics={metrics} />
+          <InteractionCard item={item} index={index} visible metrics={metrics} />
         </div>
       ))}
     </motion.div>
@@ -542,7 +537,14 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
 
   const header = PAGE_HEADERS[page];
   const descriptionEnterDelay =
-    page === 1 && pageDirection > 0 ? PAGE_TRANSITION_SECONDS : page === 0 && pageDirection < 0 ? PAGE_TRANSITION_SECONDS : 0;
+    reducedMotion
+      ? 0
+      : (page === 1 && pageDirection > 0) ||
+          (page === 0 && pageDirection < 0) ||
+          (page === 2 && pageDirection > 0) ||
+          (page === 1 && pageDirection < 0)
+        ? PAGE_TRANSITION_SECONDS
+        : 0;
 
   return (
     <motion.div
@@ -566,9 +568,9 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
       <AnimatePresence mode="wait" custom={pageDirection}>
         {page === 1 ? (
           <Slide12InteractionMap key="map" metrics={metrics} onDragAreaHover={onDragAreaHover} />
-        ) : (
+        ) : page === 2 ? (
           <motion.div
-            key={page}
+            key="stages"
             initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-22) }}
@@ -576,7 +578,20 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
             style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
           >
             <motion.div style={{ pointerEvents: "auto" }}>
-              <InteractionGrid page={page} metrics={metrics} />
+              <Slide12StageResponsibilities metrics={metrics} />
+            </motion.div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="principles"
+            initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-22) }}
+            transition={{ duration: reducedMotion ? 0 : PAGE_TRANSITION_SECONDS, ease: EASE }}
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+          >
+            <motion.div style={{ pointerEvents: "auto" }}>
+              <InteractionGrid metrics={metrics} />
             </motion.div>
           </motion.div>
         )}
