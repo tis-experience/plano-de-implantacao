@@ -38,13 +38,16 @@ function RoleTag({ role, metrics }: { role: StageRole; metrics: Metrics }) {
     <div style={{ display: "flex", gap: vx(8), alignItems: "center", width: "100%", minWidth: 0 }}>
       <span
         style={{
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
           flexShrink: 0,
           padding: `${vs(8)}px`,
           borderRadius: vs(8),
           backgroundColor: isApoio ? TAG_APOIO_BG : TAG_VALIDATION_BG,
           fontFamily: "'Bronkoh-Heavy', sans-serif",
           fontSize: vs(14),
-          lineHeight: `${vs(12)}px`,
+          lineHeight: 1,
           color: isApoio ? BLUE : TAG_VALIDATION_TEXT,
           whiteSpace: "nowrap",
         }}
