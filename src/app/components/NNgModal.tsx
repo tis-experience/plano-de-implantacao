@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import modalSvg from "../../imports/ModalOverlay/svg-j25njvl7ht";
+import { createSlideMetrics } from "../scaling";
 
 interface NNgModalProps {
   open: boolean;
@@ -98,8 +99,7 @@ const LEVELS: {
 ];
 
 export function NNgModal({ open, onClose, scaleX, scaleY }: NNgModalProps) {
-  const s = Math.min(scaleX, scaleY);
-  const vs = (n: number) => n * s;
+  const { vs } = createSlideMetrics(scaleX, scaleY);
   const vx = (n: number) => n * scaleX;
 
   const [currentPage, setCurrentPage] = useState(0);

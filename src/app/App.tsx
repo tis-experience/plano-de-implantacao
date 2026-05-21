@@ -14,6 +14,8 @@ import { Slide08DesignSystem } from "./components/Slide08DesignSystem";
 import { Slide09Stack } from "./components/Slide09Stack";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
+import { Slide12Interacoes } from "./components/Slide12Interacoes";
+import { createSlideMetrics } from "./scaling";
 
 const TOTAL_SLIDES = 17;
 const DESIGN_WIDTH = 1920;
@@ -98,11 +100,7 @@ export default function App() {
     logoY.set(y);
   };
 
-  // Uniform scale for fonts / decorative elements
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   useEffect(() => {
     const update = () => {
@@ -559,7 +557,11 @@ export default function App() {
         )}
 
         {/* ─────────────── SLIDES 10–16 ─────────────── */}
-        {currentSlide >= 9 && currentSlide <= 15 && (
+        {currentSlide === 11 && (
+          <Slide12Interacoes key="slide-12" scaleX={scaleX} scaleY={scaleY} />
+        )}
+
+        {currentSlide >= 9 && currentSlide <= 15 && currentSlide !== 11 && (
           <StandardPlanSlide
             key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}

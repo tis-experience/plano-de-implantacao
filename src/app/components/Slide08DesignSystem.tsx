@@ -1,5 +1,6 @@
 import { useRef, useState, type MouseEvent, type ReactNode, type WheelEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 
@@ -1369,14 +1370,8 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
   const [pageDirection, setPageDirection] = useState(1);
   const lastWheelRef = useRef(0);
   const pageCount = 3;
-  const s = Math.min(scaleX, scaleY);
-  const governanceTextScale = Math.min(scaleX, scaleY * 1.16);
-  const metrics = {
-    vx: (n: number) => n * scaleX,
-    vy: (n: number) => n * scaleY,
-    vs: (n: number) => n * s,
-    vg: (n: number) => n * governanceTextScale,
-  };
+  const baseMetrics = createSlideMetrics(scaleX, scaleY);
+  const metrics = { ...baseMetrics, vg: baseMetrics.vs };
   const { vy } = metrics;
   const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
   const showHeaderDescription = page !== 1;

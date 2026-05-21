@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { motion } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/03EstruturaEProcessoAtual/svg-q2kz47c459";
 import { imgGroup } from "../../imports/03EstruturaEProcessoAtual/svg-h4x0i";
 
@@ -22,10 +23,7 @@ const CARD_GAP = 32;
 const TOTAL_CARDS = 3;
 
 export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   const [currentCard, setCurrentCard] = useState(0);
 

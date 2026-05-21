@@ -1,5 +1,6 @@
 import { useRef, useState, type CSSProperties, type MouseEvent, type ReactNode, type WheelEvent } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import coreArrow from "../../assets/slide07/core-arrow.svg";
@@ -1742,12 +1743,7 @@ export function Slide07Model({ scaleX, scaleY }: Slide07ModelProps) {
   const [maturityIndex, setMaturityIndex] = useState(0);
   const [, setMaturityDirection] = useState(1);
   const lastWheelRef = useRef(0);
-  const s = Math.min(scaleX, scaleY);
-  const metrics = {
-    vx: (n: number) => n * scaleX,
-    vy: (n: number) => n * scaleY,
-    vs: (n: number) => n * s,
-  };
+  const metrics = createSlideMetrics(scaleX, scaleY);
   const { vy } = metrics;
 
   const setPage = (next: number) => {

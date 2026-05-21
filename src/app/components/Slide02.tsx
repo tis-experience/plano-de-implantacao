@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import svgPaths from "../../imports/02UxNaTisAtualmente/svg-pfywxk28k6";
 import { imgGroup } from "../../imports/02UxNaTisAtualmente/svg-5kz7o";
 import { NNgModal } from "./NNgModal";
+import { createSlideMetrics } from "../scaling";
 
 interface Props {
   scaleX: number;
@@ -19,10 +20,7 @@ const stagger = (i: number) => ({
 });
 
 export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   const [statsPage, setStatsPage] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);

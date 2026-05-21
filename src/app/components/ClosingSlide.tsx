@@ -1,4 +1,5 @@
 import { motion, type MotionValue } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/01Capa/svg-9xym7sn689";
 
 interface Props {
@@ -9,10 +10,7 @@ interface Props {
 }
 
 export function ClosingSlide({ scaleX, scaleY, logoRotateX, logoRotateY }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   return (
     <motion.div
