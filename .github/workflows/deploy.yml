@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -33,6 +33,22 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # GitHub Pages is configured to serve branch main at /. Publish the Vite
+      # build at repo root (index.html + assets/), not the dev entry /src/main.tsx.
+      - name: Publish static build to repository root
+        run: |
+          cp dist/index.html index.html
+          rm -rf assets
+          cp -r dist/assets assets
+          cp dist/favicon.svg favicon.svg
+          touch .nojekyll
+
+      - name: Commit static site for branch-based Pages
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: publish static site for GitHub Pages [skip ci]"
+          file_pattern: index.html assets favicon.svg .nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

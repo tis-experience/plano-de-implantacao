@@ -22,11 +22,11 @@ npm run preview
 
 Este projeto já inclui o workflow `.github/workflows/deploy.yml`.
 
-1. Crie um repositório no GitHub.
-2. Envie este projeto para a branch `main`.
-3. No GitHub, acesse `Settings > Pages`.
-4. Em `Build and deployment`, selecione `GitHub Actions`.
-5. Faça push na branch `main`.
+1. Envie alterações para a branch `main`.
+2. O workflow gera o build e publica `index.html` + `assets/` na raiz do repositório (necessário quando o Pages usa *Deploy from branch*).
+3. Opcional (recomendado): em `Settings > Pages > Build and deployment`, selecione **GitHub Actions** em vez de publicar a pasta `/` da branch.
+
+**Tela branca?** O site em produção precisa do **build** (`./assets/index-….js`), não do ficheiro de desenvolvimento `/src/main.tsx`. Confirme que `index.html` na raiz aponta para `./assets/…` após o workflow.
 
 Depois do workflow concluir, o link ficará disponível em:
 
