@@ -7,7 +7,7 @@ import {
   INTERACTIVE_HOVER_TRANSITION,
 } from "../constants/interactiveShadow";
 import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
-import { createSlideMetrics, scaleTypography } from "../scaling";
+import { createSlideMetrics } from "../scaling";
 
 interface Slide08DesignSystemProps {
   scaleX: number;
@@ -1395,7 +1395,7 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
     vx,
     vy,
     vs,
-    vg: (n: number) => scaleTypography(n, governanceTextScale),
+    vg: (n: number) => n * governanceTextScale,
   };
   const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
   const showHeaderDescription = page !== 1;
