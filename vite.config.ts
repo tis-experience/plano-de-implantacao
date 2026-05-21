@@ -51,6 +51,12 @@ export default defineConfig({
     },
   },
 
+  build: {
+    rollupOptions: {
+      input: path.resolve(__dirname, 'index.dev.html'),
+    },
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })
