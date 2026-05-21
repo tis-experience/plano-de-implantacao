@@ -200,6 +200,7 @@ export function Slide12StageResponsibilities({ metrics }: { metrics: Metrics }) 
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          gap: vx(8),
           padding: `${vy(12)}px ${vx(24)}px ${vy(12)}px ${vx(16)}px`,
           borderRadius: vs(16),
           backgroundColor: BANNER_BG,
@@ -207,42 +208,29 @@ export function Slide12StageResponsibilities({ metrics }: { metrics: Metrics }) 
           boxSizing: "border-box",
         }}
       >
-        <div
+        <img
+          src={infoIcon}
+          alt=""
+          aria-hidden
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: vx(8),
-            minHeight: vs(24),
+            display: "block",
+            width: vs(24),
+            height: vs(24),
+            flexShrink: 0,
+          }}
+        />
+        <p
+          style={{
+            margin: 0,
+            fontFamily: "'Bronkoh-Bold', sans-serif",
+            fontSize: vs(20),
+            lineHeight: `${vs(32)}px`,
+            color: NAVY,
+            whiteSpace: "nowrap",
           }}
         >
-          <img
-            src={infoIcon}
-            alt=""
-            aria-hidden
-            style={{
-              display: "block",
-              width: vs(24),
-              height: vs(24),
-              flexShrink: 0,
-            }}
-          />
-          <p
-            style={{
-              margin: 0,
-              display: "flex",
-              alignItems: "center",
-              height: vs(24),
-              fontFamily: "'Bronkoh-Bold', sans-serif",
-              fontSize: vs(20),
-              lineHeight: 1,
-              color: NAVY,
-              whiteSpace: "nowrap",
-            }}
-          >
-            {STAGE_RESPONSIBILITIES_FOOTNOTE}
-          </p>
-        </div>
+          {STAGE_RESPONSIBILITIES_FOOTNOTE}
+        </p>
       </motion.div>
     </motion.div>
   );
