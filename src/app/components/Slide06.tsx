@@ -2,6 +2,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
+import { createSlideMetrics } from "../scaling";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 
 interface Props {
@@ -271,8 +272,7 @@ function ExpandedInfographic({
   steps: Array<{ title: string; desc: string }>;
   tags: string[];
 }) {
-  const s = Math.min(scaleX, scaleY);
-  const vs = (n: number) => n * s;
+  const { vs } = createSlideMetrics(scaleX, scaleY);
 
   const ROW_W = 1360;
   const SIDE_STEP_W = 180;
@@ -499,10 +499,7 @@ function ExpandedInfographic({
 
 export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange }: Props) {
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   useEffect(() => {
     onExpandedChange?.(isInfographicExpanded);

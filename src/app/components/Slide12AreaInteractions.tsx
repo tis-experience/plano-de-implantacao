@@ -13,6 +13,7 @@ import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
 } from "../constants/interactiveShadow";
+import { createSlideMetrics } from "../scaling";
 import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
 
 interface Props {
@@ -507,10 +508,7 @@ function InteractionGrid({ metrics }: { metrics: Metrics }) {
 }
 
 export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
   const metrics: Metrics = { vx, vy, vs };
 
   const reducedMotion = useReducedMotion();

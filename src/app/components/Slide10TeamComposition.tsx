@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
+import { createSlideMetrics } from "../scaling";
 
 interface Props {
   scaleX: number;
@@ -288,10 +289,7 @@ function PhaseColumn({
 }
 
 export function Slide10TeamComposition({ scaleX, scaleY }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   return (
     <motion.div

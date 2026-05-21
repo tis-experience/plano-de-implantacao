@@ -5,6 +5,7 @@ import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import { ROLES } from "./rolesData";
 import { RolesModal } from "./RolesModal";
 import { INTERACTIVE_HOVER_TRANSITION } from "../constants/interactiveShadow";
+import { createSlideMetrics } from "../scaling";
 
 interface Props {
   scaleX: number;
@@ -186,10 +187,7 @@ function RoleRow({
 }
 
 export function Slide11Roles({ scaleX, scaleY, onModalChange }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [modalOpen, setModalOpen] = useState(false);

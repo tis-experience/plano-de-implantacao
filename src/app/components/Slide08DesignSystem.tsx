@@ -7,6 +7,7 @@ import {
   INTERACTIVE_HOVER_TRANSITION,
 } from "../constants/interactiveShadow";
 import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
+import { createSlideMetrics } from "../scaling";
 
 interface Slide08DesignSystemProps {
   scaleX: number;
@@ -1388,15 +1389,15 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
   const [pageDirection, setPageDirection] = useState(1);
   const lastWheelRef = useRef(0);
   const pageCount = 3;
-  const s = Math.min(scaleX, scaleY);
+  const { s, vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
   const governanceTextScale = Math.min(scaleX, scaleY * 1.16);
+  const typeBoost = s > 0 ? vs(1) / s : 1;
   const metrics = {
-    vx: (n: number) => n * scaleX,
-    vy: (n: number) => n * scaleY,
-    vs: (n: number) => n * s,
-    vg: (n: number) => n * governanceTextScale,
+    vx,
+    vy,
+    vs,
+    vg: (n: number) => n * governanceTextScale * typeBoost,
   };
-  const { vy } = metrics;
   const headerContent = page === 2 ? SLIDE_08_FLOW_HEADER : SLIDE_08_DEFAULT_HEADER;
   const showHeaderDescription = page !== 1;
   const descriptionEnterDelay =

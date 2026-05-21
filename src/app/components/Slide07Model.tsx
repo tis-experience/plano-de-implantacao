@@ -14,6 +14,7 @@ import earlyRenewA from "../../assets/slide07/early-renew-a.svg";
 import earlyRenewB from "../../assets/slide07/early-renew-b.svg";
 import growthRenew from "../../assets/slide07/growth-renew.svg";
 import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
+import { createSlideMetrics } from "../scaling";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -1757,13 +1758,8 @@ export function Slide07Model({ scaleX, scaleY }: Slide07ModelProps) {
   const [maturityIndex, setMaturityIndex] = useState(0);
   const [, setMaturityDirection] = useState(1);
   const lastWheelRef = useRef(0);
-  const s = Math.min(scaleX, scaleY);
-  const metrics = {
-    vx: (n: number) => n * scaleX,
-    vy: (n: number) => n * scaleY,
-    vs: (n: number) => n * s,
-  };
-  const { vy } = metrics;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
+  const metrics = { vx, vy, vs };
 
   const setPage = (next: number) => {
     const { target, direction } = resolveVerticalPage(next, page, SLIDE_07_PAGE_COUNT);

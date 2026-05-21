@@ -17,6 +17,7 @@ import { Slide11Roles } from "./components/Slide11Roles";
 import { Slide12AreaInteractions } from "./components/Slide12AreaInteractions";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
+import { createSlideMetrics } from "./scaling";
 
 const TOTAL_SLIDES = 17;
 const DESIGN_WIDTH = 1920;
@@ -88,11 +89,7 @@ export default function App() {
     logoY.set(y);
   };
 
-  // Uniform scale for fonts / decorative elements
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   useEffect(() => {
     const update = () => {

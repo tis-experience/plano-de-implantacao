@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import accessibleIcon from "../../assets/slide09/accessible.svg";
@@ -707,10 +708,7 @@ function Tooltip({
 }
 
 export function Slide09Stack({ scaleX, scaleY }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
   const [tooltip, setTooltip] = useState<TooltipData | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
   const [tooltipPlacement, setTooltipPlacement] = useState<TooltipPlacement>("side");

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/04CamadasDaExperiencia/svg-n4bcoxy2ji";
 
 interface Props {
@@ -169,10 +170,7 @@ const DETAILS: {
 ];
 
 export function Slide04({ scaleX, scaleY }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   const [hoveredLayer, setHoveredLayer] = useState<
     number | null

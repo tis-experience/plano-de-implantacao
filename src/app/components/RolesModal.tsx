@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import modalSvg from "../../imports/ModalOverlay/svg-j25njvl7ht";
+import { createSlideMetrics } from "../scaling";
 import { ROLES } from "./rolesData";
 
 interface RolesModalProps {
@@ -15,10 +16,7 @@ const PURPLE = "#3126b4";
 const BLUE = "#036ef2";
 
 export function RolesModal({ open, initialIndex, onClose, scaleX, scaleY }: RolesModalProps) {
-  const s = Math.min(scaleX, scaleY);
-  const vs = (n: number) => n * s;
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
+  const { s, vs, vx, vy } = createSlideMetrics(scaleX, scaleY);
 
   const [currentPage, setCurrentPage] = useState(initialIndex);
   const directionRef = useRef(1);

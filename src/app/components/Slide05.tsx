@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/05AlemDoDesenhoDeTelas/svg-d0t3u4q1u6";
 import { imgGroup } from "../../imports/05AlemDoDesenhoDeTelas/svg-s8nfu";
 import iconPaths from "../../imports/MainContainer/svg-xc3vwdt1gg";
@@ -78,10 +79,7 @@ const CARDS = [
 ];
 
 export function Slide05({ scaleX, scaleY }: Props) {
-  const s = Math.min(scaleX, scaleY);
-  const vx = (n: number) => n * scaleX;
-  const vy = (n: number) => n * scaleY;
-  const vs = (n: number) => n * s;
+  const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
   // Card column width: 3 × 560 + 2 × 20 = 1720 (MainContainer)
   const cardW = vx(560);
