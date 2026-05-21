@@ -12,9 +12,11 @@ import { Slide06 } from "./components/Slide06";
 import { Slide07Model } from "./components/Slide07Model";
 import { Slide08DesignSystem } from "./components/Slide08DesignSystem";
 import { Slide09Stack } from "./components/Slide09Stack";
+import { Slide10TeamComposition } from "./components/Slide10TeamComposition";
+import { Slide11Roles } from "./components/Slide11Roles";
+import { Slide12AreaInteractions } from "./components/Slide12AreaInteractions";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
-import { Slide12Interacoes } from "./components/Slide12Interacoes";
 import { createSlideMetrics } from "./scaling";
 
 const TOTAL_SLIDES = 17;
@@ -29,19 +31,6 @@ const LOGO_IDLE_Y_RANGE = 0.36;
 const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
 const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
-  {
-    number: "10",
-    eyebrow: "Dimensionamento de Time",
-    title: "Composição da equipa",
-    body: "Crescimento progressivo, dimensionado pelo volume e criticidade dos projetos.",
-  },
-  { number: "11", eyebrow: "AAAA", title: "Papéis e responsabilidades", body: "AAA" },
-  {
-    number: "12",
-    eyebrow: "CONEXÕES OPERACIONAIS",
-    title: "Interações com as demais áreas",
-    body: "O trabalho de Experience Engineering acontece nas interfaces entre as áreas, não em paralelo a elas.",
-  },
   { number: "13", eyebrow: "cadência e alinhamento", title: "Ritos de UX", body: "AAA" },
   { number: "14", eyebrow: "Como vamos medir", title: "Indicadores de sucesso", body: "AAA" },
   { number: "15", eyebrow: "AAAA", title: "Roadmap de implantação", body: "AAA", background: "#f4f5f7" },
@@ -210,9 +199,13 @@ export default function App() {
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
 
   const isPointerOverDragCursorArea = (x: number, y: number) => {
-    if (currentSlide !== 2) return false;
+    if (currentSlide !== 2 && currentSlide !== 11) return false;
     const target = document.elementFromPoint(x, y);
-    return Boolean(target?.closest('[data-drag-cursor-area="slide-3-carousel"]'));
+    const selector =
+      currentSlide === 2
+        ? '[data-drag-cursor-area="slide-3-carousel"]'
+        : '[data-drag-cursor-area="slide-12-map-carousel"]';
+    return Boolean(target?.closest(selector));
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -273,6 +266,8 @@ export default function App() {
     if (isInfographicExpanded) return;
     if (isModalOpen) return;
     const target = event.target instanceof Element ? event.target : null;
+    // Ignora cliques na modal mesmo após fechar no mouseUp (antes do click disparar).
+    if (target?.closest("[data-nng-modal], [data-roles-modal]")) return;
     if (target?.closest('button, a, input, select, textarea, [role="button"]')) return;
 
     const clickIsLeftHalf = event.clientX < window.innerWidth / 2;
@@ -556,17 +551,42 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDES 10–16 ─────────────── */}
-        {currentSlide === 11 && (
-          <Slide12Interacoes key="slide-12" scaleX={scaleX} scaleY={scaleY} />
+        {/* ─────────────── SLIDE 10 ─────────────── */}
+        {currentSlide === 9 && (
+          <Slide10TeamComposition
+            key="slide-10"
+            scaleX={scaleX}
+            scaleY={scaleY}
+          />
         )}
 
-        {currentSlide >= 9 && currentSlide <= 15 && currentSlide !== 11 && (
+        {/* ─────────────── SLIDE 11 ─────────────── */}
+        {currentSlide === 10 && (
+          <Slide11Roles
+            key="slide-11"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onModalChange={setIsModalOpen}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 12 ─────────────── */}
+        {currentSlide === 11 && (
+          <Slide12AreaInteractions
+            key="slide-12"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            onDragAreaHover={setIsDragAreaActive}
+          />
+        )}
+
+        {/* ─────────────── SLIDES 13–16 ─────────────── */}
+        {currentSlide >= 12 && currentSlide <= 15 && (
           <StandardPlanSlide
             key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}
             scaleY={scaleY}
-            {...STANDARD_PLAN_SLIDES[currentSlide - 9]}
+            {...STANDARD_PLAN_SLIDES[currentSlide - 12]}
           />
         )}
 
@@ -593,6 +613,7 @@ export default function App() {
           y: "-50%",
           pointerEvents: "none",
           zIndex: 9999,
+          boxShadow: "0 8px 24px 0 rgba(5, 28, 117, 0.16), 0 2px 4px 0 rgba(5, 28, 117, 0.24)",
         }}
         animate={{
           opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isInteractiveSuppressingCursor ? 1 : 0),

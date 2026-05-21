@@ -2,6 +2,7 @@ import { useEffect, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
+import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 
 interface Props {
@@ -183,10 +184,10 @@ function ExpandButton({ sc, onClick }: { sc: (n: number) => number; onClick: (ev
     >
       <motion.div
         variants={{
-          rest: { width: sc(32), height: sc(32), padding: sc(4) },
-          hover: { width: sc(56), height: sc(56), padding: sc(12) },
+          rest: { width: sc(32), height: sc(32), padding: sc(4), boxShadow: "none" },
+          hover: { width: sc(56), height: sc(56), padding: sc(12), boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
         }}
-        transition={{ duration: 0.18, ease }}
+        transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
         style={{
           borderRadius: sc(999),
           background: "#036ef2",

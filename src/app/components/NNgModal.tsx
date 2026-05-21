@@ -152,6 +152,7 @@ export function NNgModal({ open, onClose, scaleX, scaleY }: NNgModalProps) {
       {open && (
         <motion.div
           key="nng-overlay"
+          data-nng-modal
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

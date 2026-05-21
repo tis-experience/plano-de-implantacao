@@ -3,6 +3,11 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
+import {
+  INTERACTIVE_HOVER_BOX_SHADOW,
+  INTERACTIVE_HOVER_TRANSITION,
+} from "../constants/interactiveShadow";
+import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
 
 interface Slide08DesignSystemProps {
   scaleX: number;
@@ -511,7 +516,21 @@ function NavDot({ active, hovered }: { active: boolean; hovered: boolean }) {
   const highlighted = active || hovered;
 
   return (
-    <motion.svg width={24} height={24} viewBox="0 0 24 24" fill="none" style={{ display: "block", overflow: "visible", flexShrink: 0 }}>
+    <motion.svg
+      width={24}
+      height={24}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{
+        display: "block",
+        overflow: "visible",
+        flexShrink: 0,
+        filter: hovered
+          ? "drop-shadow(0 2px 4px rgba(5, 28, 117, 0.24)) drop-shadow(0 8px 24px rgba(5, 28, 117, 0.16))"
+          : "none",
+        transition: "filter 0.24s ease",
+      }}
+    >
       <motion.circle
         cx="12"
         cy="12"
@@ -553,12 +572,13 @@ function NavDotButton({
         border: 0,
         padding: 0,
         cursor: "pointer",
-        background: "transparent",
+        background: hovered ? BLUE : "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
         overflow: "visible",
+        transition: INTERACTIVE_HOVER_TRANSITION,
       }}
     >
       <NavDot active={active} hovered={hovered} />
@@ -612,7 +632,8 @@ function NavArrowButton({
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
-        transition: "background-color 150ms ease, color 150ms ease",
+        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        transition: INTERACTIVE_HOVER_TRANSITION,
       }}
     >
       {children}
@@ -632,15 +653,13 @@ function VerticalNav({
   metrics: Metrics;
 }) {
   const { vx, vy } = metrics;
-  const canGoUp = page > 0;
-  const canGoDown = page < pageCount - 1;
   const handleContainerClick = (event: MouseEvent<HTMLDivElement>) => {
     event.stopPropagation();
 
     const rect = event.currentTarget.getBoundingClientRect();
     const ratio = (event.clientY - rect.top) / rect.height;
-    if (ratio < 0.37 && canGoUp) setPage(page - 1);
-    if (ratio > 0.63 && canGoDown) setPage(page + 1);
+    if (ratio < 0.37) setPage(cycleVerticalPage(page, -1, pageCount));
+    if (ratio > 0.63) setPage(cycleVerticalPage(page, 1, pageCount));
   };
 
   return (
@@ -673,7 +692,7 @@ function VerticalNav({
           ariaLabel="Página anterior do slide 8"
           onClick={(event) => {
             stopEvent(event);
-            if (canGoUp) setPage(page - 1);
+            setPage(cycleVerticalPage(page, -1, pageCount));
           }}
           size={40}
         >
@@ -696,7 +715,7 @@ function VerticalNav({
           ariaLabel="Próxima página do slide 8"
           onClick={(event) => {
             stopEvent(event);
-            if (canGoDown) setPage(page + 1);
+            setPage(cycleVerticalPage(page, 1, pageCount));
           }}
           size={40}
         >
@@ -771,7 +790,7 @@ function RoiCard({ metrics }: { metrics: Metrics }) {
             >
               {index === 0 ? (
                 <>
-                  <span style={{ display: "block", fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(30), lineHeight: 0.9 }}>Até</span>
+                  <span style={{ display: "block", fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(30), lineHeight: 0.9, paddingBottom: 8 }}>Até</span>
                   <span style={{ fontSize: vs(64), lineHeight: 0.9 }}>70</span>
                   <span style={{ fontSize: vs(48), lineHeight: 0.9 }}>%</span>
                 </>
@@ -1383,10 +1402,10 @@ export function Slide08DesignSystem({ scaleX, scaleY }: Slide08DesignSystemProps
         : 0;
 
   const setPage = (next: number) => {
-    const clamped = Math.max(0, Math.min(pageCount - 1, next));
-    if (clamped === page) return;
-    setPageDirection(clamped > page ? 1 : -1);
-    setPageState(clamped);
+    const { target, direction } = resolveVerticalPage(next, page, pageCount);
+    if (direction === 0) return;
+    setPageDirection(direction);
+    setPageState(target);
   };
 
   const handleWheel = (event: WheelEvent<HTMLDivElement>) => {

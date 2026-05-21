@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
 import { createSlideMetrics } from "../scaling";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
@@ -660,6 +661,7 @@ function Tooltip({
             padding: vs(24),
             boxSizing: "border-box",
             background: "rgba(0,0,0,0.9)",
+            boxShadow: INTERACTIVE_HOVER_BOX_SHADOW,
             backdropFilter: "blur(4px)",
             WebkitBackdropFilter: "blur(4px)",
             display: "flex",

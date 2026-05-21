@@ -373,7 +373,7 @@ export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props
           <button
             onClick={handleStatsPrev}
             style={{ width: vs(40), height: vs(40) }}
-            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-colors cursor-pointer"
+            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-[background-color,color,box-shadow] duration-[240ms] ease hover:shadow-[0_8px_24px_0_rgba(5,28,117,0.16),0_2px_4px_0_rgba(5,28,117,0.24)] cursor-pointer"
           >
             <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" className="transition-colors">
               <mask id="s2-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
@@ -387,7 +387,7 @@ export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props
           <button
             onClick={handleStatsNext}
             style={{ width: vs(40), height: vs(40) }}
-            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-colors cursor-pointer"
+            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-[background-color,color,box-shadow] duration-[240ms] ease hover:shadow-[0_8px_24px_0_rgba(5,28,117,0.16),0_2px_4px_0_rgba(5,28,117,0.24)] cursor-pointer"
           >
             <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" className="transition-colors">
               <mask id="s2-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
