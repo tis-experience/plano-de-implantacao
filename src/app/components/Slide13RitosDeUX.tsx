@@ -482,7 +482,7 @@ function RitoRows({
             paddingBottom: vy(16),
             boxSizing: "border-box",
             overflow: "hidden",
-            cursor: "default",
+            cursor: "pointer",
           }}
         >
           <div style={{ width: vx(220), flexShrink: 0, overflow: "hidden" }}>
