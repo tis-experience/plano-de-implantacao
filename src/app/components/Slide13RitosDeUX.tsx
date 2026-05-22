@@ -184,9 +184,9 @@ const TABLE_TOP_EXP   = 0;
 const TABLE_HDR_REST_H = 48; // py 12 + linha ~24
 const LIST_GAP         = 8;
 const STICKY_HDR_H     = 80; // py 28 + linha ~24 + py 28 (797:735)
-const ROWS_GAP_HDR     = 24; // folga abaixo do título sticky (não igual à altura do header)
+const ROWS_GAP_HDR     = 2; // folga abaixo do título sticky (altura do header + 2px)
 const ROWS_PT_REST     = TABLE_HDR_REST_H + LIST_GAP; // 56
-const ROWS_PT_EXP      = STICKY_HDR_H + ROWS_GAP_HDR; // 104
+const ROWS_PT_EXP      = STICKY_HDR_H + ROWS_GAP_HDR; // 82
 
 const OVERLAY_H_REST = 314;
 const OVERLAY_H_EXP  = 180;
