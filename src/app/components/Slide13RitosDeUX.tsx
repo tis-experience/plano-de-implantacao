@@ -177,13 +177,17 @@ const DESIGN_HEIGHT   = 1080;
 
 // Posição do cabeçalho de colunas da tabela
 const TABLE_TOP_REST  = 317;   // recolhido
-const TABLE_TOP_EXP   =  24;   // expandido (24px de margem)
-const TABLE_HDR_H     =  56;   // altura da linha de cabeçalho
+const TABLE_TOP_EXP   =  24;   // expandido (24px de margem no topo)
+const TABLE_HDR_H     =  56;
+const LIST_GAP        =   8;   // margem entre títulos da tabela e 1.º item (Figma gap 8)
 
-// Clip do miolo: começa abaixo do cabeçalho e vai até o fundo do slide.
-// O gradiente/legenda (z-index superior) cobre o fim da lista.
-const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_H;  // 373
-const CLIP_TOP_EXP  = TABLE_TOP_EXP  + TABLE_HDR_H;  //  80
+// Clip do miolo (abaixo do cabeçalho de colunas + gap)
+const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_H + LIST_GAP; // 381
+const CLIP_TOP_EXP  = TABLE_TOP_EXP  + TABLE_HDR_H + LIST_GAP; //  88
+
+const GRADIENT_TOP = 680; // início do overlay de legenda no estado inicial
+const CLIP_H_REST  = GRADIENT_TOP - CLIP_TOP_REST;             // 299
+const CLIP_H_EXP   = DESIGN_HEIGHT - CLIP_TOP_EXP - 24;        // até perto do fundo
 
 export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
@@ -200,11 +204,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const contentH = contentRef.current?.scrollHeight ?? 0;
-    // viewport: desde o clip top até onde o gradiente começa (~680px do topo)
-    const clipTop = isScrolledRef.current ? vy(CLIP_TOP_EXP) : vy(CLIP_TOP_REST);
-    const gradientTop = vy(680);
-    const clipH   = Math.max(gradientTop - clipTop, vy(200));
-    const maxS    = Math.max(0, contentH - clipH);
+    const clipH = isScrolledRef.current ? vy(CLIP_H_EXP) : vy(CLIP_H_REST);
+    const maxS  = Math.max(0, contentH - clipH);
 
     rawScroll.current = Math.max(0, Math.min(maxS, rawScroll.current + e.deltaY * 0.7));
     springScroll.set(rawScroll.current);
@@ -321,18 +322,16 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
       </motion.div>
 
       {/* ── Miolo rolável ────────────────────────────────────────────────────── */}
-      {/* Vai até o fundo do slide; o gradiente/legenda (z-index superior) cobre
-          a parte inferior e faz o fade natural das linhas. */}
       <motion.div
         animate={{
           top: isScrolled ? vy(CLIP_TOP_EXP) : vy(CLIP_TOP_REST),
+          height: isScrolled ? vy(CLIP_H_EXP) : vy(CLIP_H_REST),
         }}
         transition={ANIM}
         style={{
           position: "absolute",
           left: vx(120),
           width: vx(1680),
-          height: vy(DESIGN_HEIGHT - CLIP_TOP_REST), // fixo; clip top move, mas fundo fica no limite
           overflow: "hidden",
         }}
       >
@@ -342,7 +341,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
               display: "flex",
               flexDirection: "column",
               gap: vy(8),
-              paddingBottom: vy(8),
+              paddingBottom: vy(24),
             }}
           >
             {RITOS.map((rito, i) => (
@@ -449,8 +448,10 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* ── Gradiente inferior + cartões de legenda (sempre visível) ─────────── */}
-      <div
+      {/* ── Gradiente inferior + cartões de legenda (desce ao rolar) ─────────── */}
+      <motion.div
+        animate={{ y: isScrolled ? vy(420) : 0 }}
+        transition={ANIM}
         style={{
           position: "absolute",
           bottom: 0,
@@ -460,7 +461,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 24.75%)",
           overflow: "hidden",
           zIndex: 10,
-          pointerEvents: "none",
+          pointerEvents: isScrolled ? "none" : "auto",
         }}
       >
         {/* Cartões de legenda */}
@@ -514,7 +515,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
             </div>
           ))}
         </motion.div>
-      </div>
+      </motion.div>
 
       {/* ── Footer (some ao rolar) ───────────────────────────────────────────── */}
       <motion.div
