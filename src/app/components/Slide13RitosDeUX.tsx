@@ -1,4 +1,4 @@
-import { useRef, useState, type WheelEvent } from "react";
+import { useRef, useState, type CSSProperties, type WheelEvent } from "react";
 import { motion, useSpring, useTransform } from "motion/react";
 import { createSlideMetrics } from "../scaling";
 import { imgGroup } from "../../imports/05AlemDoDesenhoDeTelas/svg-s8nfu";
@@ -169,43 +169,263 @@ const LEGEND_CARDS = [
   },
 ];
 
-// ─── Constantes de layout (px no frame 1920×1080) ────────────────────────────
+// ─── Layout Figma 1920×1080 (52:1034 inicial · 797:733 rolado) ───────────────
 const EASE = [0.22, 1, 0.36, 1] as const;
 const ANIM = { duration: 0.55, ease: EASE };
 
-const DESIGN_HEIGHT   = 1080;
+const DESIGN_HEIGHT = 1080;
 
-// Posição do cabeçalho de colunas da tabela
-const TABLE_TOP_REST  = 317;   // recolhido
-const TABLE_TOP_EXP   =  24;   // expandido (24px de margem no topo)
-const TABLE_HDR_H     =  56;
-const LIST_GAP        =   8;   // margem entre títulos da tabela e 1.º item (Figma gap 8)
+const TABLE_LEFT      = 120;
+const TABLE_WIDTH     = 1680;
+const TABLE_TOP_REST  = 317;
+const TABLE_TOP_EXP   = 0;
 
-// Clip do miolo (abaixo do cabeçalho de colunas + gap)
-const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_H + LIST_GAP; // 381
-const CLIP_TOP_EXP  = TABLE_TOP_EXP  + TABLE_HDR_H + LIST_GAP; //  88
+const TABLE_HDR_REST_H = 48; // py 12 + linha ~24
+const LIST_GAP         = 8;
+const ROWS_PT_EXP      = 80; // espaço abaixo do cabeçalho sticky (797:733)
 
-const GRADIENT_TOP = 680; // início do overlay de legenda no estado inicial
-const CLIP_H_REST  = GRADIENT_TOP - CLIP_TOP_REST;             // 299
-const CLIP_H_EXP   = DESIGN_HEIGHT - CLIP_TOP_EXP - 24;        // até perto do fundo
+const OVERLAY_H_REST = 314;
+const OVERLAY_H_EXP  = 180;
+const LEGEND_TOP     = 32;
+
+const HEADER_TOP_REST = 96;
+const HEADER_TOP_EXP  = -181;
+const FOOTER_TOP_REST = 946;
+const FOOTER_TOP_EXP  = 1080;
+
+const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_REST_H + LIST_GAP; // 373
+const CLIP_H_REST   = DESIGN_HEIGHT - OVERLAY_H_REST - CLIP_TOP_REST; // 393
+const CLIP_TOP_EXP  = 0;
+const CLIP_H_EXP    = DESIGN_HEIGHT - OVERLAY_H_EXP; // 900
+
+const COL_HEADER_BLUR: CSSProperties = {
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  backgroundColor: "rgba(255,255,255,0.8)",
+};
+
+const OVERLAY_GRADIENT =
+  "linear-gradient(to bottom, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.9) 46.97%)";
+
+// ─── Subcomponentes ───────────────────────────────────────────────────────────
+function TableColumnHeader({
+  vx,
+  vy,
+  vs,
+  sticky,
+}: {
+  vx: (n: number) => number;
+  vy: (n: number) => number;
+  vs: (n: number) => number;
+  sticky: boolean;
+}) {
+  const cols = [
+    { icon: categorySvg, label: "Rito/Canal",     width: vx(220) },
+    { icon: calendarSvg, label: "Quando",         width: vx(260) },
+    { icon: groupsSvg,   label: "Quem participa", width: undefined as number | undefined },
+    { icon: packageSvg,  label: "Saída esperada", width: undefined as number | undefined },
+  ];
+
+  return (
+    <div
+      style={{
+        ...COL_HEADER_BLUR,
+        display: "flex",
+        gap: vx(48),
+        alignItems: "center",
+        boxSizing: "border-box",
+        width: sticky ? vx(1920) : "100%",
+        paddingLeft: sticky ? vx(136) : vx(16),
+        paddingRight: sticky ? vx(136) : vx(16),
+        paddingTop: vy(sticky ? 28 : 12),
+        paddingBottom: vy(sticky ? 28 : 12),
+        ...(sticky
+          ? {
+              position: "absolute",
+              left: vx(-120),
+              top: 0,
+              zIndex: 25,
+            }
+          : { position: "relative", flexShrink: 0 }),
+      }}
+    >
+      {cols.map(({ icon, label, width }) => (
+        <div
+          key={label}
+          style={{
+            display: "flex",
+            gap: vx(8),
+            alignItems: "center",
+            width: width ?? undefined,
+            flex: width ? undefined : "1 0 0",
+            minWidth: width ? undefined : 0,
+            overflow: "hidden",
+          }}
+        >
+          <img src={icon} alt="" aria-hidden style={{ width: vs(24), height: vs(24), flexShrink: 0 }} />
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontWeight: 900,
+              fontStyle: "normal",
+              fontSize: Math.round(vs(20)),
+              lineHeight: `${Math.round(vs(20))}px`,
+              color: NAVY,
+              whiteSpace: "nowrap",
+              WebkitFontSmoothing: "antialiased",
+            }}
+          >
+            {label}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RitoRows({
+  vx,
+  vy,
+  vs,
+  fade,
+}: {
+  vx: (n: number) => number;
+  vy: (n: number) => number;
+  vs: (n: number) => number;
+  fade: (delay: number) => { duration: number; delay: number; ease: readonly [number, number, number, number] };
+}) {
+  return (
+    <>
+      {RITOS.map((rito, i) => (
+        <motion.div
+          key={rito.name}
+          initial={{ opacity: 0, y: vy(16) }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={fade(0.14 + i * 0.03)}
+          style={{
+            display: "flex",
+            gap: vx(48),
+            alignItems: "center",
+            backgroundColor: ROW_BG[rito.tagColor],
+            border: `${vs(1)}px solid ${ROW_BORDER[rito.tagColor]}`,
+            borderRadius: vs(999),
+            paddingLeft: vx(16),
+            paddingRight: vx(16),
+            paddingTop: vy(16),
+            paddingBottom: vy(16),
+            boxSizing: "border-box",
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ width: vx(220), flexShrink: 0, overflow: "hidden" }}>
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: TAG_BG[rito.tagColor],
+                borderRadius: vs(999),
+                paddingLeft: vx(20),
+                paddingRight: vx(20),
+                paddingTop: vy(16),
+                paddingBottom: vy(16),
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontFamily: "'Bronkoh-Heavy', sans-serif",
+                  fontWeight: 900,
+                  fontStyle: "normal",
+                  fontSize: Math.round(vs(20)),
+                  lineHeight: `${Math.round(vs(20))}px`,
+                  letterSpacing: Math.round(vs(-0.25) * 10) / 10,
+                  color: "#fff",
+                  whiteSpace: "nowrap",
+                  WebkitFontSmoothing: "antialiased",
+                }}
+              >
+                {rito.name}
+              </p>
+            </div>
+          </div>
+
+          <div style={{ width: vx(260), flexShrink: 0, display: "flex", gap: vx(4), flexWrap: "wrap", alignItems: "center" }}>
+            {rito.whens.map((w) => (
+              <div
+                key={w.label}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: WHEN_BG[w.color],
+                  borderRadius: vs(999),
+                  paddingLeft: vx(16),
+                  paddingRight: vx(16),
+                  paddingTop: vy(12),
+                  paddingBottom: vy(12),
+                }}
+              >
+                <p
+                  style={{
+                    margin: 0,
+                    fontFamily: "'Manrope', sans-serif",
+                    fontWeight: 800,
+                    fontStyle: "normal",
+                    fontSize: Math.round(vs(16)),
+                    lineHeight: `${Math.round(vs(16))}px`,
+                    letterSpacing: Math.round(vs(-0.25) * 10) / 10,
+                    color: WHEN_COLOR[w.color],
+                    whiteSpace: "nowrap",
+                    WebkitFontSmoothing: "antialiased",
+                  }}
+                >
+                  {w.label}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ flex: "1 0 0", minWidth: 0, paddingRight: vx(24) }}>
+            <p
+              style={{ fontSize: vs(16), lineHeight: `${vs(24)}px`, letterSpacing: vs(0.12) }}
+              className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
+            >
+              {rito.who}
+            </p>
+          </div>
+
+          <div style={{ flex: "1 0 0", minWidth: 0, paddingRight: vx(24) }}>
+            <p
+              style={{ fontSize: vs(16), lineHeight: `${vs(24)}px`, letterSpacing: vs(0.12) }}
+              className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
+            >
+              {rito.output}
+            </p>
+          </div>
+        </motion.div>
+      ))}
+    </>
+  );
+}
 
 export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // ── Scroll suave via spring ────────────────────────────────────────────────
-  const rawScroll    = useRef(0);
+  const rawScroll = useRef(0);
   const isScrolledRef = useRef(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const springScroll = useSpring(0, { damping: 32, stiffness: 220, mass: 0.8 });
-  const translateY   = useTransform(springScroll, (v) => `${-v}px`);
+  const translateY = useTransform(springScroll, (v) => `${-v}px`);
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const contentH = contentRef.current?.scrollHeight ?? 0;
     const clipH = isScrolledRef.current ? vy(CLIP_H_EXP) : vy(CLIP_H_REST);
-    const maxS  = Math.max(0, contentH - clipH);
+    const maxS = Math.max(0, contentH - clipH);
 
     rawScroll.current = Math.max(0, Math.min(maxS, rawScroll.current + e.deltaY * 0.7));
     springScroll.set(rawScroll.current);
@@ -229,16 +449,18 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
       className="absolute inset-0 overflow-hidden bg-white"
       onWheel={handleWheel}
     >
-      {/* ── Header (some quando scrollY === 0) ─────────────────────────────── */}
+      {/* Header da página (52:1034 · some ao rolar → 797:733 top -181) */}
       <motion.div
         initial={{ opacity: 0, y: vy(-20) }}
-        animate={{ opacity: isScrolled ? 0 : 1, y: isScrolled ? vy(-260) : 0 }}
+        animate={{
+          opacity: isScrolled ? 0 : 1,
+          top: vy(isScrolled ? HEADER_TOP_EXP : HEADER_TOP_REST),
+        }}
         transition={isScrolled ? ANIM : fade(0.06)}
         style={{
           position: "absolute",
-          left: vx(120),
-          top: vy(96),
-          width: vx(1680),
+          left: vx(TABLE_LEFT),
+          width: vx(TABLE_WIDTH),
           display: "flex",
           flexDirection: "column",
           gap: vy(16),
@@ -267,238 +489,76 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </p>
       </motion.div>
 
-      {/* ── Cabeçalho fixo da tabela (reposiciona ao expandir) ──────────────── */}
+      {/* Área da tabela: top 317 → 0 (52:1034 / 797:734) */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{
-          opacity: 1,
-          top: isScrolled ? vy(TABLE_TOP_EXP) : vy(TABLE_TOP_REST),
-        }}
-        transition={fade(0.12)}
-        style={{
-          position: "absolute",
-          left: vx(120),
-          width: vx(1680),
-          display: "flex",
-          gap: vx(48),
-          alignItems: "center",
-          backgroundColor: "#fff",
-          borderRadius: vs(999),
-          paddingLeft: vx(16),
-          paddingRight: vx(16),
-          paddingTop: vy(12),
-          paddingBottom: vy(12),
-          boxSizing: "border-box",
-          zIndex: 20,
-        }}
-      >
-        {[
-          { icon: categorySvg, label: "Rito/Canal",      width: vx(220) },
-          { icon: calendarSvg, label: "Quando",          width: vx(260) },
-          { icon: groupsSvg,   label: "Quem participa",  width: undefined },
-          { icon: packageSvg,  label: "Saída esperada",  width: undefined },
-        ].map(({ icon, label, width }) => (
-          <div
-            key={label}
-            style={{
-              display: "flex",
-              gap: vx(8),
-              alignItems: "center",
-              width: width ?? undefined,
-              flex: width ? undefined : "1 0 0",
-              minWidth: width ? undefined : 0,
-              overflow: "hidden",
-            }}
-          >
-            <img src={icon} alt="" aria-hidden style={{ width: vs(24), height: vs(24), flexShrink: 0 }} />
-            <p
-              style={{
-                margin: 0,
-                fontFamily: "'Bronkoh-Heavy', sans-serif",
-                fontWeight: 900,
-                fontStyle: "normal",
-                fontSize: Math.round(vs(20)),
-                lineHeight: `${Math.round(vs(20))}px`,
-                color: NAVY,
-                whiteSpace: "nowrap",
-                WebkitFontSmoothing: "antialiased",
-              }}
-            >
-              {label}
-            </p>
-          </div>
-        ))}
-      </motion.div>
-
-      {/* ── Miolo rolável ────────────────────────────────────────────────────── */}
-      <motion.div
-        animate={{
-          top: isScrolled ? vy(CLIP_TOP_EXP) : vy(CLIP_TOP_REST),
-          height: isScrolled ? vy(CLIP_H_EXP) : vy(CLIP_H_REST),
-        }}
+        animate={{ top: vy(isScrolled ? TABLE_TOP_EXP : TABLE_TOP_REST) }}
         transition={ANIM}
         style={{
           position: "absolute",
-          left: vx(120),
-          width: vx(1680),
-          overflow: "hidden",
+          left: vx(TABLE_LEFT),
+          width: vx(TABLE_WIDTH),
         }}
       >
-        <motion.div ref={contentRef} style={{ y: translateY }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: vy(8),
-              paddingBottom: vy(24),
-            }}
-          >
-            {RITOS.map((rito, i) => (
-              <motion.div
-                key={rito.name}
-                initial={{ opacity: 0, y: vy(16) }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={fade(0.14 + i * 0.03)}
-                style={{
-                  display: "flex",
-                  gap: vx(48),
-                  alignItems: "center",
-                  backgroundColor: ROW_BG[rito.tagColor],
-                  border: `${vs(1)}px solid ${ROW_BORDER[rito.tagColor]}`,
-                  borderRadius: vs(999),
-                  paddingLeft: vx(16),
-                  paddingRight: vx(16),
-                  paddingTop: vy(16),
-                  paddingBottom: vy(16),
-                  boxSizing: "border-box",
-                  overflow: "hidden",
-                }}
-              >
-                {/* Coluna: Rito/Canal */}
-                <div style={{ width: vx(220), flexShrink: 0, overflow: "hidden" }}>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      backgroundColor: TAG_BG[rito.tagColor],
-                      borderRadius: vs(999),
-                      paddingLeft: vx(20),
-                      paddingRight: vx(20),
-                      paddingTop: vy(16),
-                      paddingBottom: vy(16),
-                    }}
-                  >
-                    <p
-                      style={{
-                        margin: 0,
-                        fontFamily: "'Bronkoh-Heavy', sans-serif",
-                        fontWeight: 900,
-                        fontStyle: "normal",
-                        fontSize: Math.round(vs(20)),
-                        lineHeight: `${Math.round(vs(20))}px`,
-                        letterSpacing: Math.round(vs(-0.25) * 10) / 10,
-                        color: "#fff",
-                        whiteSpace: "nowrap",
-                        WebkitFontSmoothing: "antialiased",
-                      }}
-                    >
-                      {rito.name}
-                    </p>
-                  </div>
-                </div>
+        {/* Cabeçalho sticky full-bleed (797:735) */}
+        {isScrolled && <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky />}
 
-                {/* Coluna: Quando */}
-                <div style={{ width: vx(260), flexShrink: 0, display: "flex", gap: vx(4), flexWrap: "wrap", alignItems: "center" }}>
-                  {rito.whens.map((w) => (
-                    <div
-                      key={w.label}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: WHEN_BG[w.color],
-                        borderRadius: vs(999),
-                        paddingLeft: vx(16),
-                        paddingRight: vx(16),
-                        paddingTop: vy(12),
-                        paddingBottom: vy(12),
-                      }}
-                    >
-                    <p
-                      style={{
-                        margin: 0,
-                        fontFamily: "'Manrope', sans-serif",
-                        fontWeight: 800,
-                        fontStyle: "normal",
-                        fontSize: Math.round(vs(16)),
-                        lineHeight: `${Math.round(vs(16))}px`,
-                        letterSpacing: Math.round(vs(-0.25) * 10) / 10,
-                        color: WHEN_COLOR[w.color],
-                        whiteSpace: "nowrap",
-                        WebkitFontSmoothing: "antialiased",
-                      }}
-                    >
-                      {w.label}
-                    </p>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Coluna: Quem participa */}
-                <div style={{ flex: "1 0 0", minWidth: 0, paddingRight: vx(24) }}>
-                  <p
-                    style={{ fontSize: vs(16), lineHeight: `${vs(24)}px`, letterSpacing: vs(0.12) }}
-                    className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
-                  >
-                    {rito.who}
-                  </p>
-                </div>
-
-                {/* Coluna: Saída esperada */}
-                <div style={{ flex: "1 0 0", minWidth: 0, paddingRight: vx(24) }}>
-                  <p
-                    style={{ fontSize: vs(16), lineHeight: `${vs(24)}px`, letterSpacing: vs(0.12) }}
-                    className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
-                  >
-                    {rito.output}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
+        {/* Cabeçalho inline fixo no estado inicial (781:1467) */}
+        {!isScrolled && (
+          <div style={{ marginBottom: vy(LIST_GAP) }}>
+            <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={false} />
           </div>
+        )}
+
+        {/* Miolo rolável (só linhas) */}
+        <motion.div
+          animate={{ height: vy(isScrolled ? CLIP_H_EXP : CLIP_H_REST) }}
+          transition={ANIM}
+          style={{ position: "relative", overflow: "hidden" }}
+        >
+          <motion.div ref={contentRef} style={{ y: translateY }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: vy(LIST_GAP),
+                paddingTop: isScrolled ? vy(ROWS_PT_EXP) : 0,
+                paddingBottom: vy(24),
+              }}
+            >
+              <RitoRows vx={vx} vy={vy} vs={vs} fade={fade} />
+            </div>
+          </motion.div>
         </motion.div>
       </motion.div>
 
-      {/* ── Gradiente inferior + cartões de legenda (desce ao rolar) ─────────── */}
+      {/* Overlay de legenda — fixo no fundo, 314px → 180px (775:891 / 797:885) */}
       <motion.div
-        animate={{ y: isScrolled ? vy(420) : 0 }}
+        animate={{ height: vy(isScrolled ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
         style={{
           position: "absolute",
           bottom: 0,
           left: 0,
           width: vx(1920),
-          height: vy(400),
-          background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 24.75%)",
+          backdropFilter: "blur(50px)",
+          WebkitBackdropFilter: "blur(50px)",
+          background: OVERLAY_GRADIENT,
           overflow: "hidden",
           zIndex: 10,
-          pointerEvents: isScrolled ? "none" : "auto",
+          pointerEvents: "auto",
         }}
       >
-        {/* Cartões de legenda */}
         <motion.div
           initial={{ opacity: 0, y: vy(12) }}
           animate={{ opacity: 1, y: 0 }}
           transition={fade(0.45)}
           style={{
             position: "absolute",
-            left: vx(120),
-            top: vy(110),
-            width: vx(1680),
+            left: vx(TABLE_LEFT),
+            top: vy(LEGEND_TOP),
+            width: vx(TABLE_WIDTH),
             display: "flex",
             gap: vx(16),
-            pointerEvents: "auto",
           }}
         >
           {LEGEND_CARDS.map((card) => (
@@ -542,15 +602,17 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* ── Footer (some ao rolar) ───────────────────────────────────────────── */}
+      {/* Footer (946 → 1080 fora da tela ao rolar) */}
       <motion.div
-        animate={{ opacity: isScrolled ? 0 : 1, y: isScrolled ? vy(60) : 0 }}
+        animate={{
+          opacity: isScrolled ? 0 : 1,
+          top: vy(isScrolled ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
+        }}
         transition={ANIM}
         style={{
           position: "absolute",
-          left: vx(120),
-          top: vy(946),
-          width: vx(1680),
+          left: vx(TABLE_LEFT),
+          width: vx(TABLE_WIDTH),
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
@@ -576,7 +638,6 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           </p>
         </div>
 
-        {/* Logo TIS */}
         <div
           style={{ width: vs(120), height: vs(56), overflow: "visible", position: "relative", flexShrink: 0 }}
           className="opacity-90"
