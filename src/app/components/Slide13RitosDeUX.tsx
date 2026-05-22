@@ -312,8 +312,17 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           >
             <img src={icon} alt="" aria-hidden style={{ width: vs(24), height: vs(24), flexShrink: 0 }} />
             <p
-              style={{ fontSize: vs(20), lineHeight: 1 }}
-              className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d] whitespace-nowrap"
+              style={{
+                margin: 0,
+                fontFamily: "'Bronkoh-Heavy', sans-serif",
+                fontWeight: 900,
+                fontStyle: "normal",
+                fontSize: Math.round(vs(20)),
+                lineHeight: `${Math.round(vs(20))}px`,
+                color: NAVY,
+                whiteSpace: "nowrap",
+                WebkitFontSmoothing: "antialiased",
+              }}
             >
               {label}
             </p>
@@ -381,8 +390,18 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
                     }}
                   >
                     <p
-                      style={{ fontSize: vs(20), lineHeight: 1, letterSpacing: vs(-0.25) }}
-                      className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white whitespace-nowrap"
+                      style={{
+                        margin: 0,
+                        fontFamily: "'Bronkoh-Heavy', sans-serif",
+                        fontWeight: 900,
+                        fontStyle: "normal",
+                        fontSize: Math.round(vs(20)),
+                        lineHeight: `${Math.round(vs(20))}px`,
+                        letterSpacing: Math.round(vs(-0.25) * 10) / 10,
+                        color: "#fff",
+                        whiteSpace: "nowrap",
+                        WebkitFontSmoothing: "antialiased",
+                      }}
                     >
                       {rito.name}
                     </p>
@@ -408,13 +427,16 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
                     >
                     <p
                       style={{
-                        fontSize: vs(16),
-                        lineHeight: 1,
-                        letterSpacing: vs(-0.25),
-                        color: WHEN_COLOR[w.color],
+                        margin: 0,
                         fontFamily: "'Manrope', sans-serif",
                         fontWeight: 800,
+                        fontStyle: "normal",
+                        fontSize: Math.round(vs(16)),
+                        lineHeight: `${Math.round(vs(16))}px`,
+                        letterSpacing: Math.round(vs(-0.25) * 10) / 10,
+                        color: WHEN_COLOR[w.color],
                         whiteSpace: "nowrap",
+                        WebkitFontSmoothing: "antialiased",
                       }}
                     >
                       {w.label}
@@ -497,11 +519,14 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
             >
               <p
                 style={{
-                  fontSize: vs(20),
-                  lineHeight: 1,
-                  color: card.titleColor,
+                  margin: 0,
                   fontFamily: "'Bronkoh-Heavy', sans-serif",
+                  fontWeight: 900,
                   fontStyle: "normal",
+                  fontSize: Math.round(vs(20)),
+                  lineHeight: `${Math.round(vs(20))}px`,
+                  color: card.titleColor,
+                  WebkitFontSmoothing: "antialiased",
                 }}
               >
                 {card.title}
