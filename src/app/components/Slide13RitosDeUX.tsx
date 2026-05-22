@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type WheelEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type WheelEvent } from "react";
 import { motion, useSpring, useTransform } from "motion/react";
 import { createSlideMetrics } from "../scaling";
 import { imgGroup } from "../../imports/05AlemDoDesenhoDeTelas/svg-s8nfu";
@@ -172,6 +172,7 @@ const LEGEND_CARDS = [
 // ─── Layout Figma 1920×1080 (52:1034 inicial · 797:733 rolado) ───────────────
 const EASE = [0.22, 1, 0.36, 1] as const;
 const ANIM = { duration: 0.55, ease: EASE };
+const EXPAND_LOCK_MS = Math.round(ANIM.duration * 1000);
 
 const DESIGN_HEIGHT = 1080;
 
@@ -414,26 +415,63 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const contentRef = useRef<HTMLDivElement>(null);
 
   const rawScroll = useRef(0);
-  const isScrolledRef = useRef(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const isExpandedRef = useRef(false);
+  const expandLockRef = useRef(false);
+  const expandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const springScroll = useSpring(0, { damping: 32, stiffness: 220, mass: 0.8 });
   const translateY = useTransform(springScroll, (v) => `${-v}px`);
 
+  useEffect(() => {
+    return () => {
+      if (expandTimerRef.current) clearTimeout(expandTimerRef.current);
+    };
+  }, []);
+
+  const startExpandLock = () => {
+    expandLockRef.current = true;
+    rawScroll.current = 0;
+    springScroll.set(0);
+    if (expandTimerRef.current) clearTimeout(expandTimerRef.current);
+    expandTimerRef.current = setTimeout(() => {
+      expandLockRef.current = false;
+      expandTimerRef.current = null;
+    }, EXPAND_LOCK_MS);
+  };
+
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    const delta = e.deltaY * 0.7;
+
+    // Recolher layout ao puxar para cima com a lista no topo
+    if (isExpandedRef.current && delta < 0 && rawScroll.current <= 0) {
+      if (expandTimerRef.current) {
+        clearTimeout(expandTimerRef.current);
+        expandTimerRef.current = null;
+      }
+      expandLockRef.current = false;
+      isExpandedRef.current = false;
+      setIsExpanded(false);
+      return;
+    }
+
+    // Primeira rolagem: só expande o layout; conteúdo espera a animação
+    if (!isExpandedRef.current && delta > 0) {
+      isExpandedRef.current = true;
+      setIsExpanded(true);
+      startExpandLock();
+      return;
+    }
+
+    if (!isExpandedRef.current || expandLockRef.current) return;
+
     const contentH = contentRef.current?.scrollHeight ?? 0;
-    const clipH = isScrolledRef.current ? vy(CLIP_H_EXP) : vy(CLIP_H_REST);
+    const clipH = vy(CLIP_H_EXP);
     const maxS = Math.max(0, contentH - clipH);
 
-    rawScroll.current = Math.max(0, Math.min(maxS, rawScroll.current + e.deltaY * 0.7));
+    rawScroll.current = Math.max(0, Math.min(maxS, rawScroll.current + delta));
     springScroll.set(rawScroll.current);
-
-    const nowScrolled = rawScroll.current > 2;
-    if (nowScrolled !== isScrolledRef.current) {
-      isScrolledRef.current = nowScrolled;
-      setIsScrolled(nowScrolled);
-    }
   };
 
   const fade = (delay: number) => ({ duration: 0.45, delay, ease: EASE });
@@ -452,10 +490,10 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
       <motion.div
         initial={{ opacity: 0, y: vy(-20) }}
         animate={{
-          opacity: isScrolled ? 0 : 1,
-          top: vy(isScrolled ? HEADER_TOP_EXP : HEADER_TOP_REST),
+          opacity: isExpanded ? 0 : 1,
+          top: vy(isExpanded ? HEADER_TOP_EXP : HEADER_TOP_REST),
         }}
-        transition={isScrolled ? ANIM : fade(0.06)}
+        transition={isExpanded ? ANIM : fade(0.06)}
         style={{
           position: "absolute",
           left: vx(TABLE_LEFT),
@@ -463,7 +501,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           display: "flex",
           flexDirection: "column",
           gap: vy(16),
-          pointerEvents: isScrolled ? "none" : "auto",
+          pointerEvents: isExpanded ? "none" : "auto",
         }}
       >
         <div style={{ display: "flex", flexDirection: "column", gap: vy(16) }}>
@@ -490,7 +528,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
 
       {/* Área da tabela: top 317 → 0 (52:1034 / 797:734) */}
       <motion.div
-        animate={{ top: vy(isScrolled ? TABLE_TOP_EXP : TABLE_TOP_REST) }}
+        animate={{ top: vy(isExpanded ? TABLE_TOP_EXP : TABLE_TOP_REST) }}
         transition={ANIM}
         style={{
           position: "absolute",
@@ -500,30 +538,31 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
       >
         {/* Miolo rolável — overflow visible (blur do cabeçalho precisa do conteúdo atrás) */}
         <motion.div
-          animate={{ height: vy(isScrolled ? CLIP_H_EXP : CLIP_H_REST) }}
+          animate={{ height: vy(isExpanded ? CLIP_H_EXP : CLIP_H_REST) }}
           transition={ANIM}
           style={{ position: "relative", overflow: "visible" }}
         >
-          <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={isScrolled} />
+          <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={isExpanded} />
           <motion.div ref={contentRef} style={{ y: translateY }}>
-            <div
+            <motion.div
+              animate={{ paddingTop: vy(isExpanded ? ROWS_PT_EXP : ROWS_PT_REST) }}
+              transition={ANIM}
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: vy(LIST_GAP),
-                paddingTop: vy(isScrolled ? ROWS_PT_EXP : ROWS_PT_REST),
                 paddingBottom: vy(24),
               }}
             >
               <RitoRows vx={vx} vy={vy} vs={vs} fade={fade} />
-            </div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </motion.div>
 
       {/* Overlay de legenda — fixo no fundo, 314px → 180px (775:891 / 797:885) */}
       <motion.div
-        animate={{ height: vy(isScrolled ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
+        animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
         style={{
           position: "absolute",
@@ -595,8 +634,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
       {/* Footer (946 → 1080 fora da tela ao rolar) */}
       <motion.div
         animate={{
-          opacity: isScrolled ? 0 : 1,
-          top: vy(isScrolled ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
+          opacity: isExpanded ? 0 : 1,
+          top: vy(isExpanded ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
         }}
         transition={ANIM}
         style={{
@@ -606,7 +645,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
-          pointerEvents: isScrolled ? "none" : "auto",
+          pointerEvents: isExpanded ? "none" : "auto",
           zIndex: 15,
         }}
       >
