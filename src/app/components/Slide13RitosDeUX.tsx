@@ -171,7 +171,7 @@ const LEGEND_CARDS = [
 
 // ─── Constantes de layout (px no frame 1920×1080) ────────────────────────────
 const EASE = [0.22, 1, 0.36, 1] as const;
-const ANIM = { duration: 0.38, ease: EASE };
+const ANIM = { duration: 0.55, ease: EASE };
 
 // Estado recolhido (header + footer visíveis)
 const TABLE_TOP_REST  = 317;
@@ -179,7 +179,7 @@ const TABLE_HDR_H     =  56;
 const CLIP_BTM_REST   = 750; // limite visível antes do branco do gradiente
 
 // Estado expandido (ao rolar — header + footer ocultos)
-const TABLE_TOP_EXP   =   8;
+const TABLE_TOP_EXP   =  24;
 const CLIP_BTM_EXP    = 960; // quase fundo do slide
 
 // Derivados
@@ -197,7 +197,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const isScrolledRef = useRef(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const springScroll = useSpring(0, { damping: 28, stiffness: 280, mass: 0.6 });
+  const springScroll = useSpring(0, { damping: 32, stiffness: 220, mass: 0.8 });
   const translateY   = useTransform(springScroll, (v) => `${-v}px`);
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
