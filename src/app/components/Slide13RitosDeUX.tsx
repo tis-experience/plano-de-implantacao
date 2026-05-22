@@ -182,7 +182,9 @@ const TABLE_TOP_EXP   = 0;
 
 const TABLE_HDR_REST_H = 48; // py 12 + linha ~24
 const LIST_GAP         = 8;
-const ROWS_PT_EXP      = 80; // espaço abaixo do cabeçalho sticky (797:733)
+const STICKY_HDR_H     = 80; // py 28 + linha ~24 + py 28 (797:735)
+const ROWS_GAP_HDR     = 24; // folga abaixo do título sticky (não igual à altura do header)
+const ROWS_PT_EXP      = STICKY_HDR_H + ROWS_GAP_HDR; // 104
 
 const OVERLAY_H_REST = 314;
 const OVERLAY_H_EXP  = 180;
@@ -499,9 +501,6 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           width: vx(TABLE_WIDTH),
         }}
       >
-        {/* Cabeçalho sticky full-bleed (797:735) */}
-        {isScrolled && <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky />}
-
         {/* Cabeçalho inline fixo no estado inicial (781:1467) */}
         {!isScrolled && (
           <div style={{ marginBottom: vy(LIST_GAP) }}>
@@ -509,12 +508,16 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           </div>
         )}
 
-        {/* Miolo rolável (só linhas) */}
+        {/* Miolo rolável — sem overflow:hidden ao expandir (blur do sticky precisa do conteúdo atrás) */}
         <motion.div
           animate={{ height: vy(isScrolled ? CLIP_H_EXP : CLIP_H_REST) }}
           transition={ANIM}
-          style={{ position: "relative", overflow: "hidden" }}
+          style={{
+            position: "relative",
+            overflow: isScrolled ? "visible" : "hidden",
+          }}
         >
+          {isScrolled && <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky />}
           <motion.div ref={contentRef} style={{ y: translateY }}>
             <div
               style={{
