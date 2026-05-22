@@ -349,23 +349,42 @@ function TableColumnHeader({
   );
 }
 
+type TooltipPlacement = "side" | "top";
+
 function RitoTooltipPopover({
   tooltip,
   x,
   y,
   vs,
+  placement = "side",
 }: {
   tooltip: RitoTooltip | null;
   x: number;
   y: number;
   vs: (n: number) => number;
+  placement?: TooltipPlacement;
 }) {
   const width = vs(tooltip?.width ?? TOOLTIP_WIDTH);
   const estimatedHeight = vs(220);
   const margin = vs(16);
   const offset = vs(18);
-  const left = Math.min(window.innerWidth - width - margin, Math.max(margin, x - width / 2));
-  const top = Math.max(margin, y - estimatedHeight - offset);
+  const preferredLeft = x + offset;
+  const fallbackLeft = x - width - offset;
+  const sideLeft =
+    preferredLeft + width + margin <= window.innerWidth
+      ? preferredLeft
+      : Math.max(margin, fallbackLeft);
+  const centeredLeft = Math.min(
+    window.innerWidth - width - margin,
+    Math.max(margin, x - width / 2),
+  );
+  const left = placement === "top" ? centeredLeft : sideLeft;
+  const sideTop = Math.min(
+    window.innerHeight - estimatedHeight - margin,
+    Math.max(margin, y - estimatedHeight / 2),
+  );
+  const topTop = Math.max(margin, y - estimatedHeight - offset);
+  const top = placement === "top" ? topTop : sideTop;
 
   return (
     <AnimatePresence>
@@ -437,16 +456,12 @@ function RitoRows({
   vy: (n: number) => number;
   vs: (n: number) => number;
   fade: (delay: number) => { duration: number; delay: number; ease: readonly [number, number, number, number] };
-  onTooltipChange: (tooltip: RitoTooltip | null, position?: { x: number; y: number }) => void;
+  onTooltipChange: (
+    tooltip: RitoTooltip | null,
+    position?: { x: number; y: number },
+    placement?: TooltipPlacement,
+  ) => void;
 }) {
-  const showTooltip = (rito: Rito, event: MouseEvent<HTMLElement>) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    onTooltipChange(rito.tooltip, {
-      x: rect.left + rect.width / 2,
-      y: rect.top,
-    });
-  };
-
   return (
     <>
       {RITOS.map((rito, i) => (
@@ -458,15 +473,20 @@ function RitoRows({
           initial={{ opacity: 0, y: vy(16) }}
           animate={{ opacity: 1, y: 0 }}
           transition={fade(0.14 + i * 0.03)}
-          onMouseEnter={(e) => showTooltip(rito, e)}
-          onMouseMove={(e) => showTooltip(rito, e)}
+          onMouseEnter={(e) =>
+            onTooltipChange(rito.tooltip, { x: e.clientX, y: e.clientY }, "side")
+          }
+          onMouseMove={(e) =>
+            onTooltipChange(rito.tooltip, { x: e.clientX, y: e.clientY }, "side")
+          }
           onMouseLeave={() => onTooltipChange(null)}
           onFocus={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
-            onTooltipChange(rito.tooltip, {
-              x: rect.left + rect.width / 2,
-              y: rect.top,
-            });
+            onTooltipChange(
+              rito.tooltip,
+              { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+              "side",
+            );
           }}
           onBlur={() => onTooltipChange(null)}
           style={{
@@ -588,9 +608,15 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<RitoTooltip | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+  const [tooltipPlacement, setTooltipPlacement] = useState<TooltipPlacement>("side");
 
-  const updateTooltip = (next: RitoTooltip | null, position?: { x: number; y: number }) => {
+  const updateTooltip = (
+    next: RitoTooltip | null,
+    position?: { x: number; y: number },
+    placement: TooltipPlacement = "side",
+  ) => {
     setActiveTooltip(next);
+    setTooltipPlacement(placement);
     if (position) setTooltipPos(position);
   };
 
@@ -880,7 +906,13 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </div>
       </motion.div>
 
-      <RitoTooltipPopover tooltip={activeTooltip} x={tooltipPos.x} y={tooltipPos.y} vs={vs} />
+      <RitoTooltipPopover
+        tooltip={activeTooltip}
+        x={tooltipPos.x}
+        y={tooltipPos.y}
+        vs={vs}
+        placement={tooltipPlacement}
+      />
     </motion.div>
   );
 }
