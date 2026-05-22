@@ -333,6 +333,9 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           left: vx(120),
           width: vx(1680),
           overflow: "hidden",
+          // Máscara suave nas bordas superior e inferior — evita corte abrupto
+          WebkitMaskImage: `linear-gradient(to bottom, transparent 0, black ${vy(16)}px, black calc(100% - ${vy(16)}px), transparent 100%)`,
+          maskImage:        `linear-gradient(to bottom, transparent 0, black ${vy(16)}px, black calc(100% - ${vy(16)}px), transparent 100%)`,
         }}
       >
         <motion.div ref={contentRef} style={{ y: translateY }}>
