@@ -184,6 +184,7 @@ const TABLE_HDR_REST_H = 48; // py 12 + linha ~24
 const LIST_GAP         = 8;
 const STICKY_HDR_H     = 80; // py 28 + linha ~24 + py 28 (797:735)
 const ROWS_GAP_HDR     = 24; // folga abaixo do título sticky (não igual à altura do header)
+const ROWS_PT_REST     = TABLE_HDR_REST_H + LIST_GAP; // 56
 const ROWS_PT_EXP      = STICKY_HDR_H + ROWS_GAP_HDR; // 104
 
 const OVERLAY_H_REST = 314;
@@ -241,14 +242,10 @@ function TableColumnHeader({
         paddingRight: sticky ? vx(136) : vx(16),
         paddingTop: vy(sticky ? 28 : 12),
         paddingBottom: vy(sticky ? 28 : 12),
-        ...(sticky
-          ? {
-              position: "absolute",
-              left: vx(-120),
-              top: 0,
-              zIndex: 25,
-            }
-          : { position: "relative", flexShrink: 0 }),
+        position: "absolute",
+        top: 0,
+        left: sticky ? vx(-120) : 0,
+        zIndex: 25,
       }}
     >
       {cols.map(({ icon, label, width }) => (
@@ -501,30 +498,20 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           width: vx(TABLE_WIDTH),
         }}
       >
-        {/* Cabeçalho inline fixo no estado inicial (781:1467) */}
-        {!isScrolled && (
-          <div style={{ marginBottom: vy(LIST_GAP) }}>
-            <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={false} />
-          </div>
-        )}
-
-        {/* Miolo rolável — sem overflow:hidden ao expandir (blur do sticky precisa do conteúdo atrás) */}
+        {/* Miolo rolável — overflow visible (blur do cabeçalho precisa do conteúdo atrás) */}
         <motion.div
           animate={{ height: vy(isScrolled ? CLIP_H_EXP : CLIP_H_REST) }}
           transition={ANIM}
-          style={{
-            position: "relative",
-            overflow: isScrolled ? "visible" : "hidden",
-          }}
+          style={{ position: "relative", overflow: "visible" }}
         >
-          {isScrolled && <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky />}
+          <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={isScrolled} />
           <motion.div ref={contentRef} style={{ y: translateY }}>
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
                 gap: vy(LIST_GAP),
-                paddingTop: isScrolled ? vy(ROWS_PT_EXP) : 0,
+                paddingTop: vy(isScrolled ? ROWS_PT_EXP : ROWS_PT_REST),
                 paddingBottom: vy(24),
               }}
             >
