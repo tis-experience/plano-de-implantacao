@@ -173,20 +173,17 @@ const LEGEND_CARDS = [
 const EASE = [0.22, 1, 0.36, 1] as const;
 const ANIM = { duration: 0.55, ease: EASE };
 
-// Estado recolhido (header + footer visíveis)
-const TABLE_TOP_REST  = 317;
-const TABLE_HDR_H     =  56;
-const CLIP_BTM_REST   = 750; // limite visível antes do branco do gradiente
+const DESIGN_HEIGHT   = 1080;
 
-// Estado expandido (ao rolar — header + footer ocultos)
-const TABLE_TOP_EXP   =  24;
-const CLIP_BTM_EXP    = 960; // quase fundo do slide
+// Posição do cabeçalho de colunas da tabela
+const TABLE_TOP_REST  = 317;   // recolhido
+const TABLE_TOP_EXP   =  24;   // expandido (24px de margem)
+const TABLE_HDR_H     =  56;   // altura da linha de cabeçalho
 
-// Derivados
+// Clip do miolo: começa abaixo do cabeçalho e vai até o fundo do slide.
+// O gradiente/legenda (z-index superior) cobre o fim da lista.
 const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_H;  // 373
-const CLIP_H_REST   = CLIP_BTM_REST  - CLIP_TOP_REST; // 377
-const CLIP_TOP_EXP  = TABLE_TOP_EXP  + TABLE_HDR_H;  //  64
-const CLIP_H_EXP    = CLIP_BTM_EXP   - CLIP_TOP_EXP; // 896
+const CLIP_TOP_EXP  = TABLE_TOP_EXP  + TABLE_HDR_H;  //  80
 
 export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
@@ -203,9 +200,11 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
     const contentH = contentRef.current?.scrollHeight ?? 0;
-    // viewport muda conforme o estado de expansão
-    const clipH = isScrolledRef.current ? vy(CLIP_H_EXP) : vy(CLIP_H_REST);
-    const maxS  = Math.max(0, contentH - clipH);
+    // viewport: desde o clip top até onde o gradiente começa (~680px do topo)
+    const clipTop = isScrolledRef.current ? vy(CLIP_TOP_EXP) : vy(CLIP_TOP_REST);
+    const gradientTop = vy(680);
+    const clipH   = Math.max(gradientTop - clipTop, vy(200));
+    const maxS    = Math.max(0, contentH - clipH);
 
     rawScroll.current = Math.max(0, Math.min(maxS, rawScroll.current + e.deltaY * 0.7));
     springScroll.set(rawScroll.current);
@@ -289,7 +288,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           paddingTop: vy(12),
           paddingBottom: vy(12),
           boxSizing: "border-box",
-          zIndex: 10,
+          zIndex: 20,
         }}
       >
         {[
@@ -321,21 +320,20 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         ))}
       </motion.div>
 
-      {/* ── Miolo rolável (expande ao ocultar header/footer) ─────────────────── */}
+      {/* ── Miolo rolável ────────────────────────────────────────────────────── */}
+      {/* Vai até o fundo do slide; o gradiente/legenda (z-index superior) cobre
+          a parte inferior e faz o fade natural das linhas. */}
       <motion.div
         animate={{
-          top:    isScrolled ? vy(CLIP_TOP_EXP)  : vy(CLIP_TOP_REST),
-          height: isScrolled ? vy(CLIP_H_EXP)    : vy(CLIP_H_REST),
+          top: isScrolled ? vy(CLIP_TOP_EXP) : vy(CLIP_TOP_REST),
         }}
         transition={ANIM}
         style={{
           position: "absolute",
           left: vx(120),
           width: vx(1680),
+          height: vy(DESIGN_HEIGHT - CLIP_TOP_REST), // fixo; clip top move, mas fundo fica no limite
           overflow: "hidden",
-          // Máscara suave nas bordas superior e inferior — evita corte abrupto
-          WebkitMaskImage: `linear-gradient(to bottom, transparent 0, black ${vy(16)}px, black calc(100% - ${vy(16)}px), transparent 100%)`,
-          maskImage:        `linear-gradient(to bottom, transparent 0, black ${vy(16)}px, black calc(100% - ${vy(16)}px), transparent 100%)`,
         }}
       >
         <motion.div ref={contentRef} style={{ y: translateY }}>
@@ -451,10 +449,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* ── Gradiente inferior + cartões de legenda (some ao rolar) ──────────── */}
-      <motion.div
-        animate={{ opacity: isScrolled ? 0 : 1, y: isScrolled ? vy(80) : 0 }}
-        transition={ANIM}
+      {/* ── Gradiente inferior + cartões de legenda (sempre visível) ─────────── */}
+      <div
         style={{
           position: "absolute",
           bottom: 0,
@@ -463,7 +459,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           height: vy(400),
           background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 24.75%)",
           overflow: "hidden",
-          pointerEvents: isScrolled ? "none" : "auto",
+          zIndex: 10,
+          pointerEvents: "none",
         }}
       >
         {/* Cartões de legenda */}
@@ -517,7 +514,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
             </div>
           ))}
         </motion.div>
-      </motion.div>
+      </div>
 
       {/* ── Footer (some ao rolar) ───────────────────────────────────────────── */}
       <motion.div
@@ -532,6 +529,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           alignItems: "flex-end",
           justifyContent: "space-between",
           pointerEvents: isScrolled ? "none" : "auto",
+          zIndex: 15,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: vx(20) }}>
