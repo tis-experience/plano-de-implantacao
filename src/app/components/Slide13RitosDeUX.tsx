@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState, type CSSProperties, type WheelEvent } from "react";
-import { motion, useSpring, useTransform } from "motion/react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type WheelEvent } from "react";
+import { AnimatePresence, motion, useSpring, useTransform } from "motion/react";
 import { createSlideMetrics } from "../scaling";
+import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
 import { imgGroup } from "../../imports/05AlemDoDesenhoDeTelas/svg-s8nfu";
 import svgPaths from "../../imports/05AlemDoDesenhoDeTelas/svg-d0t3u4q1u6";
 import categorySvg from "../../assets/slide13/category-search.svg";
@@ -23,13 +24,22 @@ const GREEN  = "#308830";
 // ─── Dados ───────────────────────────────────────────────────────────────────
 type TagColor = "blue" | "orange" | "green";
 
+type RitoTooltip = {
+  title: string;
+  body: string;
+  width?: number;
+};
+
 interface Rito {
   name: string;
   tagColor: TagColor;
   whens: Array<{ label: string; color: TagColor }>;
   who: string;
   output: string;
+  tooltip: RitoTooltip;
 }
+
+const TOOLTIP_WIDTH = 396;
 
 const RITOS: Rito[] = [
   {
@@ -38,6 +48,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Sob demanda", color: "orange" }],
     who: "XP Engineering, Produto/solicitante e Desenvolvimento quando houver risco técnico.",
     output: "Tipo de atuação, prioridade, esforço, risco e próximos passos.",
+    tooltip: {
+      title: "Triagem de UX",
+      body: "Avaliação de novas demandas para entender contexto, urgência, risco e profundidade necessária de atuação. Define se o trabalho segue para discovery, design, apoio consultivo, backlog ou redirecionamento.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Planeamento de UX",
@@ -45,6 +60,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Início Projecto/Sprint", color: "blue" }],
     who: "XP Engineering e Produto se necessário.",
     output: "Itens priorizados, dependências, discovery/design necessário e riscos.",
+    tooltip: {
+      title: "Planeamento de UX",
+      body: "Organiza o trabalho de UX antes do ciclo de desenvolvimento, garantindo clareza sobre prioridades, dependências, riscos e entregáveis necessários para manter o design à frente da sprint.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Checkpoints",
@@ -52,6 +72,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "2x por semana", color: "blue" }],
     who: "XP Engineering.",
     output: "Bloqueios resolvidos, prioridades ajustadas e próximos passos.",
+    tooltip: {
+      title: "Checkpoints",
+      body: "Acompanhamento do trabalho em andamento para remover bloqueios, ajustar prioridades, alinhar próximos passos e garantir que decisões não fiquem paradas entre ritos maiores.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Design Critique",
@@ -59,6 +84,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Semanal", color: "blue" }],
     who: "XP Engineering e convidados conforme tema: Produto, Desenvolvimento, QA ou stakeholders.",
     output: "Decisões de design, ajustes priorizados e riscos identificados.",
+    tooltip: {
+      title: "Design Critique",
+      body: "Revisão crítica de soluções em andamento, olhando problema, fluxo, clareza, acessibilidade, consistência, uso do Design System e impactos para o utilizador e para o produto.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "DS Governance",
@@ -69,6 +99,11 @@ const RITOS: Rito[] = [
     ],
     who: "XP Engineering, Desenvolvimento DS e Produto quando houver impacto no roadmap.",
     output: "Componentes, padrões, exceções, dívidas técnicas e backlog do Design System.",
+    tooltip: {
+      title: "DS Governance",
+      body: "Espaço de decisão sobre evolução do Design System: novos componentes, padrões, exceções, dívida, documentação e prioridades. Durante a construção, tende a ser recorrente; depois, passa a ser acionado por necessidade.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Design:Dev Sync",
@@ -76,6 +111,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Sob demanda", color: "orange" }],
     who: "XP Engineering, Desenvolvimento e Produto quando houver trade-off funcional.",
     output: "Viabilidade alinhada, estados definidos, critérios de aceite e handoff claro.",
+    tooltip: {
+      title: "Design:Dev Sync",
+      body: "Alinhamento entre design e desenvolvimento para discutir viabilidade, estados, comportamento, componentes, restrições técnicas e critérios de aceite antes ou durante o handoff.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Experience Review",
@@ -83,6 +123,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Fim de Sprint", color: "blue" }],
     who: "XP Engineering, Produto, Desenvolvimento e QA.",
     output: "Ajustes de experiência, acessibilidade, comportamento e fidelidade ao design.",
+    tooltip: {
+      title: "Experience Review",
+      body: "Revisão da experiência implementada durante ou ao final da sprint, verificando fidelidade ao design, comportamento, acessibilidade, ajustes necessários e coerência com a solução aprovada.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Insights Review",
@@ -90,6 +135,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Sob demanda", color: "orange" }],
     who: "XP Engineering, Produto, Desenvolvimento (se necessário), Gestão e áreas-chave conforme pauta.",
     output: "Achados sintetizados, evidências compartilhadas, recomendações e implicações direcionadas.",
+    tooltip: {
+      title: "Insights Review",
+      body: "Compartilhamento dos principais achados de pesquisa, discovery, testes ou análise de comportamento. O foco é transformar evidências em recomendações claras para orientar decisões de produto e experiência.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Ops Review",
@@ -97,6 +147,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Trimestral", color: "blue" }],
     who: "XP Engineering, Produto, Desenvolvimento (se necessário), Gestão e áreas-chave conforme pauta.",
     output: "Gargalos identificados, métricas analisadas, decisões de melhoria e responsáveis definidos.",
+    tooltip: {
+      title: "Ops Review",
+      body: "Revisão da saúde da operação de UX, olhando gargalos, métricas, qualidade das entregas, adoção do Design System e ajustes necessários no processo.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Canal DS",
@@ -104,6 +159,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Assíncrono", color: "green" }],
     who: "XP Engineering, Desenvolvimento, Produto e QA.",
     output: "Dúvidas respondidas, orientações registradas, padrões esclarecidos e conhecimento compartilhado com o time.",
+    tooltip: {
+      title: "Canal DS",
+      body: "Canal assíncrono para dúvidas rápidas, orientação de uso do Design System, alinhamento de padrões e partilha de referências. Serve para resolver temas operacionais sem criar reunião.",
+      width: TOOLTIP_WIDTH,
+    },
   },
   {
     name: "Suporte",
@@ -111,6 +171,11 @@ const RITOS: Rito[] = [
     whens: [{ label: "Assíncrono", color: "green" }],
     who: "XP Engineering, Desenvolvimento, Produto e QA.",
     output: "Solicitações qualificadas, problemas recorrentes identificados e itens candidatos ao backlog.",
+    tooltip: {
+      title: "Suporte",
+      body: "Entrada assíncrona para pedidos, problemas recorrentes, exceções e necessidades identificadas no uso do Design System. O objetivo é qualificar sinais e transformar o que fizer sentido em backlog.",
+      width: TOOLTIP_WIDTH,
+    },
   },
 ];
 
@@ -284,25 +349,126 @@ function TableColumnHeader({
   );
 }
 
+function RitoTooltipPopover({
+  tooltip,
+  x,
+  y,
+  vs,
+}: {
+  tooltip: RitoTooltip | null;
+  x: number;
+  y: number;
+  vs: (n: number) => number;
+}) {
+  const width = vs(tooltip?.width ?? TOOLTIP_WIDTH);
+  const estimatedHeight = vs(220);
+  const margin = vs(16);
+  const offset = vs(18);
+  const left = Math.min(window.innerWidth - width - margin, Math.max(margin, x - width / 2));
+  const top = Math.max(margin, y - estimatedHeight - offset);
+
+  return (
+    <AnimatePresence>
+      {tooltip ? (
+        <motion.div
+          key={tooltip.title}
+          initial={{ opacity: 0, scale: 0.96, y: vs(6) }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: vs(4) }}
+          transition={{ duration: 0.16, ease: "easeOut" }}
+          style={{
+            position: "fixed",
+            left,
+            top,
+            width,
+            zIndex: 5000,
+            pointerEvents: "none",
+            borderRadius: vs(28),
+            padding: vs(24),
+            boxSizing: "border-box",
+            background: "rgba(0,0,0,0.9)",
+            boxShadow: INTERACTIVE_HOVER_BOX_SHADOW,
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+            display: "flex",
+            flexDirection: "column",
+            gap: vs(8),
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontWeight: 900,
+              fontSize: vs(20),
+              lineHeight: `${vs(20)}px`,
+              color: "#fff",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {tooltip.title}
+          </p>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 400,
+              fontSize: vs(16),
+              lineHeight: 1.4,
+              color: "#fff",
+            }}
+          >
+            {tooltip.body}
+          </p>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
 function RitoRows({
   vx,
   vy,
   vs,
   fade,
+  onTooltipChange,
 }: {
   vx: (n: number) => number;
   vy: (n: number) => number;
   vs: (n: number) => number;
   fade: (delay: number) => { duration: number; delay: number; ease: readonly [number, number, number, number] };
+  onTooltipChange: (tooltip: RitoTooltip | null, position?: { x: number; y: number }) => void;
 }) {
+  const showTooltip = (rito: Rito, event: MouseEvent<HTMLElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    onTooltipChange(rito.tooltip, {
+      x: rect.left + rect.width / 2,
+      y: rect.top,
+    });
+  };
+
   return (
     <>
       {RITOS.map((rito, i) => (
         <motion.div
           key={rito.name}
+          role="button"
+          tabIndex={0}
+          aria-label={`Ver detalhes de ${rito.name}`}
           initial={{ opacity: 0, y: vy(16) }}
           animate={{ opacity: 1, y: 0 }}
           transition={fade(0.14 + i * 0.03)}
+          onMouseEnter={(e) => showTooltip(rito, e)}
+          onMouseMove={(e) => showTooltip(rito, e)}
+          onMouseLeave={() => onTooltipChange(null)}
+          onFocus={(e) => {
+            const rect = e.currentTarget.getBoundingClientRect();
+            onTooltipChange(rito.tooltip, {
+              x: rect.left + rect.width / 2,
+              y: rect.top,
+            });
+          }}
+          onBlur={() => onTooltipChange(null)}
           style={{
             display: "flex",
             gap: vx(48),
@@ -316,6 +482,7 @@ function RitoRows({
             paddingBottom: vy(16),
             boxSizing: "border-box",
             overflow: "hidden",
+            cursor: "default",
           }}
         >
           <div style={{ width: vx(220), flexShrink: 0, overflow: "hidden" }}>
@@ -419,6 +586,13 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const expandLockRef = useRef(false);
   const expandTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [activeTooltip, setActiveTooltip] = useState<RitoTooltip | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+
+  const updateTooltip = (next: RitoTooltip | null, position?: { x: number; y: number }) => {
+    setActiveTooltip(next);
+    if (position) setTooltipPos(position);
+  };
 
   const springScroll = useSpring(0, { damping: 32, stiffness: 220, mass: 0.8 });
   const translateY = useTransform(springScroll, (v) => `${-v}px`);
@@ -442,6 +616,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
 
   const handleWheel = (e: WheelEvent<HTMLDivElement>) => {
     e.stopPropagation();
+    setActiveTooltip(null);
     const delta = e.deltaY * 0.7;
 
     // Recolher layout ao puxar para cima com a lista no topo
@@ -554,7 +729,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
                 paddingBottom: vy(24),
               }}
             >
-              <RitoRows vx={vx} vy={vy} vs={vs} fade={fade} />
+              <RitoRows vx={vx} vy={vy} vs={vs} fade={fade} onTooltipChange={updateTooltip} />
             </motion.div>
           </motion.div>
         </motion.div>
@@ -704,6 +879,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           </div>
         </div>
       </motion.div>
+
+      <RitoTooltipPopover tooltip={activeTooltip} x={tooltipPos.x} y={tooltipPos.y} vs={vs} />
     </motion.div>
   );
 }
