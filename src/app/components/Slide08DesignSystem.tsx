@@ -79,7 +79,7 @@ const benefits = [
   },
   {
     title: "Consistência:",
-    body: "Garante que o usuário tenha a mesma experiência em diferentes partes do produto ou em dispositivos variados.",
+    body: "Garante que o utilizador tenha a mesma experiência em diferentes partes do produto ou em dispositivos variados.",
   },
   {
     title: "Eficiência de Custos:",

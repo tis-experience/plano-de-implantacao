@@ -246,7 +246,7 @@ const EXPANDED_STEP_DETAILS = [
   ["Wireframes", "Protótipos navegáveis", "Design visual", "Criação de componentes", "Alinhamento técnico"],
   ["Testes de usabilidade", "Focus group", "Teste A/B", "Avaliação heurística", "Testes de acessibilidade"],
   ["Refinamento do protótipo", "Atualização do Design System", "Handoff para os DEVs", "Documentação"],
-  ["Coleta e análise de dados e feedbacks", "Observar utiliadores", "Análise de heatmaps", "Síntese dos resultados", "Alimentar backlog"],
+  ["Coleta e análise de dados e feedbacks", "Observar utilizadores", "Análise de heatmaps", "Síntese dos resultados", "Alimentar backlog"],
 ];
 
 const AI_PRINCIPLES = [
