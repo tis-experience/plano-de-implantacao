@@ -257,8 +257,8 @@ const WHEN_COLOR: Record<TagColor, string> = {
 const LEGEND_CARDS = [
   {
     color: "blue" as TagColor,
-    bg: "#f0f6fe",
-    border: "#a1c3e6",
+    bg: "#f0f7ff",
+    border: BLUE,
     titleColor: "#012e65",
     title: "Ritos recorrentes",
     desc: "Cadência fixa para alinhamento, crítica, governança e leitura da operação.",
