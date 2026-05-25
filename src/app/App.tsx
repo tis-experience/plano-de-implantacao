@@ -20,7 +20,7 @@ import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 import { createSlideMetrics } from "./scaling";
 
-const TOTAL_SLIDES = 17;
+const TOTAL_SLIDES = 16;
 const DESIGN_WIDTH = 1920;
 const DESIGN_HEIGHT = 1080;
 const CLOSE_ICON_PATH = "M11.176 22.7L9.3 20.8333L14.124 16L9.3 11.2L11.176 9.33333L16 14.1537L20.7907 9.33333L22.6667 11.2L17.8427 16L22.6667 20.8333L20.7907 22.7L16 17.8797L11.176 22.7Z";
@@ -34,7 +34,6 @@ const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
   { number: "14", eyebrow: "Como vamos medir", title: "Indicadores de sucesso", body: "AAA" },
   { number: "15", eyebrow: "AAAA", title: "Roadmap de implantação", body: "AAA", background: "#f4f5f7" },
-  { number: "16", eyebrow: "AAAA", title: "Próximos passos", body: "AAA", background: "#f4f5f7" },
 ];
 
 export default function App() {
@@ -589,8 +588,8 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDES 14–16 ─────────────── */}
-        {currentSlide >= 13 && currentSlide <= 15 && (
+        {/* ─────────────── SLIDES 14–15 ─────────────── */}
+        {currentSlide >= 13 && currentSlide <= 14 && (
           <StandardPlanSlide
             key={`slide-${currentSlide + 1}`}
             scaleX={scaleX}
@@ -599,10 +598,10 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDE 17 — Closing ─────────────── */}
-        {currentSlide === 16 && (
+        {/* ─────────────── SLIDE 16 — Closing ─────────────── */}
+        {currentSlide === 15 && (
           <ClosingSlide
-            key="slide-17"
+            key="slide-16-closing"
             scaleX={scaleX}
             scaleY={scaleY}
             logoRotateX={logoRotateX}
