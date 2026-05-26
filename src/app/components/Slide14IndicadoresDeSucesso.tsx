@@ -13,9 +13,7 @@ import cycleLoop2 from "../../assets/slide14/cycle-loop-2.svg";
 import cycleLoop3 from "../../assets/slide14/cycle-loop-3.svg";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
-  INTERACTIVE_HOVER_GROW_TRANSITION,
   INTERACTIVE_HOVER_TRANSITION,
-  interactiveCircleHoverSize,
 } from "../constants/interactiveShadow";
 import { createSlideMetrics } from "../scaling";
 import {
@@ -224,51 +222,37 @@ function InteractiveCircleButton({
   color?: string;
   children: ReactNode;
 }) {
-  const hoverSize = interactiveCircleHoverSize(size);
-  const hitSize = Math.max(size, hoverSize);
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.button
+    <button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
       onPointerDown={stopPointerEvent}
-      initial="rest"
-      animate="rest"
-      whileHover="hover"
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
-        width: hitSize,
-        height: hitSize,
+        width: size,
+        height: size,
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: "transparent",
+        background,
+        color,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
+        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
     >
-      <motion.div
-        variants={{
-          rest: { width: size, height: size, boxShadow: "none" },
-          hover: { width: hoverSize, height: hoverSize, boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
-        }}
-        transition={INTERACTIVE_HOVER_GROW_TRANSITION}
-        style={{
-          borderRadius: "50%",
-          background,
-          color,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        {children}
-      </motion.div>
-    </motion.button>
+      {children}
+    </button>
   );
 }
 
@@ -284,69 +268,44 @@ function HorizontalNavButton({
   metrics: Metrics;
 }) {
   const { vs } = metrics;
-  const size = Math.round(vs(40));
-  const hoverSize = Math.round(vs(56));
-  const iconSize = Math.round(vs(24));
+  const size = vs(40);
+  const iconSize = vs(24);
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <motion.button
+    <button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
       onPointerDown={stopPointerEvent}
-      initial="rest"
-      animate="rest"
-      whileHover="hover"
-      variants={{
-        rest: { color: BLUE },
-        hover: { color: "#fff" },
-      }}
+      onPointerEnter={() => setHovered(true)}
+      onPointerLeave={() => setHovered(false)}
+      onBlur={() => setHovered(false)}
       style={{
-        position: "relative",
-        width: hoverSize,
-        height: hoverSize,
+        width: size,
+        height: size,
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: "transparent",
+        background: hovered ? BLUE : "transparent",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
+        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
     >
-      <motion.div
-        aria-hidden
-        variants={{
-          rest: { width: size, height: size, backgroundColor: "transparent", boxShadow: "none" },
-          hover: { width: hoverSize, height: hoverSize, backgroundColor: BLUE, boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
-        }}
-        transition={INTERACTIVE_HOVER_GROW_TRANSITION}
-        style={{
-          position: "absolute",
-          inset: 0,
-          margin: "auto",
-          borderRadius: "50%",
-          pointerEvents: "none",
-        }}
-      />
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden
-        style={{ display: "block", position: "relative", zIndex: 1, flexShrink: 0 }}
-      >
+      <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
         <path
           d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
-          fill="currentColor"
-          shapeRendering="geometricPrecision"
+          fill={hovered ? "#fff" : BLUE}
+          style={{ transition: "fill 0.24s ease" }}
         />
       </svg>
-    </motion.button>
+    </button>
   );
 }
 
@@ -686,8 +645,7 @@ function PanelSlideBlock({
             alignItems: "stretch",
             width: "100%",
             height: "100%",
-            /* Borda externa contra o slide = azul claro; navy só na aba lateral */
-            backgroundColor: PANEL_BG,
+            backgroundColor: NAVY,
             overflow: "hidden",
             ...panelChromeStyle(panelR),
           }}
@@ -701,6 +659,8 @@ function PanelSlideBlock({
             style={{
               flex: 1,
               backgroundColor: PANEL_BG,
+              borderTopRightRadius: panelR,
+              borderBottomRightRadius: panelR,
               minWidth: 0,
               overflow: "hidden",
               display: "flex",
