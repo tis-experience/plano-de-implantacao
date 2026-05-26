@@ -13,7 +13,9 @@ import cycleLoop2 from "../../assets/slide14/cycle-loop-2.svg";
 import cycleLoop3 from "../../assets/slide14/cycle-loop-3.svg";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
+  INTERACTIVE_HOVER_GROW_TRANSITION,
   INTERACTIVE_HOVER_TRANSITION,
+  interactiveCircleHoverSize,
 } from "../constants/interactiveShadow";
 import { createSlideMetrics } from "../scaling";
 import {
@@ -222,37 +224,51 @@ function InteractiveCircleButton({
   color?: string;
   children: ReactNode;
 }) {
-  const [hovered, setHovered] = useState(false);
+  const hoverSize = interactiveCircleHoverSize(size);
+  const hitSize = Math.max(size, hoverSize);
 
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
       onPointerDown={stopPointerEvent}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onBlur={() => setHovered(false)}
+      initial="rest"
+      animate="rest"
+      whileHover="hover"
       style={{
-        width: size,
-        height: size,
+        width: hitSize,
+        height: hitSize,
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: hovered ? NAVY : background,
-        color,
+        background: "transparent",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
-        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
-        transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
     >
-      {children}
-    </button>
+      <motion.div
+        variants={{
+          rest: { width: size, height: size, boxShadow: "none" },
+          hover: { width: hoverSize, height: hoverSize, boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
+        }}
+        transition={INTERACTIVE_HOVER_GROW_TRANSITION}
+        style={{
+          borderRadius: "50%",
+          background,
+          color,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {children}
+      </motion.div>
+    </motion.button>
   );
 }
 
@@ -269,43 +285,66 @@ function HorizontalNavButton({
 }) {
   const { vs } = metrics;
   const size = vs(40);
+  const hoverSize = vs(56);
   const iconSize = vs(24);
-  const [hovered, setHovered] = useState(false);
 
   return (
-    <button
+    <motion.button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
       onPointerDown={stopPointerEvent}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onBlur={() => setHovered(false)}
+      initial="rest"
+      animate="rest"
+      whileHover="hover"
       style={{
-        width: size,
-        height: size,
+        width: hoverSize,
+        height: hoverSize,
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: hovered ? BLUE : "transparent",
+        background: "transparent",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
-        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
-        transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
     >
-      <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
-        <path
-          d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
-          fill={hovered ? "#fff" : BLUE}
-          style={{ transition: "fill 0.24s ease" }}
-        />
-      </svg>
-    </button>
+      <motion.div
+        variants={{
+          rest: {
+            width: size,
+            height: size,
+            backgroundColor: "transparent",
+            color: BLUE,
+            boxShadow: "none",
+          },
+          hover: {
+            width: hoverSize,
+            height: hoverSize,
+            backgroundColor: BLUE,
+            color: "#fff",
+            boxShadow: INTERACTIVE_HOVER_BOX_SHADOW,
+          },
+        }}
+        transition={INTERACTIVE_HOVER_GROW_TRANSITION}
+        style={{
+          borderRadius: "50%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+          <path
+            d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
+            fill="currentColor"
+          />
+        </svg>
+      </motion.div>
+    </motion.button>
   );
 }
 
