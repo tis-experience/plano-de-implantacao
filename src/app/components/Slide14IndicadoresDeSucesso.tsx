@@ -52,6 +52,8 @@ const PANEL_CLOSE_LEFT = 32;
 const PANEL_CLOSE_SIZE = 64;
 const PANEL_MAIN_LEFT = 120;
 const PANEL_MAIN_W = 1676;
+const SIDE_TAB_LEFT = 1820;
+const SIDE_TAB_W = 100;
 /** Figma: setas dos painéis abaixo do bloco (y=482), alinhadas à esquerda com pl=240 */
 const PANEL_NAV_TOP = 482;
 const PANEL_NAV_PL = 240;
@@ -366,14 +368,18 @@ function VerticalTab({
   accent = false,
   onClick,
   metrics,
+  edge = "inline",
 }: {
   label: string;
   height: number;
   accent?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   metrics: Metrics;
+  /** Aba colapsada encostada na borda direita do slide (Figma x=1820, w=100) */
+  edge?: "inline" | "right";
 }) {
   const { vx, vy, vs } = metrics;
+  const isRightEdge = edge === "right";
 
   return (
     <button
@@ -384,6 +390,7 @@ function VerticalTab({
       style={{
         border: 0,
         padding: `${vy(16)}px ${vx(32)}px`,
+        width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
         borderTopLeftRadius: vy(48),
@@ -397,6 +404,7 @@ function VerticalTab({
         flexShrink: 0,
         outline: "none",
         transition: INTERACTIVE_HOVER_TRANSITION,
+        boxSizing: "border-box",
       }}
     >
       <div
@@ -442,8 +450,10 @@ function OpenPanelRow({
   return (
     <div
       style={{
-        position: "relative",
-        width: vx(1920),
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
         height: vy(PANEL_ROW_H),
       }}
     >
@@ -470,8 +480,9 @@ function OpenPanelRow({
       <div
         style={{
           position: "absolute",
-          right: 0,
+          left: vx(SIDE_TAB_LEFT),
           top: 0,
+          width: vx(SIDE_TAB_W),
           height: vy(PANEL_ROW_H),
         }}
       >
@@ -752,8 +763,12 @@ function OverviewContent({
 
         <div
           style={{
+            marginLeft: vx(OVERVIEW_ARROW_GAP),
+            width: vx(200),
+            height: vy(OVERVIEW_SIDEBAR_H),
             display: "flex",
-            alignItems: "center",
+            flexDirection: "row",
+            alignItems: "stretch",
             backgroundColor: NAVY,
             borderTopLeftRadius: vy(48),
             borderBottomLeftRadius: vy(48),
@@ -807,8 +822,8 @@ function OperacionalPanel({
       style={{
         position: "absolute",
         left: 0,
+        right: 0,
         top: vy(357),
-        width: vx(1920),
         height: vy(522),
         zIndex: 3,
       }}
@@ -854,7 +869,14 @@ function OperacionalPanel({
           </div>
         }
         sideTab={
-          <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} accent onClick={onOpenUx} metrics={metrics} />
+          <VerticalTab
+            label="Métricas de UX"
+            height={PANEL_ROW_H}
+            accent
+            edge="right"
+            onClick={onOpenUx}
+            metrics={metrics}
+          />
         }
       />
 
@@ -887,8 +909,8 @@ function UxPanel({
       style={{
         position: "absolute",
         left: 0,
+        right: 0,
         top: vy(357),
-        width: vx(1920),
         height: vy(522),
         zIndex: 3,
       }}
@@ -932,6 +954,7 @@ function UxPanel({
             label="Métricas operacionais"
             height={PANEL_ROW_H}
             accent
+            edge="right"
             onClick={onOpenOperacional}
             metrics={metrics}
           />
