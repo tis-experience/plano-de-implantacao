@@ -45,6 +45,16 @@ const PANEL_BG = "#f0f6fe";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PANEL_TRANSITION = { duration: 0.45, ease: EASE };
+/** Troca operacional ↔ ux: conjunto completo, sem expor o fundo navy sozinho */
+const PANEL_SWAP_TRANSITION = { duration: 0.32, ease: EASE };
+
+const panelChromeStyle = (radius: number): CSSProperties => ({
+  isolation: "isolate",
+  transform: "translateZ(0)",
+  WebkitBackfaceVisibility: "hidden",
+  backfaceVisibility: "hidden",
+  borderRadius: radius,
+});
 
 /** Figma 1018:1642 — linha do painel aberto */
 const PANEL_ROW_H = 458;
@@ -572,8 +582,6 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
       <div
         style={{
           flex: 1,
-          backgroundColor: PANEL_BG,
-          borderRadius: vy(48),
           padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
           display: "flex",
           justifyContent: "space-between",
@@ -598,8 +606,6 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
     <div
       style={{
         flex: 1,
-        backgroundColor: PANEL_BG,
-        borderRadius: vy(48),
         padding: `${vy(64)}px ${vx(80)}px`,
         display: "flex",
         gap: vx(80),
@@ -611,6 +617,81 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
         <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
       ))}
     </div>
+  );
+}
+
+function PanelSlideBlock({
+  metrics,
+  view,
+  onOpenOperacional,
+  onOpenUx,
+}: {
+  metrics: Metrics;
+  view: Exclude<PanelView, "overview">;
+  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const { vx, vy } = metrics;
+  const isOperacional = view === "operacional";
+  const panelR = vy(48);
+
+  return (
+    <OpenPanelRow
+      metrics={metrics}
+      main={
+        <div
+          style={{
+            display: "flex",
+            alignItems: "stretch",
+            width: "100%",
+            height: "100%",
+            backgroundColor: NAVY,
+            overflow: "hidden",
+            ...panelChromeStyle(panelR),
+          }}
+        >
+          <VerticalTab
+            label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
+            height={PANEL_ROW_H}
+            metrics={metrics}
+          />
+          <div
+            style={{
+              flex: 1,
+              backgroundColor: PANEL_BG,
+              borderTopRightRadius: panelR,
+              borderBottomRightRadius: panelR,
+              minWidth: 0,
+              overflow: "hidden",
+              display: "flex",
+            }}
+          >
+            <PanelMetricsBody metrics={metrics} view={view} />
+          </div>
+        </div>
+      }
+      sideTab={
+        isOperacional ? (
+          <VerticalTab
+            label="Métricas de UX"
+            height={PANEL_ROW_H}
+            accent
+            edge="right"
+            onClick={onOpenUx}
+            metrics={metrics}
+          />
+        ) : (
+          <VerticalTab
+            label="Métricas operacionais"
+            height={PANEL_ROW_H}
+            accent
+            edge="right"
+            onClick={onOpenOperacional}
+            metrics={metrics}
+          />
+        )
+      }
+    />
   );
 }
 
@@ -632,7 +713,6 @@ function OpenPanelsShell({
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { vx, vy } = metrics;
-  const isOperacional = view === "operacional";
 
   return (
     <motion.div
@@ -667,62 +747,38 @@ function OpenPanelsShell({
         <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
       </div>
 
-      <OpenPanelRow
-        metrics={metrics}
-        main={
-          <div
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0,
+          height: vy(PANEL_ROW_H),
+        }}
+      >
+        <AnimatePresence mode="sync" initial={false}>
+          <motion.div
+            key={view}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={PANEL_SWAP_TRANSITION}
             style={{
-              display: "flex",
-              alignItems: "stretch",
-              backgroundColor: NAVY,
-              borderRadius: vy(48),
-              width: "100%",
-              height: "100%",
-              overflow: "hidden",
+              position: "absolute",
+              inset: 0,
+              isolation: "isolate",
+              transform: "translateZ(0)",
             }}
           >
-            <VerticalTab
-              label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
-              height={PANEL_ROW_H}
+            <PanelSlideBlock
               metrics={metrics}
+              view={view}
+              onOpenOperacional={onOpenOperacional}
+              onOpenUx={onOpenUx}
             />
-
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={view}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.25, ease: EASE }}
-                style={{ flex: 1, display: "flex", minWidth: 0, overflow: "hidden" }}
-              >
-                <PanelMetricsBody metrics={metrics} view={view} />
-              </motion.div>
-            </AnimatePresence>
-          </div>
-        }
-        sideTab={
-          isOperacional ? (
-            <VerticalTab
-              label="Métricas de UX"
-              height={PANEL_ROW_H}
-              accent
-              edge="right"
-              onClick={onOpenUx}
-              metrics={metrics}
-            />
-          ) : (
-            <VerticalTab
-              label="Métricas operacionais"
-              height={PANEL_ROW_H}
-              accent
-              edge="right"
-              onClick={onOpenOperacional}
-              metrics={metrics}
-            />
-          )
-        }
-      />
+          </motion.div>
+        </AnimatePresence>
+      </div>
     </motion.div>
   );
 }
