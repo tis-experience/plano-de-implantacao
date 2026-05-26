@@ -52,6 +52,7 @@ export default function App() {
   const [isNearInteractive, setIsNearInteractive] = useState(false);
   const [isOnInteractive, setIsOnInteractive] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSlide14PanelOpen, setIsSlide14PanelOpen] = useState(false);
   const [isInfographicExpanded, setIsInfographicExpanded] = useState(false);
   const [isDragAreaActive, setIsDragAreaActive] = useState(false);
   const [isDragCursorIconLatched, setIsDragCursorIconLatched] = useState(false);
@@ -172,6 +173,7 @@ export default function App() {
     setIsNearCustomCursorTarget(false);
     setIsNearInteractive(false);
     setIsOnInteractive(false);
+    setIsSlide14PanelOpen(false);
   };
 
   const goToSlide = (n: number) => {
@@ -187,12 +189,13 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isInfographicExpanded) return;
       if (isModalOpen) return;
+      if (isSlide14PanelOpen) return;
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft")  goPrev();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide, isModalOpen, isInfographicExpanded]);
+  }, [currentSlide, isModalOpen, isInfographicExpanded, isSlide14PanelOpen]);
   // ──────────────────────────────────────────────────────────────────────
 
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
@@ -264,6 +267,7 @@ export default function App() {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isInfographicExpanded) return;
     if (isModalOpen) return;
+    if (isSlide14PanelOpen) return;
     const target = event.target instanceof Element ? event.target : null;
     // Ignora cliques na modal mesmo após fechar no mouseUp (antes do click disparar).
     if (target?.closest("[data-nng-modal], [data-roles-modal]")) return;
@@ -594,6 +598,7 @@ export default function App() {
             key="slide-14"
             scaleX={scaleX}
             scaleY={scaleY}
+            onPanelViewChange={(panelView) => setIsSlide14PanelOpen(panelView !== "overview")}
           />
         )}
 

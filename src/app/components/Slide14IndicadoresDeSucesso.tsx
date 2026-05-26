@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import modalSvgPaths from "../../imports/Modal/svg-plwxvk4et1";
@@ -25,6 +25,7 @@ import {
 interface Props {
   scaleX: number;
   scaleY: number;
+  onPanelViewChange?: (view: PanelView) => void;
 }
 
 type PanelView = "overview" | "operacional" | "ux";
@@ -57,6 +58,10 @@ const PILLAR_ICONS = {
 const fade = (delay: number) => ({ duration: 0.55, delay, ease: "easeOut" as const });
 
 function stopEvent(event: MouseEvent) {
+  event.stopPropagation();
+}
+
+function stopPointerEvent(event: MouseEvent) {
   event.stopPropagation();
 }
 
@@ -199,6 +204,7 @@ function InteractiveCircleButton({
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
+      onPointerDown={stopPointerEvent}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
@@ -238,21 +244,25 @@ function HorizontalNavButton({
   onClick,
   direction,
   metrics,
+  emphasized = false,
 }: {
   ariaLabel: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   direction: "left" | "right";
   metrics: Metrics;
+  emphasized?: boolean;
 }) {
   const { vs } = metrics;
   const size = vs(40);
   const [hovered, setHovered] = useState(false);
+  const highlighted = emphasized || hovered;
 
   return (
     <button
       type="button"
       aria-label={ariaLabel}
       onClick={onClick}
+      onPointerDown={stopPointerEvent}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onBlur={() => setHovered(false)}
@@ -262,14 +272,14 @@ function HorizontalNavButton({
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: hovered ? BLUE : "transparent",
-        color: hovered ? "#fff" : BLUE,
+        background: highlighted ? BLUE : "transparent",
+        color: highlighted ? "#fff" : BLUE,
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
-        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        boxShadow: highlighted ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
         transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
@@ -327,7 +337,7 @@ function MetricColumnBlock({
         flexDirection: "column",
         gap: vy(24),
         width: width !== undefined ? vx(width) : undefined,
-        flex: flex !== undefined ? `${flex} 0 0` : undefined,
+        flex: flex !== undefined ? `${flex} 1 1 0` : undefined,
         minWidth: flex !== undefined ? 0 : undefined,
       }}
     >
@@ -362,6 +372,7 @@ function VerticalTab({
       type="button"
       aria-label={label}
       onClick={onClick}
+      onPointerDown={onClick ? stopPointerEvent : undefined}
       style={{
         border: 0,
         padding: `${vy(16)}px ${vx(32)}px`,
@@ -434,27 +445,44 @@ function CloseButton({
 
 function PanelNavigation({
   metrics,
+  view,
   onPrev,
   onNext,
 }: {
   metrics: Metrics;
+  view: PanelView;
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy } = metrics;
+  const { vx } = metrics;
 
   return (
     <div
       style={{
+        width: "100%",
         display: "flex",
         gap: vx(32),
         alignItems: "flex-end",
         justifyContent: "flex-end",
         paddingLeft: vx(240),
+        paddingRight: vx(32),
+        boxSizing: "border-box",
       }}
     >
-      <HorizontalNavButton ariaLabel="Painel anterior" direction="left" onClick={onPrev} metrics={metrics} />
-      <HorizontalNavButton ariaLabel="Próximo painel" direction="right" onClick={onNext} metrics={metrics} />
+      <HorizontalNavButton
+        ariaLabel={view === "ux" ? "Métricas operacionais" : "Voltar ao conteúdo inicial"}
+        direction="left"
+        onClick={onPrev}
+        metrics={metrics}
+        emphasized={view === "ux"}
+      />
+      <HorizontalNavButton
+        ariaLabel={view === "operacional" ? "Métricas de UX" : "Voltar ao conteúdo inicial"}
+        direction="right"
+        onClick={onNext}
+        metrics={metrics}
+        emphasized={view === "operacional"}
+      />
     </div>
   );
 }
@@ -474,12 +502,14 @@ function OverviewContent({
   };
 
   return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: vy(24) }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: vy(-16) }}
-        transition={PANEL_TRANSITION}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={PANEL_TRANSITION}
+      style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}
+    >
+      <div
         style={{
           position: "absolute",
           left: vx(120),
@@ -487,7 +517,7 @@ function OverviewContent({
           display: "flex",
           gap: vx(64),
           alignItems: "flex-start",
-          zIndex: 1,
+          pointerEvents: "auto",
         }}
       >
         <div
@@ -629,13 +659,9 @@ function OverviewContent({
             Consolidar padrões em 90 dias, sem esperar para agir.
           </p>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, x: vx(24) }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: vx(24) }}
-        transition={PANEL_TRANSITION}
+      <div
         style={{
           position: "absolute",
           left: vx(1668),
@@ -644,6 +670,7 @@ function OverviewContent({
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          pointerEvents: "auto",
           zIndex: 3,
         }}
       >
@@ -665,16 +692,12 @@ function OverviewContent({
             borderBottomLeftRadius: vy(48),
           }}
         >
-          <VerticalTab label="Métricas operacionais" height={458} metrics={metrics} />
+          <VerticalTab label="Métricas operacionais" height={458} onClick={onOpenOperacional} metrics={metrics} />
           <VerticalTab label="Métricas de UX" height={458} accent onClick={onOpenUx} metrics={metrics} />
         </div>
-      </motion.div>
+      </div>
 
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={fade(0.2)}
+      <p
         style={{
           position: "absolute",
           left: vx(120),
@@ -683,13 +706,13 @@ function OverviewContent({
           lineHeight: 1.3,
           margin: 0,
           whiteSpace: "nowrap",
-          zIndex: 1,
+          pointerEvents: "none",
         }}
         className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
       >
         Indicadores devem ser acompanhados por ciclo, com uma linha de base no início da implantação e revisão ao fim de cada período.
-      </motion.p>
-    </>
+      </p>
+    </motion.div>
   );
 }
 
@@ -725,7 +748,17 @@ function OperacionalPanel({
         zIndex: 3,
       }}
     >
-      <div style={{ display: "flex", gap: vx(24), alignItems: "center", paddingLeft: vx(32), width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: vx(24),
+          alignItems: "center",
+          paddingLeft: vx(32),
+          paddingRight: vx(32),
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         <CloseButton metrics={metrics} onClick={onClose} />
 
         <div
@@ -734,9 +767,9 @@ function OperacionalPanel({
             alignItems: "stretch",
             backgroundColor: NAVY,
             borderRadius: vy(48),
-            width: vx(1676),
+            flex: 1,
+            minWidth: 0,
             overflow: "hidden",
-            flexShrink: 0,
           }}
         >
           <VerticalTab label="Métricas operacionais" height={458} metrics={metrics} />
@@ -750,6 +783,7 @@ function OperacionalPanel({
               justifyContent: "space-between",
               gap: vx(24),
               minWidth: 0,
+              overflow: "hidden",
             }}
           >
             {OPERACIONAL_COLUMNS.map((column, index) => (
@@ -766,7 +800,7 @@ function OperacionalPanel({
         <VerticalTab label="Métricas de UX" height={458} accent onClick={onOpenUx} metrics={metrics} />
       </div>
 
-      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} />
+      <PanelNavigation metrics={metrics} view="operacional" onPrev={onPrev} onNext={onNext} />
     </motion.div>
   );
 }
@@ -803,7 +837,17 @@ function UxPanel({
         zIndex: 3,
       }}
     >
-      <div style={{ display: "flex", gap: vx(24), alignItems: "center", paddingLeft: vx(32), width: "100%" }}>
+      <div
+        style={{
+          display: "flex",
+          gap: vx(24),
+          alignItems: "center",
+          paddingLeft: vx(32),
+          paddingRight: vx(32),
+          width: "100%",
+          boxSizing: "border-box",
+        }}
+      >
         <CloseButton metrics={metrics} onClick={onClose} />
 
         <div
@@ -812,9 +856,9 @@ function UxPanel({
             alignItems: "stretch",
             backgroundColor: NAVY,
             borderRadius: vy(48),
-            width: vx(1676),
+            flex: 1,
+            minWidth: 0,
             overflow: "hidden",
-            flexShrink: 0,
           }}
         >
           <VerticalTab label="Métricas de UX" height={458} metrics={metrics} />
@@ -827,6 +871,7 @@ function UxPanel({
               display: "flex",
               gap: vx(80),
               minWidth: 0,
+              overflow: "hidden",
             }}
           >
             {UX_COLUMNS.map((column) => (
@@ -844,14 +889,18 @@ function UxPanel({
         />
       </div>
 
-      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} />
+      <PanelNavigation metrics={metrics} view="ux" onPrev={onPrev} onNext={onNext} />
     </motion.div>
   );
 }
 
-export function Slide14IndicadoresDeSucesso({ scaleX, scaleY }: Props) {
+export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const [view, setView] = useState<PanelView>("overview");
+
+  useEffect(() => {
+    onPanelViewChange?.(view);
+  }, [view, onPanelViewChange]);
 
   const openOperacional = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
@@ -870,15 +919,18 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY }: Props) {
 
   const handlePrev = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    if (view === "operacional") setView("overview");
-    else if (view === "ux") setView("operacional");
+    setView((current) => {
+      if (current === "ux") return "operacional";
+      return "overview";
+    });
   };
 
   const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    if (view === "overview") setView("operacional");
-    else if (view === "operacional") setView("ux");
-    else setView("overview");
+    setView((current) => {
+      if (current === "operacional") return "ux";
+      return "overview";
+    });
   };
 
   return (
