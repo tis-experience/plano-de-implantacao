@@ -284,9 +284,9 @@ function HorizontalNavButton({
   metrics: Metrics;
 }) {
   const { vs } = metrics;
-  const size = vs(40);
-  const hoverSize = vs(56);
-  const iconSize = vs(24);
+  const size = Math.round(vs(40));
+  const hoverSize = Math.round(vs(56));
+  const iconSize = Math.round(vs(24));
 
   return (
     <motion.button
@@ -297,7 +297,12 @@ function HorizontalNavButton({
       initial="rest"
       animate="rest"
       whileHover="hover"
+      variants={{
+        rest: { color: BLUE },
+        hover: { color: "#fff" },
+      }}
       style={{
+        position: "relative",
         width: hoverSize,
         height: hoverSize,
         border: 0,
@@ -313,37 +318,34 @@ function HorizontalNavButton({
       }}
     >
       <motion.div
+        aria-hidden
         variants={{
-          rest: {
-            width: size,
-            height: size,
-            backgroundColor: "transparent",
-            color: BLUE,
-            boxShadow: "none",
-          },
-          hover: {
-            width: hoverSize,
-            height: hoverSize,
-            backgroundColor: BLUE,
-            color: "#fff",
-            boxShadow: INTERACTIVE_HOVER_BOX_SHADOW,
-          },
+          rest: { width: size, height: size, backgroundColor: "transparent", boxShadow: "none" },
+          hover: { width: hoverSize, height: hoverSize, backgroundColor: BLUE, boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
         }}
         transition={INTERACTIVE_HOVER_GROW_TRANSITION}
         style={{
+          position: "absolute",
+          inset: 0,
+          margin: "auto",
           borderRadius: "50%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          pointerEvents: "none",
         }}
+      />
+      <svg
+        width={iconSize}
+        height={iconSize}
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden
+        style={{ display: "block", position: "relative", zIndex: 1, flexShrink: 0 }}
       >
-        <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
-          <path
-            d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
-            fill="currentColor"
-          />
-        </svg>
-      </motion.div>
+        <path
+          d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
+          fill="currentColor"
+          shapeRendering="geometricPrecision"
+        />
+      </svg>
     </motion.button>
   );
 }
