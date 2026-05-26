@@ -433,19 +433,34 @@ function VerticalTab({
   accent = false,
   onClick,
   metrics,
-  edge = "inline",
+  edge = "sidebar",
 }: {
   label: string;
   height: number;
   accent?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   metrics: Metrics;
-  /** inline = aba no miolo; right = aba lateral (Figma 1018:1763 — só cantos à esquerda) */
-  edge?: "inline" | "right";
+  /** panel = aba no painel aberto (Figma 1018:1648 rounded 16); sidebar = overview; right = aba lateral */
+  edge?: "panel" | "sidebar" | "right";
 }) {
   const { vx, vy, vs } = metrics;
   const isRightEdge = edge === "right";
-  const tabR = vy(48);
+  const isPanelTab = edge === "panel" || edge === "sidebar";
+  const sideTabR = vy(48);
+  const innerTabR = vy(16);
+
+  const cornerRadius: CSSProperties = isRightEdge
+    ? {
+        borderTopLeftRadius: sideTabR,
+        borderBottomLeftRadius: sideTabR,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
+      }
+    : isPanelTab
+      ? {
+          borderRadius: innerTabR,
+        }
+      : {};
 
   return (
     <button
@@ -459,11 +474,7 @@ function VerticalTab({
         width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
-        /** Figma: rounded-bl/tl — nunca arredondar a borda direita da aba lateral */
-        borderTopLeftRadius: tabR,
-        borderBottomLeftRadius: tabR,
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        ...cornerRadius,
         cursor: onClick ? "pointer" : "default",
         display: "flex",
         alignItems: "center",
@@ -726,8 +737,7 @@ function PanelSlideBlock({
             alignItems: "stretch",
             width: "100%",
             height: "100%",
-            /** Borda externa contra o slide branco = azul claro (evita franja navy no anti-alias) */
-            backgroundColor: PANEL_BG,
+            backgroundColor: NAVY,
             overflow: "hidden",
             ...panelChromeStyle(panelR),
           }}
@@ -735,19 +745,25 @@ function PanelSlideBlock({
           <VerticalTab
             label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
             height={PANEL_ROW_H}
+            edge="panel"
             metrics={metrics}
           />
           <div
             style={{
               flex: 1,
               backgroundColor: PANEL_BG,
-              /** Figma 1018:1650 — rounded-[48px] no miolo */
-              borderRadius: panelR,
+              borderTopLeftRadius: panelR,
+              borderTopRightRadius: panelR,
+              borderBottomLeftRadius: panelR,
+              borderBottomRightRadius: panelR,
               minWidth: 0,
               overflow: "hidden",
               display: "flex",
               position: "relative",
               zIndex: 1,
+              isolation: "isolate",
+              /** Evita franja navy nos cantos arredondados contra o fundo branco */
+              boxShadow: `0 0 0 1px ${PANEL_BG}`,
             }}
           >
             <PanelMetricsBody metrics={metrics} view={view} />
