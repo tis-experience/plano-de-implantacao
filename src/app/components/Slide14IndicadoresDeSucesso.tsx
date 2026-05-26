@@ -70,6 +70,9 @@ const OVERVIEW_SIDEBAR_LEFT = 1668;
 const OVERVIEW_SIDEBAR_W = 252;
 const OVERVIEW_SIDEBAR_H = 458;
 const OVERVIEW_ARROW_GAP = 12;
+/** Figma 1033:2154 — Main container 200px; cada aba 100px */
+const OVERVIEW_TABS_W = 200;
+const OVERVIEW_TAB_W = 100;
 
 const PANEL_RAIL_GAP = 24;
 /** Trilho aberto: close + gaps + miolo + aba (Figma 1018:1642) */
@@ -441,12 +444,11 @@ function VerticalTab({
   accent?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   metrics: Metrics;
-  /** panel = aba no painel aberto (Figma 1018:1648 rounded 16); sidebar = overview; right = aba lateral */
-  edge?: "panel" | "sidebar" | "right";
+  /** panel = aba ativa no miolo (1018:1648 · rounded 16); right = aba lateral aberta (1018:1763) */
+  edge?: "panel" | "right";
 }) {
   const { vx, vy, vs } = metrics;
   const isRightEdge = edge === "right";
-  const isPanelTab = edge === "panel" || edge === "sidebar";
   const sideTabR = vy(48);
   const innerTabR = vy(16);
 
@@ -457,11 +459,9 @@ function VerticalTab({
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
       }
-    : isPanelTab
-      ? {
-          borderRadius: innerTabR,
-        }
-      : {};
+    : {
+        borderRadius: innerTabR,
+      };
 
   return (
     <button
@@ -486,30 +486,112 @@ function VerticalTab({
         boxSizing: "border-box",
       }}
     >
-      <div
-        style={{
-          width: vx(36),
-          height: vy(label === "Métricas operacionais" ? 321 : 219),
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <p
-          style={{
-            transform: "rotate(-90deg)",
-            fontSize: vs(36),
-            letterSpacing: vs(-0.5),
-            lineHeight: 1,
-            margin: 0,
-            whiteSpace: "nowrap",
-          }}
-          className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white"
-        >
-          {label}
-        </p>
-      </div>
+      <VerticalTabLabel label={label} metrics={metrics} />
     </button>
+  );
+}
+
+function VerticalTabLabel({
+  label,
+  metrics,
+}: {
+  label: string;
+  metrics: Metrics;
+}) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vx(36),
+        height: vy(label === "Métricas operacionais" ? 321 : 219),
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <p
+        style={{
+          transform: "rotate(-90deg)",
+          fontSize: vs(36),
+          letterSpacing: vs(-0.5),
+          lineHeight: 1,
+          margin: 0,
+          whiteSpace: "nowrap",
+        }}
+        className="font-['Bronkoh-Heavy',sans-serif] not-italic text-white"
+      >
+        {label}
+      </p>
+    </div>
+  );
+}
+
+/** Figma 1033:2154 / 1018:1419 — bloco único navy + operacional (16) + UX (azul) */
+function OverviewTabsStrip({
+  metrics,
+  onOpenOperacional,
+  onOpenUx,
+}: {
+  metrics: Metrics;
+  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const { vx, vy } = metrics;
+  const tabButtonStyle = (bg: string, radius: CSSProperties): CSSProperties => ({
+    border: 0,
+    margin: 0,
+    padding: `${vy(16)}px ${vx(32)}px`,
+    width: vx(OVERVIEW_TAB_W),
+    height: vy(PANEL_ROW_H),
+    backgroundColor: bg,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    outline: "none",
+    boxSizing: "border-box",
+    flexShrink: 0,
+    ...radius,
+  });
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "stretch",
+        width: vx(OVERVIEW_TABS_W),
+        height: vy(PANEL_ROW_H),
+        backgroundColor: NAVY,
+        borderTopLeftRadius: vy(48),
+        borderBottomLeftRadius: vy(48),
+        flexShrink: 0,
+        overflow: "hidden",
+      }}
+    >
+      <button
+        type="button"
+        aria-label="Métricas operacionais"
+        onClick={onOpenOperacional}
+        onPointerDown={stopPointerEvent}
+        style={tabButtonStyle(NAVY, { borderRadius: vy(16) })}
+      >
+        <VerticalTabLabel label="Métricas operacionais" metrics={metrics} />
+      </button>
+      <button
+        type="button"
+        aria-label="Métricas de UX"
+        onClick={onOpenUx}
+        onPointerDown={stopPointerEvent}
+        style={tabButtonStyle(BLUE, {
+          borderTopLeftRadius: vy(48),
+          borderBottomLeftRadius: vy(48),
+        })}
+      >
+        <VerticalTabLabel label="Métricas de UX" metrics={metrics} />
+      </button>
+    </div>
   );
 }
 
@@ -693,29 +775,36 @@ function MetricsPanelRail({
             display: "flex",
             flexDirection: "row",
             alignItems: "center",
-            gap: vx(OVERVIEW_ARROW_GAP),
+            justifyContent: isOpen ? "flex-start" : "space-between",
+            width: isOpen ? vx(SIDE_TAB_W) : vx(PANEL_RAIL_COLLAPSED_W),
             height: "100%",
             overflow: "hidden",
           }}
-          animate={{ width: isOpen ? vx(SIDE_TAB_W) : vx(PANEL_RAIL_COLLAPSED_W) }}
           transition={PANEL_TRANSITION}
         >
           {!isOpen && (
-            <InteractiveCircleButton
-              ariaLabel="Abrir métricas operacionais"
-              onClick={onOpenOperacional}
-              size={vs(40)}
-              background={BLUE}
-              growOnHover
-            >
-              <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
-                <path d={navSvgPaths.p90d8b80} fill="#fff" />
-              </svg>
-            </InteractiveCircleButton>
+            <>
+              <InteractiveCircleButton
+                ariaLabel="Abrir métricas operacionais"
+                onClick={onOpenOperacional}
+                size={vs(40)}
+                background={BLUE}
+                growOnHover
+              >
+                <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+                  <path d={navSvgPaths.p90d8b80} fill="#fff" />
+                </svg>
+              </InteractiveCircleButton>
+              <OverviewTabsStrip
+                metrics={metrics}
+                onOpenOperacional={onOpenOperacional}
+                onOpenUx={onOpenUx}
+              />
+            </>
           )}
 
-          {isOpen ? (
-            isOperacional ? (
+          {isOpen &&
+            (isOperacional ? (
               <VerticalTab
                 label="Métricas de UX"
                 height={PANEL_ROW_H}
@@ -733,29 +822,7 @@ function MetricsPanelRail({
                 onClick={onOpenOperacional}
                 metrics={metrics}
               />
-            )
-          ) : (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "stretch",
-                backgroundColor: NAVY,
-                borderTopLeftRadius: vy(48),
-                borderBottomLeftRadius: vy(48),
-                flex: 1,
-                minWidth: 0,
-              }}
-            >
-              <VerticalTab
-                label="Métricas operacionais"
-                height={PANEL_ROW_H}
-                onClick={onOpenOperacional}
-                metrics={metrics}
-              />
-              <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} accent onClick={onOpenUx} metrics={metrics} />
-            </div>
-          )}
+            ))}
         </motion.div>
       </motion.div>
     </motion.div>
