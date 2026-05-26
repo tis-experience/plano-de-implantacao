@@ -385,11 +385,12 @@ function VerticalTab({
   accent?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   metrics: Metrics;
-  /** Aba colapsada encostada na borda direita do slide (Figma x=1820, w=100) */
+  /** inline = aba no miolo; right = aba lateral (Figma 1018:1763 — só cantos à esquerda) */
   edge?: "inline" | "right";
 }) {
   const { vx, vy, vs } = metrics;
   const isRightEdge = edge === "right";
+  const tabR = vy(48);
 
   return (
     <button
@@ -403,10 +404,11 @@ function VerticalTab({
         width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
-        borderTopLeftRadius: isRightEdge ? 0 : vy(48),
-        borderBottomLeftRadius: isRightEdge ? 0 : vy(48),
-        borderTopRightRadius: isRightEdge ? vy(48) : 0,
-        borderBottomRightRadius: isRightEdge ? vy(48) : 0,
+        /** Figma: rounded-bl/tl — nunca arredondar a borda direita da aba lateral */
+        borderTopLeftRadius: tabR,
+        borderBottomLeftRadius: tabR,
+        borderTopRightRadius: 0,
+        borderBottomRightRadius: 0,
         cursor: onClick ? "pointer" : "default",
         display: "flex",
         alignItems: "center",
@@ -645,7 +647,8 @@ function PanelSlideBlock({
             alignItems: "stretch",
             width: "100%",
             height: "100%",
-            backgroundColor: NAVY,
+            /** Borda externa contra o slide branco = azul claro (evita franja navy no anti-alias) */
+            backgroundColor: PANEL_BG,
             overflow: "hidden",
             ...panelChromeStyle(panelR),
           }}
@@ -659,11 +662,13 @@ function PanelSlideBlock({
             style={{
               flex: 1,
               backgroundColor: PANEL_BG,
-              borderTopRightRadius: panelR,
-              borderBottomRightRadius: panelR,
+              /** Figma 1018:1650 — rounded-[48px] no miolo */
+              borderRadius: panelR,
               minWidth: 0,
               overflow: "hidden",
               display: "flex",
+              position: "relative",
+              zIndex: 1,
             }}
           >
             <PanelMetricsBody metrics={metrics} view={view} />
