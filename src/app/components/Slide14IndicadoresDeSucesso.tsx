@@ -442,10 +442,10 @@ function VerticalTab({
         width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
-        borderTopLeftRadius: vy(48),
-        borderBottomLeftRadius: vy(48),
-        borderTopRightRadius: 0,
-        borderBottomRightRadius: 0,
+        borderTopLeftRadius: isRightEdge ? 0 : vy(48),
+        borderBottomLeftRadius: isRightEdge ? 0 : vy(48),
+        borderTopRightRadius: isRightEdge ? vy(48) : 0,
+        borderBottomRightRadius: isRightEdge ? vy(48) : 0,
         cursor: onClick ? "pointer" : "default",
         display: "flex",
         alignItems: "center",
@@ -684,7 +684,8 @@ function PanelSlideBlock({
             alignItems: "stretch",
             width: "100%",
             height: "100%",
-            backgroundColor: NAVY,
+            /* Borda externa contra o slide = azul claro; navy só na aba lateral */
+            backgroundColor: PANEL_BG,
             overflow: "hidden",
             ...panelChromeStyle(panelR),
           }}
@@ -698,8 +699,6 @@ function PanelSlideBlock({
             style={{
               flex: 1,
               backgroundColor: PANEL_BG,
-              borderTopRightRadius: panelR,
-              borderBottomRightRadius: panelR,
               minWidth: 0,
               overflow: "hidden",
               display: "flex",
