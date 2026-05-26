@@ -441,7 +441,7 @@ function OpenPanelRow({
   sideTab,
 }: {
   metrics: Metrics;
-  close: ReactNode;
+  close?: ReactNode;
   main: ReactNode;
   sideTab: ReactNode;
 }) {
@@ -457,15 +457,17 @@ function OpenPanelRow({
         height: vy(PANEL_ROW_H),
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: vx(PANEL_CLOSE_LEFT),
-          top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
-        }}
-      >
-        {close}
-      </div>
+      {close != null && (
+        <div
+          style={{
+            position: "absolute",
+            left: vx(PANEL_CLOSE_LEFT),
+            top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
+          }}
+        >
+          {close}
+        </div>
+      )}
       <div
         style={{
           position: "absolute",
@@ -561,6 +563,57 @@ function PanelNavigation({
   );
 }
 
+function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<PanelView, "overview"> }) {
+  const { vx, vy } = metrics;
+  const isOperacional = view === "operacional";
+
+  if (isOperacional) {
+    return (
+      <div
+        style={{
+          flex: 1,
+          backgroundColor: PANEL_BG,
+          borderRadius: vy(48),
+          padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
+          display: "flex",
+          justifyContent: "space-between",
+          gap: vx(24),
+          minWidth: 0,
+          overflow: "hidden",
+        }}
+      >
+        {OPERACIONAL_COLUMNS.map((column, index) => (
+          <MetricColumnBlock
+            key={column.title}
+            column={column}
+            metrics={metrics}
+            width={[320, 300, 280, 296][index]}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div
+      style={{
+        flex: 1,
+        backgroundColor: PANEL_BG,
+        borderRadius: vy(48),
+        padding: `${vy(64)}px ${vx(80)}px`,
+        display: "flex",
+        gap: vx(80),
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      {UX_COLUMNS.map((column) => (
+        <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
+      ))}
+    </div>
+  );
+}
+
 function OpenPanelsShell({
   metrics,
   view,
@@ -597,9 +650,25 @@ function OpenPanelsShell({
         zIndex: 3,
       }}
     >
+      {/* Fechar + setas: fora da troca operacional ↔ ux (sem remount/animação) */}
+      <div
+        style={{
+          position: "absolute",
+          left: vx(PANEL_CLOSE_LEFT),
+          top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
+          zIndex: 10,
+          pointerEvents: "auto",
+        }}
+      >
+        <CloseButton metrics={metrics} onClick={onClose} />
+      </div>
+
+      <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto" }}>
+        <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
+      </div>
+
       <OpenPanelRow
         metrics={metrics}
-        close={<CloseButton metrics={metrics} onClick={onClose} />}
         main={
           <div
             style={{
@@ -618,47 +687,18 @@ function OpenPanelsShell({
               metrics={metrics}
             />
 
-            {isOperacional ? (
-              <div
-                style={{
-                  flex: 1,
-                  backgroundColor: PANEL_BG,
-                  borderRadius: vy(48),
-                  padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: vx(24),
-                  minWidth: 0,
-                  overflow: "hidden",
-                }}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={view}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25, ease: EASE }}
+                style={{ flex: 1, display: "flex", minWidth: 0, overflow: "hidden" }}
               >
-                {OPERACIONAL_COLUMNS.map((column, index) => (
-                  <MetricColumnBlock
-                    key={column.title}
-                    column={column}
-                    metrics={metrics}
-                    width={[320, 300, 280, 296][index]}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div
-                style={{
-                  flex: 1,
-                  backgroundColor: PANEL_BG,
-                  borderRadius: vy(48),
-                  padding: `${vy(64)}px ${vx(80)}px`,
-                  display: "flex",
-                  gap: vx(80),
-                  minWidth: 0,
-                  overflow: "hidden",
-                }}
-              >
-                {UX_COLUMNS.map((column) => (
-                  <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
-                ))}
-              </div>
-            )}
+                <PanelMetricsBody metrics={metrics} view={view} />
+              </motion.div>
+            </AnimatePresence>
           </div>
         }
         sideTab={
@@ -683,8 +723,6 @@ function OpenPanelsShell({
           )
         }
       />
-
-      <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
     </motion.div>
   );
 }
@@ -926,174 +964,6 @@ function OverviewContent({
   );
 }
 
-function OperacionalPanel({
-  metrics,
-  onClose,
-  onOpenUx,
-  onPrev,
-  onNext,
-}: {
-  metrics: Metrics;
-  onClose: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
-  onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
-  onNext: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const { vx, vy } = metrics;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: vx(40) }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: vx(40) }}
-      transition={PANEL_TRANSITION}
-      style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: vy(357),
-        height: vy(522),
-        zIndex: 3,
-      }}
-    >
-      <OpenPanelRow
-        metrics={metrics}
-        close={<CloseButton metrics={metrics} onClick={onClose} />}
-        main={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "stretch",
-              backgroundColor: NAVY,
-              borderRadius: vy(48),
-              width: "100%",
-              height: "100%",
-              overflow: "hidden",
-            }}
-          >
-            <VerticalTab label="Métricas operacionais" height={PANEL_ROW_H} metrics={metrics} />
-            <div
-              style={{
-                flex: 1,
-                backgroundColor: PANEL_BG,
-                borderRadius: vy(48),
-                padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
-                display: "flex",
-                justifyContent: "space-between",
-                gap: vx(24),
-                minWidth: 0,
-                overflow: "hidden",
-              }}
-            >
-              {OPERACIONAL_COLUMNS.map((column, index) => (
-                <MetricColumnBlock
-                  key={column.title}
-                  column={column}
-                  metrics={metrics}
-                  width={[320, 300, 280, 296][index]}
-                />
-              ))}
-            </div>
-          </div>
-        }
-        sideTab={
-          <VerticalTab
-            label="Métricas de UX"
-            height={PANEL_ROW_H}
-            accent
-            edge="right"
-            onClick={onOpenUx}
-            metrics={metrics}
-          />
-        }
-      />
-
-      <PanelNavigation metrics={metrics} view="operacional" onPrev={onPrev} onNext={onNext} />
-    </motion.div>
-  );
-}
-
-function UxPanel({
-  metrics,
-  onClose,
-  onOpenOperacional,
-  onPrev,
-  onNext,
-}: {
-  metrics: Metrics;
-  onClose: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
-  onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
-  onNext: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const { vx, vy } = metrics;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, x: vx(40) }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: vx(40) }}
-      transition={PANEL_TRANSITION}
-      style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: vy(357),
-        height: vy(522),
-        zIndex: 3,
-      }}
-    >
-      <OpenPanelRow
-        metrics={metrics}
-        close={<CloseButton metrics={metrics} onClick={onClose} />}
-        main={
-          <div
-            style={{
-              display: "flex",
-              alignItems: "stretch",
-              backgroundColor: NAVY,
-              borderRadius: vy(48),
-              width: "100%",
-              height: "100%",
-              overflow: "hidden",
-            }}
-          >
-            <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} metrics={metrics} />
-            <div
-              style={{
-                flex: 1,
-                backgroundColor: PANEL_BG,
-                borderRadius: vy(48),
-                padding: `${vy(64)}px ${vx(80)}px`,
-                display: "flex",
-                gap: vx(80),
-                minWidth: 0,
-                overflow: "hidden",
-              }}
-            >
-              {UX_COLUMNS.map((column) => (
-                <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
-              ))}
-            </div>
-          </div>
-        }
-        sideTab={
-          <VerticalTab
-            label="Métricas operacionais"
-            height={PANEL_ROW_H}
-            accent
-            edge="right"
-            onClick={onOpenOperacional}
-            metrics={metrics}
-          />
-        }
-      />
-
-      <PanelNavigation metrics={metrics} view="ux" onPrev={onPrev} onNext={onNext} />
-    </motion.div>
-  );
-}
-
 export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const [view, setView] = useState<PanelView>("overview");
@@ -1120,16 +990,16 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
   const handlePrev = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
     setView((current) => {
-      if (current === "operacional") return "ux";
-      return "operacional";
+      if (current === "overview") return current;
+      return current === "operacional" ? "ux" : "operacional";
     });
   };
 
   const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
     setView((current) => {
-      if (current === "ux") return "operacional";
-      return "ux";
+      if (current === "overview") return current;
+      return current === "ux" ? "operacional" : "ux";
     });
   };
 
