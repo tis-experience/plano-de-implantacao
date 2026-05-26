@@ -617,6 +617,9 @@ function PanelNavigation({
 }) {
   const { vx, vy } = metrics;
 
+  /** Espaço para box-shadow no hover (não cortar em height: 40) */
+  const shadowPad = vy(20);
+
   return (
     <div
       style={{
@@ -628,9 +631,11 @@ function PanelNavigation({
         alignItems: "flex-end",
         gap: vx(PANEL_NAV_GAP),
         paddingLeft: vx(PANEL_NAV_PL),
+        paddingRight: vx(16),
+        paddingBottom: shadowPad,
         width: vx(352),
-        height: vy(40),
         boxSizing: "border-box",
+        overflow: "visible",
       }}
     >
       <HorizontalNavButton
@@ -832,7 +837,7 @@ function OpenPanelsShell({
       {/* Fechar + setas: fora da troca operacional ↔ ux (sem remount/animação) */}
       <CloseButton metrics={metrics} onClick={onClose} />
 
-      <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto" }}>
+      <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto", overflow: "visible" }}>
         <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
       </div>
 
