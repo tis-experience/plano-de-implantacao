@@ -14,6 +14,7 @@ import cycleLoop3 from "../../assets/slide14/cycle-loop-3.svg";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
+  interactiveCircleHoverSize,
 } from "../constants/interactiveShadow";
 import { createSlideMetrics } from "../scaling";
 import {
@@ -216,6 +217,7 @@ function InteractiveCircleButton({
   size,
   background,
   color = "#fff",
+  growOnHover = false,
   children,
 }: {
   ariaLabel: string;
@@ -223,9 +225,60 @@ function InteractiveCircleButton({
   size: number;
   background: string;
   color?: string;
+  /** Slide 06: 40px → 56px no hover (overview, fechar) */
+  growOnHover?: boolean;
   children: ReactNode;
 }) {
   const [hovered, setHovered] = useState(false);
+
+  if (growOnHover) {
+    const hoverSize = interactiveCircleHoverSize(size);
+
+    return (
+      <motion.button
+        type="button"
+        aria-label={ariaLabel}
+        onClick={onClick}
+        onPointerDown={stopPointerEvent}
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+        onBlur={() => setHovered(false)}
+        style={{
+          width: hoverSize,
+          height: hoverSize,
+          border: 0,
+          padding: 0,
+          background: "transparent",
+          cursor: "pointer",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          outline: "none",
+          flexShrink: 0,
+        }}
+      >
+        <motion.div
+          animate={{
+            width: hovered ? hoverSize : size,
+            height: hovered ? hoverSize : size,
+            boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+          }}
+          transition={{ duration: 0.24, ease: EASE }}
+          style={{
+            borderRadius: "50%",
+            background,
+            color,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+          }}
+        >
+          {children}
+        </motion.div>
+      </motion.button>
+    );
+  }
 
   return (
     <button
@@ -525,6 +578,7 @@ function CloseButton({
       onClick={onClick}
       size={vs(PANEL_CLOSE_SIZE)}
       background={BLUE}
+      growOnHover
     >
       <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
         <path d={modalSvgPaths.peeed100} fill="currentColor" />
@@ -1007,6 +1061,7 @@ function OverviewContent({
           onClick={onOpenOperacional}
           size={vs(40)}
           background={BLUE}
+          growOnHover
         >
           <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
             <path d={navSvgPaths.p90d8b80} fill="#fff" />
