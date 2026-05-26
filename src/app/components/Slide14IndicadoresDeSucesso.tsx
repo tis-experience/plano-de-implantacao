@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties, type MouseEvent, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
+import navSvgPaths from "../../imports/Container/svg-veiw3t7zfa";
 import modalSvgPaths from "../../imports/Modal/svg-plwxvk4et1";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import flowsheetIcon from "../../assets/slide14/flowsheet.svg";
@@ -45,8 +46,14 @@ const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PANEL_TRANSITION = { duration: 0.45, ease: EASE };
 
-const NAV_ARROW_LEFT_PATH = "M15 22L5 12L15 2L16.775 3.775L8.55 12L16.775 20.225L15 22Z";
-const NAV_ARROW_RIGHT_PATH = "M9.025 22L7.25 20.225L15.475 12L7.25 3.775L9.025 2L19.025 12L9.025 22Z";
+/** Figma: setas dos painéis abaixo do bloco (y=482), alinhadas à esquerda com pl=240 */
+const PANEL_NAV_TOP = 482;
+const PANEL_NAV_PL = 240;
+const PANEL_NAV_GAP = 32;
+const OVERVIEW_SIDEBAR_LEFT = 1668;
+const OVERVIEW_SIDEBAR_W = 252;
+const OVERVIEW_SIDEBAR_H = 458;
+const OVERVIEW_ARROW_GAP = 12;
 
 const PILLAR_ICONS = {
   flowsheet: flowsheetIcon,
@@ -231,31 +238,21 @@ function InteractiveCircleButton({
   );
 }
 
-function HorizontalNavArrow({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
-      <path d={direction === "left" ? NAV_ARROW_LEFT_PATH : NAV_ARROW_RIGHT_PATH} fill="currentColor" />
-    </svg>
-  );
-}
-
 function HorizontalNavButton({
   ariaLabel,
   onClick,
   direction,
   metrics,
-  emphasized = false,
 }: {
   ariaLabel: string;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   direction: "left" | "right";
   metrics: Metrics;
-  emphasized?: boolean;
 }) {
   const { vs } = metrics;
   const size = vs(40);
+  const iconSize = vs(24);
   const [hovered, setHovered] = useState(false);
-  const highlighted = emphasized || hovered;
 
   return (
     <button
@@ -272,19 +269,24 @@ function HorizontalNavButton({
         border: 0,
         padding: 0,
         borderRadius: "50%",
-        background: highlighted ? BLUE : "transparent",
-        color: highlighted ? "#fff" : BLUE,
+        background: hovered ? BLUE : "transparent",
         cursor: "pointer",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         outline: "none",
-        boxShadow: highlighted ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+        boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
         transition: INTERACTIVE_HOVER_TRANSITION,
         flexShrink: 0,
       }}
     >
-      <HorizontalNavArrow direction={direction} />
+      <svg width={iconSize} height={iconSize} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+        <path
+          d={direction === "left" ? navSvgPaths.p90d8b80 : navSvgPaths.p23cbb200}
+          fill={hovered ? "#fff" : BLUE}
+          style={{ transition: "fill 0.24s ease" }}
+        />
+      </svg>
     </button>
   );
 }
@@ -454,18 +456,21 @@ function PanelNavigation({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx } = metrics;
+  const { vx, vy } = metrics;
 
   return (
     <div
       style={{
-        width: "100%",
+        position: "absolute",
+        left: 0,
+        top: vy(PANEL_NAV_TOP),
         display: "flex",
-        gap: vx(32),
+        flexDirection: "row",
         alignItems: "flex-end",
-        justifyContent: "flex-end",
-        paddingLeft: vx(240),
-        paddingRight: vx(32),
+        gap: vx(PANEL_NAV_GAP),
+        paddingLeft: vx(PANEL_NAV_PL),
+        width: vx(352),
+        height: vy(40),
         boxSizing: "border-box",
       }}
     >
@@ -474,14 +479,12 @@ function PanelNavigation({
         direction="left"
         onClick={onPrev}
         metrics={metrics}
-        emphasized={view === "ux"}
       />
       <HorizontalNavButton
         ariaLabel={view === "operacional" ? "Métricas de UX" : "Voltar ao conteúdo inicial"}
         direction="right"
         onClick={onNext}
         metrics={metrics}
-        emphasized={view === "operacional"}
       />
     </div>
   );
@@ -664,12 +667,14 @@ function OverviewContent({
       <div
         style={{
           position: "absolute",
-          left: vx(1668),
+          left: vx(OVERVIEW_SIDEBAR_LEFT),
           top: vy(357),
-          width: vx(252),
+          width: vx(OVERVIEW_SIDEBAR_W),
+          height: vy(OVERVIEW_SIDEBAR_H),
           display: "flex",
+          flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: vx(OVERVIEW_ARROW_GAP),
           pointerEvents: "auto",
           zIndex: 3,
         }}
@@ -680,7 +685,9 @@ function OverviewContent({
           size={vs(40)}
           background={BLUE}
         >
-          <HorizontalNavArrow direction="left" />
+          <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+            <path d={navSvgPaths.p90d8b80} fill="#fff" />
+          </svg>
         </InteractiveCircleButton>
 
         <div
@@ -742,20 +749,21 @@ function OperacionalPanel({
         left: 0,
         top: vy(357),
         width: vx(1920),
-        display: "flex",
-        flexDirection: "column",
-        gap: vy(24),
+        height: vy(522),
         zIndex: 3,
       }}
     >
       <div
         style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: vy(458),
           display: "flex",
           gap: vx(24),
           alignItems: "center",
           paddingLeft: vx(32),
-          paddingRight: vx(32),
-          width: "100%",
           boxSizing: "border-box",
         }}
       >
@@ -768,6 +776,7 @@ function OperacionalPanel({
             backgroundColor: NAVY,
             borderRadius: vy(48),
             flex: 1,
+            maxWidth: vx(1676),
             minWidth: 0,
             overflow: "hidden",
           }}
@@ -831,20 +840,21 @@ function UxPanel({
         left: 0,
         top: vy(357),
         width: vx(1920),
-        display: "flex",
-        flexDirection: "column",
-        gap: vy(24),
+        height: vy(522),
         zIndex: 3,
       }}
     >
       <div
         style={{
+          position: "absolute",
+          left: 0,
+          top: 0,
+          width: "100%",
+          height: vy(458),
           display: "flex",
           gap: vx(24),
           alignItems: "center",
           paddingLeft: vx(32),
-          paddingRight: vx(32),
-          width: "100%",
           boxSizing: "border-box",
         }}
       >
@@ -857,6 +867,7 @@ function UxPanel({
             backgroundColor: NAVY,
             borderRadius: vy(48),
             flex: 1,
+            maxWidth: vx(1676),
             minWidth: 0,
             overflow: "hidden",
           }}
