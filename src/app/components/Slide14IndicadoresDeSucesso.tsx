@@ -612,8 +612,6 @@ function MetricsPanelRail({
   const isOperacional = view === "operacional";
   const expandedW = vx(PANEL_RAIL_EXPANDED_W);
   const collapsedW = vx(PANEL_RAIL_COLLAPSED_W);
-  const innerW = expandedW;
-  const collapsedX = -(innerW - collapsedW);
   const closeSize = vs(PANEL_CLOSE_SIZE);
   const closeHoverSize = interactiveCircleHoverSize(closeSize);
   const iconSize = vs(40);
@@ -626,7 +624,8 @@ function MetricsPanelRail({
         top: vy(357),
         height: vy(PANEL_ROW_H),
         overflow: "hidden",
-        zIndex: 3,
+        zIndex: 5,
+        pointerEvents: "auto",
       }}
       animate={{
         width: isOpen ? expandedW : collapsedW,
@@ -638,11 +637,10 @@ function MetricsPanelRail({
           display: "flex",
           flexDirection: "row",
           alignItems: "stretch",
-          width: innerW,
           height: "100%",
           flexShrink: 0,
         }}
-        animate={{ x: isOpen ? 0 : collapsedX }}
+        animate={{ width: isOpen ? expandedW : collapsedW }}
         transition={PANEL_TRANSITION}
       >
         <motion.div
