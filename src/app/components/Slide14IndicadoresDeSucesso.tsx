@@ -73,9 +73,12 @@ const OVERVIEW_SIDEBAR_W = 252;
 const OVERVIEW_SIDEBAR_H = 458;
 const OVERVIEW_ARROW_GAP = 12;
 
-/** Abertura: só as abas à direita visíveis, depois desliza até a posição final (da direita → esquerda) */
-const PANEL_OPEN_TRAVEL_X = OVERVIEW_SIDEBAR_LEFT;
-const PANEL_SWAP_TRAVEL_X = 520;
+const PANEL_RAIL_GAP = 24;
+/** Trilho aberto: close + gaps + miolo + aba (Figma 1018:1642) */
+const PANEL_RAIL_EXPANDED_W =
+  PANEL_CLOSE_SIZE + PANEL_RAIL_GAP + PANEL_MAIN_W + PANEL_RAIL_GAP + SIDE_TAB_W;
+const PANEL_RAIL_COLLAPSED_W = OVERVIEW_SIDEBAR_W;
+const PANEL_CONTENT_SWAP_X = 520;
 
 const PILLAR_ICONS = {
   flowsheet: flowsheetIcon,
@@ -512,106 +515,254 @@ function VerticalTab({
   );
 }
 
-function OpenPanelRow({
+function PanelMainChrome({
   metrics,
-  close,
-  main,
-  sideTab,
+  view,
+  swapDirection,
 }: {
   metrics: Metrics;
-  close?: ReactNode;
-  main: ReactNode;
-  sideTab: ReactNode;
+  view: Exclude<PanelView, "overview">;
+  swapDirection: number;
 }) {
   const { vx, vy } = metrics;
+  const panelR = vy(48);
+  const isOperacional = view === "operacional";
+  const swapTravel = vx(PANEL_CONTENT_SWAP_X);
 
   return (
     <div
       style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        height: vy(PANEL_ROW_H),
+        display: "flex",
+        alignItems: "stretch",
+        width: vx(PANEL_MAIN_W),
+        height: "100%",
+        flexShrink: 0,
+        backgroundColor: NAVY,
+        overflow: "hidden",
+        ...panelChromeStyle(panelR),
       }}
     >
-      {close != null && (
-        <div
-          style={{
-            position: "absolute",
-            left: vx(PANEL_CLOSE_LEFT),
-            top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
-          }}
-        >
-          {close}
-        </div>
-      )}
+      <VerticalTab
+        label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
+        height={PANEL_ROW_H}
+        edge="panel"
+        metrics={metrics}
+      />
       <div
         style={{
-          position: "absolute",
-          left: vx(PANEL_MAIN_LEFT),
-          top: 0,
-          width: vx(PANEL_MAIN_W),
-          height: vy(PANEL_ROW_H),
+          flex: 1,
+          backgroundColor: PANEL_BG,
+          borderTopLeftRadius: panelR,
+          borderTopRightRadius: panelR,
+          borderBottomLeftRadius: panelR,
+          borderBottomRightRadius: panelR,
+          minWidth: 0,
+          overflow: "hidden",
+          display: "flex",
+          position: "relative",
+          zIndex: 1,
+          isolation: "isolate",
+          boxShadow: `0 0 0 1px ${PANEL_BG}`,
         }}
       >
-        {main}
-      </div>
-      <div
-        style={{
-          position: "absolute",
-          left: vx(SIDE_TAB_LEFT),
-          top: 0,
-          width: vx(SIDE_TAB_W),
-          height: vy(PANEL_ROW_H),
-        }}
-      >
-        {sideTab}
+        <AnimatePresence mode="popLayout" initial={false} custom={swapDirection}>
+          <motion.div
+            key={view}
+            custom={swapDirection}
+            variants={{
+              enter: (direction: number) => ({
+                x: direction > 0 ? swapTravel : -swapTravel,
+                opacity: 0.5,
+              }),
+              center: { x: 0, opacity: 1 },
+              exit: (direction: number) => ({
+                x: direction > 0 ? -swapTravel : swapTravel,
+                opacity: 0.5,
+              }),
+            }}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={PANEL_SWAP_TRANSITION}
+            style={{ position: "absolute", inset: 0, display: "flex" }}
+          >
+            <PanelMetricsBody metrics={metrics} view={view} />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );
 }
 
-function CloseButton({
+function MetricsPanelRail({
   metrics,
-  onClick,
+  view,
+  swapDirection,
+  onClose,
+  onOpenOperacional,
+  onOpenUx,
 }: {
   metrics: Metrics;
-  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  view: PanelView;
+  swapDirection: number;
+  onClose: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { vx, vy, vs } = metrics;
-  const size = vs(PANEL_CLOSE_SIZE);
-  const hoverSize = interactiveCircleHoverSize(size);
+  const isOpen = view !== "overview";
+  const isOperacional = view === "operacional";
+  const expandedW = vx(PANEL_RAIL_EXPANDED_W);
+  const collapsedW = vx(PANEL_RAIL_COLLAPSED_W);
+  const innerW = expandedW;
+  const collapsedX = -(innerW - collapsedW);
+  const closeSize = vs(PANEL_CLOSE_SIZE);
+  const closeHoverSize = interactiveCircleHoverSize(closeSize);
   const iconSize = vs(40);
 
   return (
-    <div
+    <motion.div
       style={{
         position: "absolute",
-        left: vx(PANEL_CLOSE_LEFT),
-        top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
-        width: hoverSize,
-        height: hoverSize,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 10,
-        pointerEvents: "auto",
-        overflow: "visible",
+        right: 0,
+        top: vy(357),
+        height: vy(PANEL_ROW_H),
+        overflow: "hidden",
+        zIndex: 3,
       }}
+      animate={{
+        width: isOpen ? expandedW : collapsedW,
+      }}
+      transition={PANEL_TRANSITION}
     >
-      <InteractiveCircleButton
-        ariaLabel="Fechar painel"
-        onClick={onClick}
-        size={size}
-        background={BLUE}
-        growOnHover
+      <motion.div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "stretch",
+          width: innerW,
+          height: "100%",
+          flexShrink: 0,
+        }}
+        animate={{ x: isOpen ? 0 : collapsedX }}
+        transition={PANEL_TRANSITION}
       >
-        <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
-          <path d={modalSvgPaths.peeed100} fill="currentColor" />
-        </svg>
-      </InteractiveCircleButton>
-    </div>
+        <motion.div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            flexShrink: 0,
+            overflow: "visible",
+          }}
+          animate={{
+            width: isOpen ? closeHoverSize : 0,
+            marginRight: isOpen ? vx(PANEL_RAIL_GAP) : 0,
+            opacity: isOpen ? 1 : 0,
+          }}
+          transition={PANEL_TRANSITION}
+        >
+          <InteractiveCircleButton
+            ariaLabel="Fechar painel"
+            onClick={onClose}
+            size={closeSize}
+            background={BLUE}
+            growOnHover
+          >
+            <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
+              <path d={modalSvgPaths.peeed100} fill="currentColor" />
+            </svg>
+          </InteractiveCircleButton>
+        </motion.div>
+
+        <motion.div
+          style={{ display: "flex", flexShrink: 0, overflow: "hidden", height: "100%" }}
+          animate={{ width: isOpen ? vx(PANEL_MAIN_W) : 0 }}
+          transition={PANEL_TRANSITION}
+        >
+          {isOpen && view !== "overview" && (
+            <PanelMainChrome metrics={metrics} view={view} swapDirection={swapDirection} />
+          )}
+        </motion.div>
+
+        <motion.div
+          style={{ flexShrink: 0, display: "flex", alignItems: "stretch" }}
+          animate={{ width: isOpen ? vx(PANEL_RAIL_GAP) : 0 }}
+          transition={PANEL_TRANSITION}
+        />
+
+        <motion.div
+          style={{
+            flexShrink: 0,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            gap: vx(OVERVIEW_ARROW_GAP),
+            height: "100%",
+            overflow: "hidden",
+          }}
+          animate={{ width: isOpen ? vx(SIDE_TAB_W) : vx(PANEL_RAIL_COLLAPSED_W) }}
+          transition={PANEL_TRANSITION}
+        >
+          {!isOpen && (
+            <InteractiveCircleButton
+              ariaLabel="Abrir métricas operacionais"
+              onClick={onOpenOperacional}
+              size={vs(40)}
+              background={BLUE}
+              growOnHover
+            >
+              <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+                <path d={navSvgPaths.p90d8b80} fill="#fff" />
+              </svg>
+            </InteractiveCircleButton>
+          )}
+
+          {isOpen ? (
+            isOperacional ? (
+              <VerticalTab
+                label="Métricas de UX"
+                height={PANEL_ROW_H}
+                accent
+                edge="right"
+                onClick={onOpenUx}
+                metrics={metrics}
+              />
+            ) : (
+              <VerticalTab
+                label="Métricas operacionais"
+                height={PANEL_ROW_H}
+                accent
+                edge="right"
+                onClick={onOpenOperacional}
+                metrics={metrics}
+              />
+            )
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "stretch",
+                backgroundColor: NAVY,
+                borderTopLeftRadius: vy(48),
+                borderBottomLeftRadius: vy(48),
+                flex: 1,
+                minWidth: 0,
+              }}
+            >
+              <VerticalTab
+                label="Métricas operacionais"
+                height={PANEL_ROW_H}
+                onClick={onOpenOperacional}
+                metrics={metrics}
+              />
+              <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} accent onClick={onOpenUx} metrics={metrics} />
+            </div>
+          )}
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -712,199 +863,7 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
   );
 }
 
-function PanelSlideBlock({
-  metrics,
-  view,
-  onOpenOperacional,
-  onOpenUx,
-}: {
-  metrics: Metrics;
-  view: Exclude<PanelView, "overview">;
-  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const { vx, vy } = metrics;
-  const isOperacional = view === "operacional";
-  const panelR = vy(48);
-
-  return (
-    <OpenPanelRow
-      metrics={metrics}
-      main={
-        <div
-          style={{
-            display: "flex",
-            alignItems: "stretch",
-            width: "100%",
-            height: "100%",
-            backgroundColor: NAVY,
-            overflow: "hidden",
-            ...panelChromeStyle(panelR),
-          }}
-        >
-          <VerticalTab
-            label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
-            height={PANEL_ROW_H}
-            edge="panel"
-            metrics={metrics}
-          />
-          <div
-            style={{
-              flex: 1,
-              backgroundColor: PANEL_BG,
-              borderTopLeftRadius: panelR,
-              borderTopRightRadius: panelR,
-              borderBottomLeftRadius: panelR,
-              borderBottomRightRadius: panelR,
-              minWidth: 0,
-              overflow: "hidden",
-              display: "flex",
-              position: "relative",
-              zIndex: 1,
-              isolation: "isolate",
-              /** Evita franja navy nos cantos arredondados contra o fundo branco */
-              boxShadow: `0 0 0 1px ${PANEL_BG}`,
-            }}
-          >
-            <PanelMetricsBody metrics={metrics} view={view} />
-          </div>
-        </div>
-      }
-      sideTab={
-        isOperacional ? (
-          <VerticalTab
-            label="Métricas de UX"
-            height={PANEL_ROW_H}
-            accent
-            edge="right"
-            onClick={onOpenUx}
-            metrics={metrics}
-          />
-        ) : (
-          <VerticalTab
-            label="Métricas operacionais"
-            height={PANEL_ROW_H}
-            accent
-            edge="right"
-            onClick={onOpenOperacional}
-            metrics={metrics}
-          />
-        )
-      }
-    />
-  );
-}
-
-const panelSwapVariants = (metrics: Metrics) => {
-  const travel = metrics.vx(PANEL_SWAP_TRAVEL_X);
-  return {
-    enter: (direction: number) => ({
-      x: direction > 0 ? travel : -travel,
-      opacity: 0.4,
-    }),
-    center: { x: 0, opacity: 1 },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -travel : travel,
-      opacity: 0.4,
-    }),
-  };
-};
-
-function OpenPanelsShell({
-  metrics,
-  view,
-  swapDirection,
-  onClose,
-  onOpenOperacional,
-  onOpenUx,
-  onPrev,
-  onNext,
-}: {
-  metrics: Metrics;
-  view: Exclude<PanelView, "overview">;
-  /** 1 = painel entra da direita; -1 = da esquerda (troca operacional ↔ ux) */
-  swapDirection: number;
-  onClose: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
-  onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
-  onNext: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
-  const { vx, vy } = metrics;
-  const openTravel = vx(PANEL_OPEN_TRAVEL_X);
-
-  return (
-    <motion.div
-      key="open-panels"
-      initial={{ x: openTravel }}
-      animate={{ x: 0 }}
-      exit={{ x: openTravel }}
-      transition={PANEL_TRANSITION}
-      style={{
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: vy(357),
-        height: vy(522),
-        zIndex: 3,
-        overflow: "visible",
-      }}
-    >
-      {/* Fechar + setas: fora da troca operacional ↔ ux (sem remount/animação) */}
-      <CloseButton metrics={metrics} onClick={onClose} />
-
-      <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto", overflow: "visible" }}>
-        <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
-      </div>
-
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0,
-          height: vy(PANEL_ROW_H),
-          overflow: "hidden",
-        }}
-      >
-        <AnimatePresence mode="popLayout" initial={false} custom={swapDirection}>
-          <motion.div
-            key={view}
-            custom={swapDirection}
-            variants={panelSwapVariants(metrics)}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={PANEL_SWAP_TRANSITION}
-            style={{
-              position: "absolute",
-              inset: 0,
-              isolation: "isolate",
-              transform: "translateZ(0)",
-            }}
-          >
-            <PanelSlideBlock
-              metrics={metrics}
-              view={view}
-              onOpenOperacional={onOpenOperacional}
-              onOpenUx={onOpenUx}
-            />
-          </motion.div>
-        </AnimatePresence>
-      </div>
-    </motion.div>
-  );
-}
-
-function OverviewContent({
-  metrics,
-  onOpenOperacional,
-  onOpenUx,
-}: {
-  metrics: Metrics;
-  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
-  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
-}) {
+function OverviewContent({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
   const cardBg: CSSProperties = {
     backgroundImage: `linear-gradient(90deg, ${PALE_BLUE} 0%, ${PALE_BLUE} 100%), linear-gradient(90deg, #ffffff 0%, #ffffff 100%)`,
@@ -1070,51 +1029,6 @@ function OverviewContent({
         </div>
       </div>
 
-      <div
-        style={{
-          position: "absolute",
-          left: vx(OVERVIEW_SIDEBAR_LEFT),
-          top: vy(357),
-          width: vx(OVERVIEW_SIDEBAR_W),
-          height: vy(OVERVIEW_SIDEBAR_H),
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: vx(OVERVIEW_ARROW_GAP),
-          pointerEvents: "auto",
-          zIndex: 3,
-        }}
-      >
-        <InteractiveCircleButton
-          ariaLabel="Abrir métricas operacionais"
-          onClick={onOpenOperacional}
-          size={vs(40)}
-          background={BLUE}
-          growOnHover
-        >
-          <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
-            <path d={navSvgPaths.p90d8b80} fill="#fff" />
-          </svg>
-        </InteractiveCircleButton>
-
-        <div
-          style={{
-            marginLeft: vx(OVERVIEW_ARROW_GAP),
-            width: vx(200),
-            height: vy(OVERVIEW_SIDEBAR_H),
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "stretch",
-            backgroundColor: NAVY,
-            borderTopLeftRadius: vy(48),
-            borderBottomLeftRadius: vy(48),
-          }}
-        >
-          <VerticalTab label="Métricas operacionais" height={458} onClick={onOpenOperacional} metrics={metrics} />
-          <VerticalTab label="Métricas de UX" height={458} accent onClick={onOpenUx} metrics={metrics} />
-        </div>
-      </div>
-
       <p
         style={{
           position: "absolute",
@@ -1151,12 +1065,12 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
 
   const openOperacional = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    goToPanel("operacional", -1);
+    goToPanel("operacional", view === "ux" ? -1 : 1);
   };
 
   const openUx = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    goToPanel("ux", 1);
+    goToPanel("ux", view === "operacional" ? 1 : 1);
   };
 
   const closePanel = (event: MouseEvent<HTMLButtonElement>) => {
@@ -1191,28 +1105,26 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
       <SlideHeader metrics={metrics} />
       <SlideFooter metrics={metrics} />
 
-      <AnimatePresence mode="wait">
-        {view === "overview" ? (
-          <OverviewContent
-            key="overview"
-            metrics={metrics}
-            onOpenOperacional={openOperacional}
-            onOpenUx={openUx}
-          />
-        ) : (
-          <OpenPanelsShell
-            key="open-shell"
-            metrics={metrics}
-            view={view}
-            swapDirection={panelSwapDirection}
-            onClose={closePanel}
-            onOpenOperacional={openOperacional}
-            onOpenUx={openUx}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
+      <AnimatePresence initial={false}>
+        {view === "overview" && (
+          <OverviewContent key="overview-cards" metrics={metrics} />
         )}
       </AnimatePresence>
+
+      <MetricsPanelRail
+        metrics={metrics}
+        view={view}
+        swapDirection={panelSwapDirection}
+        onClose={closePanel}
+        onOpenOperacional={openOperacional}
+        onOpenUx={openUx}
+      />
+
+      {view !== "overview" && (
+        <div style={{ position: "absolute", left: 0, right: 0, top: 0, bottom: 0, pointerEvents: "none", zIndex: 10 }}>
+          <PanelNavigation metrics={metrics} view={view} onPrev={handlePrev} onNext={handleNext} />
+        </div>
+      )}
     </motion.div>
   );
 }
