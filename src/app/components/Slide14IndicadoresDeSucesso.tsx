@@ -46,6 +46,12 @@ const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PANEL_TRANSITION = { duration: 0.45, ease: EASE };
 
+/** Figma 1018:1642 — linha do painel aberto */
+const PANEL_ROW_H = 458;
+const PANEL_CLOSE_LEFT = 32;
+const PANEL_CLOSE_SIZE = 64;
+const PANEL_MAIN_LEFT = 120;
+const PANEL_MAIN_W = 1676;
 /** Figma: setas dos painéis abaixo do bloco (y=482), alinhadas à esquerda com pl=240 */
 const PANEL_NAV_TOP = 482;
 const PANEL_NAV_PL = 240;
@@ -420,6 +426,61 @@ function VerticalTab({
   );
 }
 
+function OpenPanelRow({
+  metrics,
+  close,
+  main,
+  sideTab,
+}: {
+  metrics: Metrics;
+  close: ReactNode;
+  main: ReactNode;
+  sideTab: ReactNode;
+}) {
+  const { vx, vy } = metrics;
+
+  return (
+    <div
+      style={{
+        position: "relative",
+        width: vx(1920),
+        height: vy(PANEL_ROW_H),
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          left: vx(PANEL_CLOSE_LEFT),
+          top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
+        }}
+      >
+        {close}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          left: vx(PANEL_MAIN_LEFT),
+          top: 0,
+          width: vx(PANEL_MAIN_W),
+          height: vy(PANEL_ROW_H),
+        }}
+      >
+        {main}
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          height: vy(PANEL_ROW_H),
+        }}
+      >
+        {sideTab}
+      </div>
+    </div>
+  );
+}
+
 function CloseButton({
   metrics,
   onClick,
@@ -429,13 +490,12 @@ function CloseButton({
 }) {
   const { vs } = metrics;
   const iconSize = vs(40);
-  const buttonSize = vs(64);
 
   return (
     <InteractiveCircleButton
       ariaLabel="Fechar painel"
       onClick={onClick}
-      size={buttonSize}
+      size={vs(PANEL_CLOSE_SIZE)}
       background={BLUE}
     >
       <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
@@ -753,61 +813,50 @@ function OperacionalPanel({
         zIndex: 3,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: vy(458),
-          display: "flex",
-          gap: vx(24),
-          alignItems: "center",
-          paddingLeft: vx(32),
-          boxSizing: "border-box",
-        }}
-      >
-        <CloseButton metrics={metrics} onClick={onClose} />
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "stretch",
-            backgroundColor: NAVY,
-            borderRadius: vy(48),
-            flex: 1,
-            maxWidth: vx(1676),
-            minWidth: 0,
-            overflow: "hidden",
-          }}
-        >
-          <VerticalTab label="Métricas operacionais" height={458} metrics={metrics} />
+      <OpenPanelRow
+        metrics={metrics}
+        close={<CloseButton metrics={metrics} onClick={onClose} />}
+        main={
           <div
             style={{
-              flex: 1,
-              backgroundColor: PANEL_BG,
-              borderRadius: vy(48),
-              padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
               display: "flex",
-              justifyContent: "space-between",
-              gap: vx(24),
-              minWidth: 0,
+              alignItems: "stretch",
+              backgroundColor: NAVY,
+              borderRadius: vy(48),
+              width: "100%",
+              height: "100%",
               overflow: "hidden",
             }}
           >
-            {OPERACIONAL_COLUMNS.map((column, index) => (
-              <MetricColumnBlock
-                key={column.title}
-                column={column}
-                metrics={metrics}
-                width={[320, 300, 280, 296][index]}
-              />
-            ))}
+            <VerticalTab label="Métricas operacionais" height={PANEL_ROW_H} metrics={metrics} />
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: PANEL_BG,
+                borderRadius: vy(48),
+                padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
+                display: "flex",
+                justifyContent: "space-between",
+                gap: vx(24),
+                minWidth: 0,
+                overflow: "hidden",
+              }}
+            >
+              {OPERACIONAL_COLUMNS.map((column, index) => (
+                <MetricColumnBlock
+                  key={column.title}
+                  column={column}
+                  metrics={metrics}
+                  width={[320, 300, 280, 296][index]}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-
-        <VerticalTab label="Métricas de UX" height={458} accent onClick={onOpenUx} metrics={metrics} />
-      </div>
+        }
+        sideTab={
+          <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} accent onClick={onOpenUx} metrics={metrics} />
+        }
+      />
 
       <PanelNavigation metrics={metrics} view="operacional" onPrev={onPrev} onNext={onNext} />
     </motion.div>
@@ -844,61 +893,50 @@ function UxPanel({
         zIndex: 3,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: 0,
-          width: "100%",
-          height: vy(458),
-          display: "flex",
-          gap: vx(24),
-          alignItems: "center",
-          paddingLeft: vx(32),
-          boxSizing: "border-box",
-        }}
-      >
-        <CloseButton metrics={metrics} onClick={onClose} />
-
-        <div
-          style={{
-            display: "flex",
-            alignItems: "stretch",
-            backgroundColor: NAVY,
-            borderRadius: vy(48),
-            flex: 1,
-            maxWidth: vx(1676),
-            minWidth: 0,
-            overflow: "hidden",
-          }}
-        >
-          <VerticalTab label="Métricas de UX" height={458} metrics={metrics} />
+      <OpenPanelRow
+        metrics={metrics}
+        close={<CloseButton metrics={metrics} onClick={onClose} />}
+        main={
           <div
             style={{
-              flex: 1,
-              backgroundColor: PANEL_BG,
-              borderRadius: vy(48),
-              padding: `${vy(64)}px ${vx(80)}px`,
               display: "flex",
-              gap: vx(80),
-              minWidth: 0,
+              alignItems: "stretch",
+              backgroundColor: NAVY,
+              borderRadius: vy(48),
+              width: "100%",
+              height: "100%",
               overflow: "hidden",
             }}
           >
-            {UX_COLUMNS.map((column) => (
-              <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
-            ))}
+            <VerticalTab label="Métricas de UX" height={PANEL_ROW_H} metrics={metrics} />
+            <div
+              style={{
+                flex: 1,
+                backgroundColor: PANEL_BG,
+                borderRadius: vy(48),
+                padding: `${vy(64)}px ${vx(80)}px`,
+                display: "flex",
+                gap: vx(80),
+                minWidth: 0,
+                overflow: "hidden",
+              }}
+            >
+              {UX_COLUMNS.map((column) => (
+                <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
+              ))}
+            </div>
           </div>
-        </div>
-
-        <VerticalTab
-          label="Métricas operacionais"
-          height={458}
-          accent
-          onClick={onOpenOperacional}
-          metrics={metrics}
-        />
-      </div>
+        }
+        sideTab={
+          <VerticalTab
+            label="Métricas operacionais"
+            height={PANEL_ROW_H}
+            accent
+            onClick={onOpenOperacional}
+            metrics={metrics}
+          />
+        }
+      />
 
       <PanelNavigation metrics={metrics} view="ux" onPrev={onPrev} onNext={onNext} />
     </motion.div>
