@@ -16,6 +16,7 @@ import { Slide10TeamComposition } from "./components/Slide10TeamComposition";
 import { Slide11Roles } from "./components/Slide11Roles";
 import { Slide12AreaInteractions } from "./components/Slide12AreaInteractions";
 import { Slide13RitosDeUX } from "./components/Slide13RitosDeUX";
+import { Slide14IndicadoresDeSucesso } from "./components/Slide14IndicadoresDeSucesso";
 import { ClosingSlide } from "./components/ClosingSlide";
 import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
 import { createSlideMetrics } from "./scaling";
@@ -32,7 +33,6 @@ const LOGO_IDLE_Y_RANGE = 0.36;
 const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
 const LOGO_MOUSE_IDLE_DELAY_MS = 560;
 const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
-  { number: "14", eyebrow: "Como vamos medir", title: "Indicadores de sucesso", body: "AAA" },
   { number: "15", eyebrow: "AAAA", title: "Roadmap de implantação", body: "AAA", background: "#f4f5f7" },
 ];
 
@@ -588,13 +588,22 @@ export default function App() {
           />
         )}
 
-        {/* ─────────────── SLIDES 14–15 ─────────────── */}
-        {currentSlide >= 13 && currentSlide <= 14 && (
-          <StandardPlanSlide
-            key={`slide-${currentSlide + 1}`}
+        {/* ─────────────── SLIDE 14 ─────────────── */}
+        {currentSlide === 13 && (
+          <Slide14IndicadoresDeSucesso
+            key="slide-14"
             scaleX={scaleX}
             scaleY={scaleY}
-            {...STANDARD_PLAN_SLIDES[currentSlide - 13]}
+          />
+        )}
+
+        {/* ─────────────── SLIDE 15 ─────────────── */}
+        {currentSlide === 14 && (
+          <StandardPlanSlide
+            key="slide-15"
+            scaleX={scaleX}
+            scaleY={scaleY}
+            {...STANDARD_PLAN_SLIDES[0]}
           />
         )}
 
