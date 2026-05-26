@@ -44,9 +44,8 @@ const PALE_BLUE = "rgba(3, 110, 242, 0.06)";
 const PANEL_BG = "#f0f6fe";
 const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
-const PANEL_TRANSITION = { duration: 0.45, ease: EASE };
-/** Troca operacional ↔ ux: conjunto completo, sem expor o fundo navy sozinho */
-const PANEL_SWAP_TRANSITION = { duration: 0.32, ease: EASE };
+const PANEL_TRANSITION = { duration: 0.5, ease: EASE };
+const PANEL_SWAP_TRANSITION = { duration: 0.38, ease: EASE };
 
 const panelChromeStyle = (radius: number): CSSProperties => ({
   isolation: "isolate",
@@ -72,6 +71,10 @@ const OVERVIEW_SIDEBAR_LEFT = 1668;
 const OVERVIEW_SIDEBAR_W = 252;
 const OVERVIEW_SIDEBAR_H = 458;
 const OVERVIEW_ARROW_GAP = 12;
+
+/** Abertura: só as abas à direita visíveis, depois desliza até a posição final (da direita → esquerda) */
+const PANEL_OPEN_TRAVEL_X = OVERVIEW_SIDEBAR_LEFT;
+const PANEL_SWAP_TRAVEL_X = 520;
 
 const PILLAR_ICONS = {
   flowsheet: flowsheetIcon,
@@ -700,9 +703,25 @@ function PanelSlideBlock({
   );
 }
 
+const panelSwapVariants = (metrics: Metrics) => {
+  const travel = metrics.vx(PANEL_SWAP_TRAVEL_X);
+  return {
+    enter: (direction: number) => ({
+      x: direction > 0 ? travel : -travel,
+      opacity: 0.4,
+    }),
+    center: { x: 0, opacity: 1 },
+    exit: (direction: number) => ({
+      x: direction > 0 ? -travel : travel,
+      opacity: 0.4,
+    }),
+  };
+};
+
 function OpenPanelsShell({
   metrics,
   view,
+  swapDirection,
   onClose,
   onOpenOperacional,
   onOpenUx,
@@ -711,6 +730,8 @@ function OpenPanelsShell({
 }: {
   metrics: Metrics;
   view: Exclude<PanelView, "overview">;
+  /** 1 = painel entra da direita; -1 = da esquerda (troca operacional ↔ ux) */
+  swapDirection: number;
   onClose: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
@@ -718,13 +739,14 @@ function OpenPanelsShell({
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
   const { vx, vy } = metrics;
+  const openTravel = vx(PANEL_OPEN_TRAVEL_X);
 
   return (
     <motion.div
       key="open-panels"
-      initial={{ opacity: 0, x: vx(40) }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: vx(40) }}
+      initial={{ x: openTravel }}
+      animate={{ x: 0 }}
+      exit={{ x: openTravel }}
       transition={PANEL_TRANSITION}
       style={{
         position: "absolute",
@@ -733,6 +755,7 @@ function OpenPanelsShell({
         top: vy(357),
         height: vy(522),
         zIndex: 3,
+        overflow: "hidden",
       }}
     >
       {/* Fechar + setas: fora da troca operacional ↔ ux (sem remount/animação) */}
@@ -761,12 +784,14 @@ function OpenPanelsShell({
           height: vy(PANEL_ROW_H),
         }}
       >
-        <AnimatePresence mode="sync" initial={false}>
+        <AnimatePresence mode="popLayout" initial={false} custom={swapDirection}>
           <motion.div
             key={view}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            custom={swapDirection}
+            variants={panelSwapVariants(metrics)}
+            initial="enter"
+            animate="center"
+            exit="exit"
             transition={PANEL_SWAP_TRANSITION}
             style={{
               position: "absolute",
@@ -804,9 +829,9 @@ function OverviewContent({
 
   return (
     <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 1, x: 0 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: vx(-48) }}
       transition={PANEL_TRANSITION}
       style={{ position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1 }}
     >
@@ -1028,19 +1053,26 @@ function OverviewContent({
 export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const [view, setView] = useState<PanelView>("overview");
+  /** 1 = próximo painel vem da direita; -1 = da esquerda */
+  const [panelSwapDirection, setPanelSwapDirection] = useState(1);
 
   useEffect(() => {
     onPanelViewChange?.(view);
   }, [view, onPanelViewChange]);
 
+  const goToPanel = (next: Exclude<PanelView, "overview">, direction: number) => {
+    setPanelSwapDirection(direction);
+    setView(next);
+  };
+
   const openOperacional = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    setView("operacional");
+    goToPanel("operacional", -1);
   };
 
   const openUx = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    setView("ux");
+    goToPanel("ux", 1);
   };
 
   const closePanel = (event: MouseEvent<HTMLButtonElement>) => {
@@ -1050,18 +1082,16 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
 
   const handlePrev = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    setView((current) => {
-      if (current === "overview") return current;
-      return current === "operacional" ? "ux" : "operacional";
-    });
+    if (view === "overview") return;
+    const next = view === "operacional" ? "ux" : "operacional";
+    goToPanel(next, next === "ux" ? 1 : -1);
   };
 
   const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
-    setView((current) => {
-      if (current === "overview") return current;
-      return current === "ux" ? "operacional" : "ux";
-    });
+    if (view === "overview") return;
+    const next = view === "ux" ? "operacional" : "ux";
+    goToPanel(next, next === "ux" ? 1 : -1);
   };
 
   return (
@@ -1090,6 +1120,7 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
             key="open-shell"
             metrics={metrics}
             view={view}
+            swapDirection={panelSwapDirection}
             onClose={closePanel}
             onOpenOperacional={openOperacional}
             onOpenUx={openUx}
