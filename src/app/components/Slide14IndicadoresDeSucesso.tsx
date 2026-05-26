@@ -8,9 +8,7 @@ import flowsheetIcon from "../../assets/slide14/flowsheet.svg";
 import modelingIcon from "../../assets/slide14/modeling.svg";
 import workspacePremiumIcon from "../../assets/slide14/workspace-premium.svg";
 import thumbsUpDownIcon from "../../assets/slide14/thumbs-up-down.svg";
-import cycleLoop1 from "../../assets/slide14/cycle-loop-1.svg";
-import cycleLoop2 from "../../assets/slide14/cycle-loop-2.svg";
-import cycleLoop3 from "../../assets/slide14/cycle-loop-3.svg";
+import { MonthlyReadingCycle } from "./MonthlyReadingCycle";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -959,66 +957,7 @@ function OverviewContent({ metrics }: { metrics: Metrics }) {
             </p>
           </div>
 
-          <div style={{ position: "relative", width: vx(284), height: vy(186), flexShrink: 0 }}>
-            <div style={{ position: "absolute", left: vx(178), top: vy(14), width: vx(64), height: vy(69), display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ transform: "rotate(90deg)" }}>
-                <img src={cycleLoop1} alt="" aria-hidden style={{ width: vx(69), height: vy(64), display: "block" }} />
-              </div>
-            </div>
-            <div style={{ position: "absolute", left: vx(42), top: vy(18), width: vx(69), height: vy(64) }}>
-              <img src={cycleLoop2} alt="" aria-hidden style={{ width: "100%", height: "100%", display: "block" }} />
-            </div>
-            <div style={{ position: "absolute", left: vx(47), top: vy(129), width: vx(192), height: vy(55.197) }}>
-              <img src={cycleLoop3} alt="" aria-hidden style={{ width: "100%", height: "100%", display: "block" }} />
-            </div>
-
-            {[
-              { label: "Observar", left: 0, top: 89 },
-              { label: "Ler", left: 117, top: 0 },
-              { label: "Ajustar", left: 201, top: 89 },
-            ].map((pill) => (
-              <div
-                key={pill.label}
-                style={{
-                  position: "absolute",
-                  left: vx(pill.left),
-                  top: vy(pill.top),
-                  height: vy(34),
-                  padding: `${vy(8)}px ${vx(16)}px`,
-                  borderRadius: vy(17),
-                  border: `2px solid ${BLUE}`,
-                  backgroundColor: PALE_BLUE,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <p
-                  style={{ fontSize: vs(14), lineHeight: `${vy(17)}px`, margin: 0, whiteSpace: "nowrap" }}
-                  className="font-['Manrope',sans-serif] font-extrabold text-[#04165d]"
-                >
-                  {pill.label}
-                </p>
-              </div>
-            ))}
-
-            <p
-              style={{
-                position: "absolute",
-                left: "50%",
-                transform: "translateX(-50%)",
-                top: vy(77),
-                width: vx(80),
-                fontSize: vs(20),
-                lineHeight: `${vy(20)}px`,
-                margin: 0,
-                textAlign: "center",
-              }}
-              className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
-            >
-              Leitura mensal
-            </p>
-          </div>
+          <MonthlyReadingCycle metrics={metrics} />
 
           <p
             style={{ fontSize: vs(18), lineHeight: `${vy(22)}px`, letterSpacing: vs(-0.25), margin: 0, textAlign: "center" }}
