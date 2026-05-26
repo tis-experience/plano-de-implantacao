@@ -546,18 +546,146 @@ function PanelNavigation({
       }}
     >
       <HorizontalNavButton
-        ariaLabel={view === "ux" ? "Métricas operacionais" : "Voltar ao conteúdo inicial"}
+        ariaLabel="Métricas operacionais"
         direction="left"
         onClick={onPrev}
         metrics={metrics}
       />
       <HorizontalNavButton
-        ariaLabel={view === "operacional" ? "Métricas de UX" : "Voltar ao conteúdo inicial"}
+        ariaLabel="Métricas de UX"
         direction="right"
         onClick={onNext}
         metrics={metrics}
       />
     </div>
+  );
+}
+
+function OpenPanelsShell({
+  metrics,
+  view,
+  onClose,
+  onOpenOperacional,
+  onOpenUx,
+  onPrev,
+  onNext,
+}: {
+  metrics: Metrics;
+  view: Exclude<PanelView, "overview">;
+  onClose: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
+  onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
+  onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
+  onNext: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const { vx, vy } = metrics;
+  const isOperacional = view === "operacional";
+
+  return (
+    <motion.div
+      key="open-panels"
+      initial={{ opacity: 0, x: vx(40) }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: vx(40) }}
+      transition={PANEL_TRANSITION}
+      style={{
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: vy(357),
+        height: vy(522),
+        zIndex: 3,
+      }}
+    >
+      <OpenPanelRow
+        metrics={metrics}
+        close={<CloseButton metrics={metrics} onClick={onClose} />}
+        main={
+          <div
+            style={{
+              display: "flex",
+              alignItems: "stretch",
+              backgroundColor: NAVY,
+              borderRadius: vy(48),
+              width: "100%",
+              height: "100%",
+              overflow: "hidden",
+            }}
+          >
+            <VerticalTab
+              label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
+              height={PANEL_ROW_H}
+              metrics={metrics}
+            />
+
+            {isOperacional ? (
+              <div
+                style={{
+                  flex: 1,
+                  backgroundColor: PANEL_BG,
+                  borderRadius: vy(48),
+                  padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: vx(24),
+                  minWidth: 0,
+                  overflow: "hidden",
+                }}
+              >
+                {OPERACIONAL_COLUMNS.map((column, index) => (
+                  <MetricColumnBlock
+                    key={column.title}
+                    column={column}
+                    metrics={metrics}
+                    width={[320, 300, 280, 296][index]}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div
+                style={{
+                  flex: 1,
+                  backgroundColor: PANEL_BG,
+                  borderRadius: vy(48),
+                  padding: `${vy(64)}px ${vx(80)}px`,
+                  display: "flex",
+                  gap: vx(80),
+                  minWidth: 0,
+                  overflow: "hidden",
+                }}
+              >
+                {UX_COLUMNS.map((column) => (
+                  <MetricColumnBlock key={column.title} column={column} metrics={metrics} flex={1} />
+                ))}
+              </div>
+            )}
+          </div>
+        }
+        sideTab={
+          isOperacional ? (
+            <VerticalTab
+              label="Métricas de UX"
+              height={PANEL_ROW_H}
+              accent
+              edge="right"
+              onClick={onOpenUx}
+              metrics={metrics}
+            />
+          ) : (
+            <VerticalTab
+              label="Métricas operacionais"
+              height={PANEL_ROW_H}
+              accent
+              edge="right"
+              onClick={onOpenOperacional}
+              metrics={metrics}
+            />
+          )
+        }
+      />
+
+      <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
+    </motion.div>
   );
 }
 
@@ -992,16 +1120,16 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
   const handlePrev = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
     setView((current) => {
-      if (current === "ux") return "operacional";
-      return "overview";
+      if (current === "operacional") return "ux";
+      return "operacional";
     });
   };
 
   const handleNext = (event: MouseEvent<HTMLButtonElement>) => {
     stopEvent(event);
     setView((current) => {
-      if (current === "operacional") return "ux";
-      return "overview";
+      if (current === "ux") return "operacional";
+      return "ux";
     });
   };
 
@@ -1019,32 +1147,21 @@ export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange 
       <SlideFooter metrics={metrics} />
 
       <AnimatePresence mode="wait">
-        {view === "overview" && (
+        {view === "overview" ? (
           <OverviewContent
             key="overview"
             metrics={metrics}
             onOpenOperacional={openOperacional}
             onOpenUx={openUx}
           />
-        )}
-
-        {view === "operacional" && (
-          <OperacionalPanel
-            key="operacional"
+        ) : (
+          <OpenPanelsShell
+            key="open-shell"
             metrics={metrics}
-            onClose={closePanel}
-            onOpenUx={openUx}
-            onPrev={handlePrev}
-            onNext={handleNext}
-          />
-        )}
-
-        {view === "ux" && (
-          <UxPanel
-            key="ux"
-            metrics={metrics}
+            view={view}
             onClose={closePanel}
             onOpenOperacional={openOperacional}
+            onOpenUx={openUx}
             onPrev={handlePrev}
             onNext={handleNext}
           />
