@@ -238,11 +238,11 @@ function InteractiveCircleButton({
       <motion.button
         type="button"
         aria-label={ariaLabel}
+        initial="rest"
+        animate="rest"
+        whileHover="hover"
         onClick={onClick}
         onPointerDown={stopPointerEvent}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
-        onBlur={() => setHovered(false)}
         style={{
           width: hoverSize,
           height: hoverSize,
@@ -258,10 +258,9 @@ function InteractiveCircleButton({
         }}
       >
         <motion.div
-          animate={{
-            width: hovered ? hoverSize : size,
-            height: hovered ? hoverSize : size,
-            boxShadow: hovered ? INTERACTIVE_HOVER_BOX_SHADOW : "none",
+          variants={{
+            rest: { width: size, height: size, boxShadow: "none" },
+            hover: { width: hoverSize, height: hoverSize, boxShadow: INTERACTIVE_HOVER_BOX_SHADOW },
           }}
           transition={{ duration: 0.24, ease: EASE }}
           style={{
@@ -569,21 +568,39 @@ function CloseButton({
   metrics: Metrics;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vs } = metrics;
+  const { vx, vy, vs } = metrics;
+  const size = vs(PANEL_CLOSE_SIZE);
+  const hoverSize = interactiveCircleHoverSize(size);
   const iconSize = vs(40);
 
   return (
-    <InteractiveCircleButton
-      ariaLabel="Fechar painel"
-      onClick={onClick}
-      size={vs(PANEL_CLOSE_SIZE)}
-      background={BLUE}
-      growOnHover
+    <div
+      style={{
+        position: "absolute",
+        left: vx(PANEL_CLOSE_LEFT),
+        top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
+        width: hoverSize,
+        height: hoverSize,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 10,
+        pointerEvents: "auto",
+        overflow: "visible",
+      }}
     >
-      <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
-        <path d={modalSvgPaths.peeed100} fill="currentColor" />
-      </svg>
-    </InteractiveCircleButton>
+      <InteractiveCircleButton
+        ariaLabel="Fechar painel"
+        onClick={onClick}
+        size={size}
+        background={BLUE}
+        growOnHover
+      >
+        <svg width={iconSize} height={iconSize} viewBox="0 0 32 32" fill="none" style={{ display: "block" }}>
+          <path d={modalSvgPaths.peeed100} fill="currentColor" />
+        </svg>
+      </InteractiveCircleButton>
+    </div>
   );
 }
 
@@ -809,21 +826,11 @@ function OpenPanelsShell({
         top: vy(357),
         height: vy(522),
         zIndex: 3,
-        overflow: "hidden",
+        overflow: "visible",
       }}
     >
       {/* Fechar + setas: fora da troca operacional ↔ ux (sem remount/animação) */}
-      <div
-        style={{
-          position: "absolute",
-          left: vx(PANEL_CLOSE_LEFT),
-          top: vy((PANEL_ROW_H - PANEL_CLOSE_SIZE) / 2),
-          zIndex: 10,
-          pointerEvents: "auto",
-        }}
-      >
-        <CloseButton metrics={metrics} onClick={onClose} />
-      </div>
+      <CloseButton metrics={metrics} onClick={onClose} />
 
       <div style={{ position: "relative", zIndex: 10, pointerEvents: "auto" }}>
         <PanelNavigation metrics={metrics} view={view} onPrev={onPrev} onNext={onNext} />
@@ -836,6 +843,7 @@ function OpenPanelsShell({
           right: 0,
           top: 0,
           height: vy(PANEL_ROW_H),
+          overflow: "hidden",
         }}
       >
         <AnimatePresence mode="popLayout" initial={false} custom={swapDirection}>
