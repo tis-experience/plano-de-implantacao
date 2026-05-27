@@ -578,11 +578,15 @@ function OverviewTabsStrip({
       style={{
         display: "flex",
         flexDirection: "row",
-        alignItems: "center",
-        flexShrink: 0,
+        alignItems: "stretch",
+        width: vl(OVERVIEW_TABS_W),
+        minWidth: vl(OVERVIEW_TABS_W),
+        height: vy(PANEL_ROW_H),
         backgroundColor: NAVY,
         borderTopLeftRadius: sideR,
         borderBottomLeftRadius: sideR,
+        flexShrink: 0,
+        overflow: "hidden",
       }}
     >
       <button
@@ -590,11 +594,7 @@ function OverviewTabsStrip({
         aria-label="Métricas operacionais"
         onClick={onOpenOperacional}
         onPointerDown={stopPointerEvent}
-        style={{
-          ...tabButtonStyle(NAVY, { borderRadius: innerR }),
-          position: "relative",
-          zIndex: 0,
-        }}
+        style={tabButtonStyle(NAVY, { borderRadius: innerR })}
       >
         <VerticalTabLabel label="Métricas operacionais" metrics={metrics} />
       </button>
@@ -603,14 +603,10 @@ function OverviewTabsStrip({
         aria-label="Métricas de UX"
         onClick={onOpenUx}
         onPointerDown={stopPointerEvent}
-        style={{
-          ...tabButtonStyle(BLUE, {
-            borderTopLeftRadius: sideR,
-            borderBottomLeftRadius: sideR,
-          }),
-          position: "relative",
-          zIndex: 1,
-        }}
+        style={tabButtonStyle(BLUE, {
+          borderTopLeftRadius: sideR,
+          borderBottomLeftRadius: sideR,
+        })}
       >
         <VerticalTabLabel label="Métricas de UX" metrics={metrics} />
       </button>
