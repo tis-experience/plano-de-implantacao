@@ -30,7 +30,7 @@ export const OPERACIONAL_COLUMNS: MetricColumn[] = [
   {
     title: "Maturidade e adoção",
     items: [
-      "Nível NN/g",
+      "Nível de Maturidade (NN/g)",
       "% de projectos com UX desde o kickoff",
       "% de projectos consumindo o Design System",
       "% de pedidos com briefing completo",
@@ -55,7 +55,7 @@ export const OPERACIONAL_COLUMNS: MetricColumn[] = [
     items: [
       "Sucesso de tarefa",
       "Usability Score",
-      "Taxa de bugs de UX",
+      "Taxa de bugs de UX/UI",
       "Satisfação interna do time",
       "Consistência visual",
       "Conformidade com a WCAG 2.2 AA",
@@ -65,7 +65,8 @@ export const OPERACIONAL_COLUMNS: MetricColumn[] = [
     title: "Eficiência",
     items: [
       "Tempo design -> dev",
-      "Lead time de UX",
+      "Lead time de entrega",
+      "% de reutilização de componentes",
       "Redução de retrabalho",
       "Pedidos de suporte",
       "Tempo de manutenção",
