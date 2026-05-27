@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import monthlyReadingCycleImage from "../../assets/slide14/monthly-reading-cycle.png";
+import monthlyReadingCycleImage from "../../assets/slide14/monthly-reading-cycle.svg";
 
 const DESIGN_W = 284;
 const DESIGN_H = 186;
