@@ -65,8 +65,6 @@ const PANEL_CLOSE_LEFT = 32;
 const PANEL_CLOSE_SIZE = 64;
 const PANEL_MAIN_W = 1676;
 const SIDE_TAB_W = 100;
-/** Figma 1018:1648 / 1033:2154 — aba vertical ativa no miolo e no overview */
-const PANEL_TAB_W = 100;
 /** Figma 1018:1432 — coluna do painel: bloco 458px + gap 24 + setas; setas com pl=240 no slide */
 const PANEL_SHELL_TOP = 357;
 const PANEL_NAV_PL = 240;
@@ -474,8 +472,7 @@ function VerticalTab({
       style={{
         border: 0,
         padding: `${vy(16)}px ${vx(32)}px`,
-        width: vx(isRightEdge ? SIDE_TAB_W : PANEL_TAB_W),
-        minWidth: vx(isRightEdge ? SIDE_TAB_W : PANEL_TAB_W),
+        width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
         ...cornerRadius,
@@ -558,9 +555,6 @@ function OverviewTabsStrip({
     ...radius,
   });
 
-  const sideR = vy(48);
-  const innerR = vy(16);
-
   return (
     <div
       style={{
@@ -569,10 +563,11 @@ function OverviewTabsStrip({
         alignItems: "stretch",
         width: vx(OVERVIEW_TABS_W),
         height: vy(PANEL_ROW_H),
+        backgroundColor: NAVY,
+        borderTopLeftRadius: vy(48),
+        borderBottomLeftRadius: vy(48),
         flexShrink: 0,
         overflow: "hidden",
-        borderTopLeftRadius: sideR,
-        borderBottomLeftRadius: sideR,
       }}
     >
       <button
@@ -580,12 +575,7 @@ function OverviewTabsStrip({
         aria-label="Métricas operacionais"
         onClick={onOpenOperacional}
         onPointerDown={stopPointerEvent}
-        style={tabButtonStyle(NAVY, {
-          borderTopLeftRadius: sideR,
-          borderBottomLeftRadius: sideR,
-          borderTopRightRadius: innerR,
-          borderBottomRightRadius: innerR,
-        })}
+        style={tabButtonStyle(NAVY, { borderRadius: vy(16) })}
       >
         <VerticalTabLabel label="Métricas operacionais" metrics={metrics} />
       </button>
@@ -595,8 +585,8 @@ function OverviewTabsStrip({
         onClick={onOpenUx}
         onPointerDown={stopPointerEvent}
         style={tabButtonStyle(BLUE, {
-          borderTopLeftRadius: sideR,
-          borderBottomLeftRadius: sideR,
+          borderTopLeftRadius: vy(48),
+          borderBottomLeftRadius: vy(48),
         })}
       >
         <VerticalTabLabel label="Métricas de UX" metrics={metrics} />
@@ -619,6 +609,8 @@ function PanelMainChrome({
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
 
+  const rightEdgeSeal = Math.max(1, vy(1));
+
   return (
     <div
       style={{
@@ -627,27 +619,17 @@ function PanelMainChrome({
         width: vx(PANEL_MAIN_W),
         height: "100%",
         flexShrink: 0,
+        backgroundColor: NAVY,
         overflow: "hidden",
         ...panelChromeStyle(panelR),
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexShrink: 0,
-          backgroundColor: NAVY,
-          borderTopLeftRadius: panelR,
-          borderBottomLeftRadius: panelR,
-          overflow: "hidden",
-        }}
-      >
-        <VerticalTab
-          label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
-          height={PANEL_ROW_H}
-          edge="panel"
-          metrics={metrics}
-        />
-      </div>
+      <VerticalTab
+        label={isOperacional ? "Métricas operacionais" : "Métricas de UX"}
+        height={PANEL_ROW_H}
+        edge="panel"
+        metrics={metrics}
+      />
       <div
         style={{
           flex: 1,
@@ -660,6 +642,9 @@ function PanelMainChrome({
           overflow: "hidden",
           display: "flex",
           position: "relative",
+          zIndex: 1,
+          isolation: "isolate",
+          boxShadow: `inset -${rightEdgeSeal}px 0 0 0 ${PANEL_BG}, 0 0 0 1px ${PANEL_BG}`,
         }}
       >
         <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
@@ -826,47 +811,23 @@ function OpenPanelShell({
         <PanelMainChrome metrics={metrics} view={view} swapDirection={swapDirection} />
 
         {isOperacional ? (
-          <div
-            style={{
-              flexShrink: 0,
-              width: vx(SIDE_TAB_W),
-              minWidth: vx(SIDE_TAB_W),
-              height: vy(PANEL_ROW_H),
-              overflow: "hidden",
-              borderTopLeftRadius: vy(48),
-              borderBottomLeftRadius: vy(48),
-            }}
-          >
-            <VerticalTab
-              label="Métricas de UX"
-              height={PANEL_ROW_H}
-              accent
-              edge="right"
-              onClick={onOpenUx}
-              metrics={metrics}
-            />
-          </div>
+          <VerticalTab
+            label="Métricas de UX"
+            height={PANEL_ROW_H}
+            accent
+            edge="right"
+            onClick={onOpenUx}
+            metrics={metrics}
+          />
         ) : (
-          <div
-            style={{
-              flexShrink: 0,
-              width: vx(SIDE_TAB_W),
-              minWidth: vx(SIDE_TAB_W),
-              height: vy(PANEL_ROW_H),
-              overflow: "hidden",
-              borderTopLeftRadius: vy(48),
-              borderBottomLeftRadius: vy(48),
-            }}
-          >
-            <VerticalTab
-              label="Métricas operacionais"
-              height={PANEL_ROW_H}
-              accent
-              edge="right"
-              onClick={onOpenOperacional}
-              metrics={metrics}
-            />
-          </div>
+          <VerticalTab
+            label="Métricas operacionais"
+            height={PANEL_ROW_H}
+            accent
+            edge="right"
+            onClick={onOpenOperacional}
+            metrics={metrics}
+          />
         )}
       </motion.div>
 
