@@ -307,7 +307,6 @@ const LEGEND_TOP     = 32;
 const HEADER_TOP_REST = 96;
 const HEADER_TOP_EXP  = -181;
 const FOOTER_TOP_REST = 946;
-const FOOTER_TOP_EXP  = 1080;
 
 const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_REST_H + LIST_GAP; // 373
 const CLIP_H_REST   = DESIGN_HEIGHT - OVERLAY_H_REST - CLIP_TOP_REST; // 393
@@ -897,12 +896,9 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Footer (946 → 1080 fora da tela ao rolar) */}
+      {/* Footer — acima da faixa de legenda; permanece visível ao expandir (Figma 52:1034) */}
       <motion.div
-        animate={{
-          opacity: isExpanded ? 0 : 1,
-          top: vy(isExpanded ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
-        }}
+        animate={{ top: vy(FOOTER_TOP_REST) }}
         transition={ANIM}
         style={{
           position: "absolute",
@@ -911,8 +907,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
-          pointerEvents: isExpanded ? "none" : "auto",
-          zIndex: 15,
+          pointerEvents: "none",
+          zIndex: 40,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: vx(20) }}>
