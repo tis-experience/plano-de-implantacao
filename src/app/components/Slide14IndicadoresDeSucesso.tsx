@@ -609,6 +609,8 @@ function PanelMainChrome({
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
 
+  const rightEdgeSeal = Math.max(1, vy(1));
+
   return (
     <div
       style={{
@@ -617,8 +619,7 @@ function PanelMainChrome({
         width: vx(PANEL_MAIN_W),
         height: "100%",
         flexShrink: 0,
-        /** Shell claro + clip: evita franja navy no anti-alias da direita (aba navy fica à esquerda) */
-        backgroundColor: PANEL_BG,
+        backgroundColor: NAVY,
         overflow: "hidden",
         ...panelChromeStyle(panelR),
       }}
@@ -633,12 +634,17 @@ function PanelMainChrome({
         style={{
           flex: 1,
           backgroundColor: PANEL_BG,
-          borderRadius: panelR,
+          borderTopLeftRadius: panelR,
+          borderTopRightRadius: panelR,
+          borderBottomLeftRadius: panelR,
+          borderBottomRightRadius: panelR,
           minWidth: 0,
           overflow: "hidden",
           display: "flex",
           position: "relative",
           zIndex: 1,
+          isolation: "isolate",
+          boxShadow: `inset -${rightEdgeSeal}px 0 0 0 ${PANEL_BG}, 0 0 0 1px ${PANEL_BG}`,
         }}
       >
         <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
