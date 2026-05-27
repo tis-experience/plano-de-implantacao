@@ -444,23 +444,22 @@ function VerticalTab({
   accent?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   metrics: Metrics;
-  /** panel = aba ativa no miolo (1018:1648 · rounded 16); right = aba lateral aberta (1018:1763) */
+  /** panel = aba ativa no miolo (radius 48, igual ao painel); right = aba lateral aberta (1018:1763) */
   edge?: "panel" | "right";
 }) {
   const { vx, vy, vs } = metrics;
   const isRightEdge = edge === "right";
-  const sideTabR = vy(48);
-  const innerTabR = vy(16);
+  const panelR = vy(48);
 
   const cornerRadius: CSSProperties = isRightEdge
     ? {
-        borderTopLeftRadius: sideTabR,
-        borderBottomLeftRadius: sideTabR,
+        borderTopLeftRadius: panelR,
+        borderBottomLeftRadius: panelR,
         borderTopRightRadius: 0,
         borderBottomRightRadius: 0,
       }
     : {
-        borderRadius: innerTabR,
+        borderRadius: panelR,
       };
 
   return (
@@ -618,7 +617,6 @@ function PanelMainChrome({
         height: "100%",
         flexShrink: 0,
         backgroundColor: NAVY,
-        overflow: "hidden",
         ...panelChromeStyle(panelR),
       }}
     >
