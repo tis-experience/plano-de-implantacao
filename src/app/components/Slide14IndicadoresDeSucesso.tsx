@@ -51,19 +51,13 @@ const PANEL_SWAP_EXIT_TRANSITION = {
   opacity: { duration: 0.22, ease: EASE },
 };
 
-/** Design px — cobre anti-alias navy nas curvas do miolo (escala com vy) */
-const PANEL_EDGE_BLEED = 2;
-
 const panelChromeStyle = (radius: number): CSSProperties => ({
   isolation: "isolate",
+  transform: "translateZ(0)",
   WebkitBackfaceVisibility: "hidden",
   backfaceVisibility: "hidden",
   borderRadius: radius,
 });
-
-function panelEdgeBleedPx(metrics: Metrics): number {
-  return Math.max(1, metrics.vy(PANEL_EDGE_BLEED));
-}
 
 /** Figma 1018:1642 — linha do painel aberto */
 const PANEL_ROW_H = 458;
@@ -458,7 +452,6 @@ function VerticalTab({
   const sideTabR = vy(48);
   const innerTabR = vy(16);
 
-  const edgeBleed = panelEdgeBleedPx(metrics);
   const cornerRadius: CSSProperties = isRightEdge
     ? {
         borderTopLeftRadius: sideTabR,
@@ -491,11 +484,6 @@ function VerticalTab({
         outline: "none",
         transition: INTERACTIVE_HOVER_TRANSITION,
         boxSizing: "border-box",
-        position: "relative",
-        zIndex: 2,
-        ...(edge === "panel"
-          ? { boxShadow: `${edgeBleed}px 0 0 0 ${PANEL_BG}` }
-          : undefined),
       }}
     >
       <VerticalTabLabel label={label} metrics={metrics} />
@@ -618,7 +606,6 @@ function PanelMainChrome({
 }) {
   const { vx, vy } = metrics;
   const panelR = vy(48);
-  const edgeBleed = panelEdgeBleedPx(metrics);
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
 
@@ -644,38 +631,20 @@ function PanelMainChrome({
       <div
         style={{
           flex: 1,
+          backgroundColor: PANEL_BG,
+          borderTopLeftRadius: panelR,
+          borderTopRightRadius: panelR,
+          borderBottomLeftRadius: panelR,
+          borderBottomRightRadius: panelR,
           minWidth: 0,
           overflow: "hidden",
+          display: "flex",
           position: "relative",
           zIndex: 1,
+          isolation: "isolate",
+          boxShadow: `0 0 0 1px ${PANEL_BG}`,
         }}
       >
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            top: -edgeBleed,
-            right: -edgeBleed * 2,
-            bottom: -edgeBleed * 2,
-            left: -edgeBleed,
-            backgroundColor: PANEL_BG,
-            borderRadius: panelR + edgeBleed,
-            zIndex: 0,
-            pointerEvents: "none",
-            transform: "translateZ(0)",
-          }}
-        />
-        <div
-          style={{
-            position: "relative",
-            zIndex: 1,
-            width: "100%",
-            height: "100%",
-            backgroundColor: PANEL_BG,
-            overflow: "hidden",
-            display: "flex",
-          }}
-        >
         <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
           <motion.div
             key={view}
@@ -710,7 +679,6 @@ function PanelMainChrome({
             <PanelMetricsBody metrics={metrics} view={view} />
           </motion.div>
         </AnimatePresence>
-        </div>
       </div>
     </div>
   );
