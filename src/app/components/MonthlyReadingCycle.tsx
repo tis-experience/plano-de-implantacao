@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import monthlyReadingCycleSvg from "../../assets/slide14/monthly-reading-cycle.svg";
+import monthlyReadingCycleImage from "../../assets/slide14/monthly-reading-cycle.png";
 
 const DESIGN_W = 284;
 const DESIGN_H = 186;
@@ -21,7 +21,7 @@ export function MonthlyReadingCycle({
 
   return (
     <img
-      src={monthlyReadingCycleSvg}
+      src={monthlyReadingCycleImage}
       alt=""
       aria-hidden
       width={width}
