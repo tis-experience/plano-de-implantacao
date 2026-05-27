@@ -45,6 +45,11 @@ const FOOTER_TEXT = "PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING";
 const EASE = [0.22, 1, 0.36, 1] as const;
 const PANEL_TRANSITION = { duration: 0.5, ease: EASE };
 const PANEL_SWAP_TRANSITION = { duration: 0.38, ease: EASE };
+/** Saída some antes do slide terminar — evita colunas flex sobrepostas no último frame */
+const PANEL_SWAP_EXIT_TRANSITION = {
+  x: { duration: 0.38, ease: EASE },
+  opacity: { duration: 0.22, ease: EASE },
+};
 
 const panelChromeStyle = (radius: number): CSSProperties => ({
   isolation: "isolate",
@@ -640,26 +645,36 @@ function PanelMainChrome({
           boxShadow: `0 0 0 1px ${PANEL_BG}`,
         }}
       >
-        <AnimatePresence mode="popLayout" initial={false} custom={swapDirection}>
+        <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
           <motion.div
             key={view}
             custom={swapDirection}
             variants={{
               enter: (direction: number) => ({
                 x: direction > 0 ? swapTravel : -swapTravel,
-                opacity: 0.5,
+                opacity: 0,
               }),
               center: { x: 0, opacity: 1 },
               exit: (direction: number) => ({
                 x: direction > 0 ? -swapTravel : swapTravel,
-                opacity: 0.5,
+                opacity: 0,
               }),
             }}
             initial="enter"
             animate="center"
             exit="exit"
-            transition={PANEL_SWAP_TRANSITION}
-            style={{ position: "absolute", inset: 0, display: "flex" }}
+            transition={{
+              ...PANEL_SWAP_TRANSITION,
+              exit: PANEL_SWAP_EXIT_TRANSITION,
+            }}
+            style={{
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              overflow: "hidden",
+              flexShrink: 0,
+              willChange: "transform, opacity",
+            }}
           >
             <PanelMetricsBody metrics={metrics} view={view} />
           </motion.div>
@@ -876,6 +891,8 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
     return (
       <div
         style={{
+          width: "100%",
+          height: "100%",
           flex: 1,
           padding: `${vy(64)}px ${vx(48)}px ${vy(64)}px ${vx(80)}px`,
           display: "flex",
@@ -883,6 +900,7 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
           gap: vx(24),
           minWidth: 0,
           overflow: "hidden",
+          boxSizing: "border-box",
         }}
       >
         {OPERACIONAL_COLUMNS.map((column, index) => (
@@ -900,12 +918,15 @@ function PanelMetricsBody({ metrics, view }: { metrics: Metrics; view: Exclude<P
   return (
     <div
       style={{
+        width: "100%",
+        height: "100%",
         flex: 1,
         padding: `${vy(64)}px ${vx(80)}px`,
         display: "flex",
         gap: vx(80),
         minWidth: 0,
         overflow: "hidden",
+        boxSizing: "border-box",
       }}
     >
       {UX_COLUMNS.map((column) => (
