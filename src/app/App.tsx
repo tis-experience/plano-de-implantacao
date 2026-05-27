@@ -189,13 +189,12 @@ export default function App() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isInfographicExpanded) return;
       if (isModalOpen) return;
-      if (isSlide14PanelOpen) return;
       if (e.key === "ArrowRight") goNext();
       if (e.key === "ArrowLeft")  goPrev();
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide, isModalOpen, isInfographicExpanded, isSlide14PanelOpen]);
+  }, [currentSlide, isModalOpen, isInfographicExpanded]);
   // ──────────────────────────────────────────────────────────────────────
 
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
@@ -267,7 +266,6 @@ export default function App() {
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
     if (isInfographicExpanded) return;
     if (isModalOpen) return;
-    if (isSlide14PanelOpen) return;
     const target = event.target instanceof Element ? event.target : null;
     // Ignora cliques na modal mesmo após fechar no mouseUp (antes do click disparar).
     if (target?.closest("[data-nng-modal], [data-roles-modal]")) return;
@@ -338,7 +336,7 @@ export default function App() {
       onMouseEnter={() => setCursorVisible(true)}
       onClickCapture={handleClick}
       style={{ backgroundColor: isDarkSlide ? "#04165d" : "#ffffff" }}
-      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : ((isModalOpen || isSlide14PanelOpen) ? "cursor-auto" : (isInteractiveSuppressingCursor ? "" : "cursor-none"))}`}
+      className={`w-screen h-screen overflow-hidden relative select-none transition-colors duration-500 ${isInfographicExpanded ? "cursor-none" : (isModalOpen ? "cursor-auto" : (isInteractiveSuppressingCursor ? "" : "cursor-none"))}`}
     >
       <div
         style={{
@@ -638,7 +636,7 @@ export default function App() {
           boxShadow: "0 8px 24px 0 rgba(5, 28, 117, 0.16), 0 2px 4px 0 rgba(5, 28, 117, 0.24)",
         }}
         animate={{
-          opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && !isSlide14PanelOpen && cursorReady && cursorVisible && !isInteractiveSuppressingCursor ? 1 : 0),
+          opacity: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0) : (!isModalOpen && cursorReady && cursorVisible && !isInteractiveSuppressingCursor ? 1 : 0),
           scale: isInfographicActionCursor ? (cursorReady && cursorVisible ? 1 : 0.4) : (isInteractiveSuppressingCursor ? 0 : (isTapping ? 0.82 : (cursorReady && cursorVisible ? 1 : 0.4))),
           width: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(80) : (showBackCursor ? vs(56) : vs(80))),
           height: isInfographicActionCursor ? vs(INFOGRAPHIC_CURSOR_SIZE) : (isDragAreaActive ? vs(40) : (showBackCursor ? vs(56) : vs(80))),
