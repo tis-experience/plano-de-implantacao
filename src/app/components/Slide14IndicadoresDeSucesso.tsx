@@ -617,7 +617,8 @@ function PanelMainChrome({
         width: vx(PANEL_MAIN_W),
         height: "100%",
         flexShrink: 0,
-        backgroundColor: NAVY,
+        /** Shell claro + clip: evita franja navy no anti-alias da direita (aba navy fica à esquerda) */
+        backgroundColor: PANEL_BG,
         overflow: "hidden",
         ...panelChromeStyle(panelR),
       }}
@@ -632,17 +633,12 @@ function PanelMainChrome({
         style={{
           flex: 1,
           backgroundColor: PANEL_BG,
-          borderTopLeftRadius: panelR,
-          borderTopRightRadius: panelR,
-          borderBottomLeftRadius: panelR,
-          borderBottomRightRadius: panelR,
+          borderRadius: panelR,
           minWidth: 0,
           overflow: "hidden",
           display: "flex",
           position: "relative",
           zIndex: 1,
-          isolation: "isolate",
-          boxShadow: `0 0 0 1px ${PANEL_BG}`,
         }}
       >
         <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
