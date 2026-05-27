@@ -16,7 +16,7 @@ export const INTERACTION_MAP_PANELS: InteractionAreaCard[][] = [
       delivers: "Fluxos validados, protótipos e especificações de handoff.",
     },
     {
-      title: "Engenharia",
+      title: "Desenvolvimento",
       intro: "Recebe o handoff e implementa.",
       xpRole: "acompanha fidelidade e resolve dúvidas técnicas.",
       receives: "Feedback técnico e limitações de plataforma.",
