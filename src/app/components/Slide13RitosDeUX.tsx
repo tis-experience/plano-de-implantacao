@@ -307,6 +307,7 @@ const LEGEND_TOP     = 32;
 const HEADER_TOP_REST = 96;
 const HEADER_TOP_EXP  = -181;
 const FOOTER_TOP_REST = 946;
+const FOOTER_TOP_EXP  = 1080;
 
 const CLIP_TOP_REST = TABLE_TOP_REST + TABLE_HDR_REST_H + LIST_GAP; // 373
 const CLIP_H_REST   = DESIGN_HEIGHT - OVERLAY_H_REST - CLIP_TOP_REST; // 393
@@ -822,9 +823,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Faixa inferior: bloqueia hover das linhas (tooltips) e deixa passar cursor/clique de slide */}
+      {/* Faixa inferior: captura o ponteiro para bloquear hover nas linhas atrás */}
       <motion.div
-        data-slide-nav-shield="slide-13-legend"
         animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
         onPointerEnter={() => updateTooltip(null)}
@@ -837,7 +837,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           WebkitBackdropFilter: "blur(50px)",
           background: OVERLAY_GRADIENT,
           overflow: "hidden",
-          zIndex: 30,
+          zIndex: 10,
           pointerEvents: "auto",
           cursor: "none",
         }}
@@ -896,9 +896,12 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Footer — acima da faixa de legenda; permanece visível ao expandir (Figma 52:1034) */}
+      {/* Footer (946 → sai da tela ao expandir) */}
       <motion.div
-        animate={{ top: vy(FOOTER_TOP_REST) }}
+        animate={{
+          opacity: isExpanded ? 0 : 1,
+          top: vy(isExpanded ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
+        }}
         transition={ANIM}
         style={{
           position: "absolute",
@@ -907,8 +910,8 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           display: "flex",
           alignItems: "flex-end",
           justifyContent: "space-between",
-          pointerEvents: "none",
-          zIndex: 40,
+          pointerEvents: isExpanded ? "none" : "auto",
+          zIndex: 15,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: vx(20) }}>
