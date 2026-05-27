@@ -633,10 +633,10 @@ function PanelMainChrome({
       style={{
         display: "flex",
         alignItems: "stretch",
-        width: vx(PANEL_MAIN_W),
-        minWidth: vx(PANEL_MAIN_W),
+        flex: 1,
+        minWidth: 0,
         height: "100%",
-        flexShrink: 0,
+        flexShrink: 1,
         backgroundColor: NAVY,
         ...panelChromeStyle(panelR),
       }}
@@ -787,10 +787,10 @@ function OpenPanelShell({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy, vs } = metrics;
+  const { vx, vy } = metrics;
   const isOperacional = view === "operacional";
-  const closeSize = vs(PANEL_CLOSE_SIZE);
-  const iconSize = vs(40);
+  const closeSize = vx(PANEL_CLOSE_SIZE);
+  const iconSize = vx(40);
   const openFromX = vx(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
 
   return (
@@ -802,6 +802,7 @@ function OpenPanelShell({
       style={{
         position: "absolute",
         left: vx(PANEL_CLOSE_LEFT),
+        right: vx(24),
         top: vy(PANEL_SHELL_TOP),
         display: "flex",
         flexDirection: "column",
@@ -821,6 +822,7 @@ function OpenPanelShell({
           flexDirection: "row",
           alignItems: "stretch",
           gap: vx(PANEL_ROW_GAP),
+          width: "100%",
           height: vy(PANEL_ROW_H),
           overflow: "visible",
           flexShrink: 0,
