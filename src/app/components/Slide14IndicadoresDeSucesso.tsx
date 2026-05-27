@@ -787,10 +787,10 @@ function OpenPanelShell({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy } = metrics;
+  const { vx, vy, vs } = metrics;
   const isOperacional = view === "operacional";
-  const closeSize = vx(PANEL_CLOSE_SIZE);
-  const iconSize = vx(40);
+  const closeSize = Math.min(vx(PANEL_CLOSE_SIZE), vs(PANEL_CLOSE_SIZE));
+  const iconSize = Math.min(vx(40), vs(40));
   const openFromX = vx(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
 
   return (
