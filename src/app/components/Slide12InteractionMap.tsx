@@ -147,7 +147,7 @@ function AreaCard({ area, metrics }: { area: InteractionAreaCard; metrics: Metri
               margin: 0,
               fontFamily: "'Manrope', sans-serif",
               fontWeight: 400,
-              fontSize: vs(16),
+              fontSize: vs(18),
               lineHeight: 1.4,
               color: INK,
             }}
@@ -159,7 +159,7 @@ function AreaCard({ area, metrics }: { area: InteractionAreaCard; metrics: Metri
               margin: 0,
               fontFamily: "'Manrope', sans-serif",
               fontWeight: 400,
-              fontSize: vs(16),
+              fontSize: vs(18),
               lineHeight: 1.4,
               color: INK,
             }}
