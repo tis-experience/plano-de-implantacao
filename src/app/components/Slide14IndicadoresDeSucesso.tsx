@@ -787,11 +787,11 @@ function OpenPanelShell({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vy, vl } = metrics;
+  const { vx, vy, vl } = metrics;
   const isOperacional = view === "operacional";
   const closeSize = vl(PANEL_CLOSE_SIZE);
   const iconSize = vl(40);
-  const openFromX = vl(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
+  const openFromX = vx(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
 
   return (
     <motion.div
@@ -801,11 +801,10 @@ function OpenPanelShell({
       transition={PANEL_TRANSITION}
       style={{
         position: "absolute",
-        right: 0,
+        left: vx(PANEL_CLOSE_LEFT),
         top: vy(PANEL_SHELL_TOP),
         display: "flex",
         flexDirection: "column",
-        alignItems: "flex-end",
         gap: vy(PANEL_ROW_GAP),
         zIndex: 6,
         pointerEvents: "auto",
@@ -821,7 +820,7 @@ function OpenPanelShell({
           display: "flex",
           flexDirection: "row",
           alignItems: "stretch",
-          gap: vl(PANEL_ROW_GAP),
+          gap: vx(PANEL_ROW_GAP),
           height: vy(PANEL_ROW_H),
           overflow: "visible",
           flexShrink: 0,
@@ -864,7 +863,7 @@ function OpenPanelShell({
         )}
       </motion.div>
 
-      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} insetLeft={vl(PANEL_NAV_INSET_FROM_SHELL)} />
+      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} insetLeft={vx(PANEL_NAV_INSET_FROM_SHELL)} />
     </motion.div>
   );
 }
@@ -900,6 +899,7 @@ function PanelNavigation({
         boxSizing: "border-box",
         overflow: "visible",
         flexShrink: 0,
+        alignSelf: "flex-start",
       }}
     >
       <HorizontalNavButton
