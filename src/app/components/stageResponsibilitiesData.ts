@@ -47,7 +47,7 @@ export const STAGE_RESPONSIBILITIES: StageResponsibility[] = [
     icon: mobileLayoutIcon,
     owner: "XP Engineering",
     roles: [
-      { tag: "apoio", label: "Produto, Engenharia, Stakeholder e Utilizador" },
+      { tag: "apoio", label: "Produto, Desenvolvimento, Stakeholder e Utilizador" },
       { tag: "validacao", label: "Produto, Stakeholder e Utilizador" },
     ],
   },
