@@ -512,7 +512,7 @@ function VerticalTabLabel({
   label: string;
   metrics: Metrics;
 }) {
-  const { vy, vl } = metrics;
+  const { vy, vl, vs } = metrics;
 
   return (
     <div
