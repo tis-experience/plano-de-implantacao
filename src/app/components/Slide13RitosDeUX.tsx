@@ -899,6 +899,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
 
       {/* Footer (946 → sai da tela ao expandir) */}
       <motion.div
+        data-slide-nav-shield="slide-13-footer"
         animate={{
           opacity: isExpanded ? 0 : 1,
           top: vy(isExpanded ? FOOTER_TOP_EXP : FOOTER_TOP_REST),
@@ -913,6 +914,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           justifyContent: "space-between",
           pointerEvents: isExpanded ? "none" : "auto",
           zIndex: 15,
+          cursor: "none",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: vx(20) }}>
