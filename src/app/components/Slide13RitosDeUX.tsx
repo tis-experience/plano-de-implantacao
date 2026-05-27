@@ -825,6 +825,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
 
       {/* Faixa inferior: captura o ponteiro para bloquear hover nas linhas atrás */}
       <motion.div
+        data-slide-nav-shield="slide-13-legend"
         animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
         onPointerEnter={() => updateTooltip(null)}

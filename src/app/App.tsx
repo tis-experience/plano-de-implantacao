@@ -233,7 +233,13 @@ export default function App() {
     logoX.set(xRatio * LOGO_MOUSE_TILT_MULTIPLIER);
     logoY.set(yRatio * LOGO_MOUSE_TILT_MULTIPLIER);
 
-    const els = document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
+    const pointerOverShield = Boolean(
+      document.elementFromPoint(e.clientX, e.clientY)?.closest("[data-slide-nav-shield]"),
+    );
+
+    const els = pointerOverShield
+      ? ([] as NodeListOf<Element> | Element[])
+      : document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
     let near = false;
     let on = false;
     let nearCustomCursorTarget = false;
