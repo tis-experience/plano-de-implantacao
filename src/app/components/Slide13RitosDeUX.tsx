@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type WheelEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type WheelEvent } from "react";
 import { AnimatePresence, motion, useSpring, useTransform } from "motion/react";
 import { createSlideMetrics } from "../scaling";
 import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
@@ -12,7 +12,6 @@ import packageSvg from "../../assets/slide13/package.svg";
 interface Props {
   scaleX: number;
   scaleY: number;
-  onDragAreaHover?: (active: boolean) => void;
 }
 
 // ─── Paleta ───────────────────────────────────────────────────────────────────
@@ -660,12 +659,9 @@ function RitoRows({
   );
 }
 
-export function Slide13RitosDeUX({ scaleX, scaleY, onDragAreaHover }: Props) {
+export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
   const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
   const contentRef = useRef<HTMLDivElement>(null);
-  const legendDragStartXRef = useRef<number | null>(null);
-  const legendHasDraggedRef = useRef(false);
-  const [legendFocus, setLegendFocus] = useState(0);
 
   const rawScroll = useRef(0);
   const isExpandedRef = useRef(false);
@@ -684,10 +680,6 @@ export function Slide13RitosDeUX({ scaleX, scaleY, onDragAreaHover }: Props) {
     setActiveTooltip(next);
     setTooltipPlacement(placement);
     if (position) setTooltipPos(position);
-  };
-
-  const cycleLegendFocus = (delta: number) => {
-    setLegendFocus((current) => (current + delta + LEGEND_CARDS.length) % LEGEND_CARDS.length);
   };
 
   const springScroll = useSpring(0, { damping: 32, stiffness: 220, mass: 0.8 });
@@ -831,57 +823,10 @@ export function Slide13RitosDeUX({ scaleX, scaleY, onDragAreaHover }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Overlay de legenda — fixo no fundo, 314px → 180px (775:891 / 797:885) */}
+      {/* Overlay de legenda — só visual; não bloqueia cursor/clique de navegação do slide */}
       <motion.div
-        data-drag-cursor-area="slide-13-ritos-carousel"
         animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
-        onClick={(event) => event.stopPropagation()}
-        onPointerDown={(event) => {
-          legendDragStartXRef.current = event.clientX;
-          legendHasDraggedRef.current = false;
-          try {
-            (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
-          } catch {
-            /* ignore */
-          }
-        }}
-        onPointerMove={(event) => {
-          onDragAreaHover?.(true);
-          if (
-            legendDragStartXRef.current !== null &&
-            Math.abs(event.clientX - legendDragStartXRef.current) > 8
-          ) {
-            legendHasDraggedRef.current = true;
-          }
-        }}
-        onPointerUp={(event) => {
-          if (legendDragStartXRef.current === null) return;
-          const delta = event.clientX - legendDragStartXRef.current;
-          const threshold = 60;
-          if (delta < -threshold) cycleLegendFocus(1);
-          else if (delta > threshold) cycleLegendFocus(-1);
-          else if (!legendHasDraggedRef.current) {
-            const rect = event.currentTarget.getBoundingClientRect();
-            const clickIsLeftHalf = event.clientX - rect.left < rect.width / 2;
-            cycleLegendFocus(clickIsLeftHalf ? -1 : 1);
-          }
-          legendDragStartXRef.current = null;
-          try {
-            (event.currentTarget as HTMLElement).releasePointerCapture(event.pointerId);
-          } catch {
-            /* ignore */
-          }
-        }}
-        onPointerEnter={() => onDragAreaHover?.(true)}
-        onPointerLeave={() => {
-          legendDragStartXRef.current = null;
-          onDragAreaHover?.(false);
-        }}
-        onPointerCancel={() => {
-          legendDragStartXRef.current = null;
-          onDragAreaHover?.(false);
-        }}
         style={{
           position: "absolute",
           bottom: 0,
@@ -892,9 +837,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY, onDragAreaHover }: Props) {
           background: OVERLAY_GRADIENT,
           overflow: "hidden",
           zIndex: 10,
-          pointerEvents: "auto",
-          userSelect: "none",
-          touchAction: "none",
+          pointerEvents: "none",
         }}
       >
         <motion.div
@@ -910,22 +853,20 @@ export function Slide13RitosDeUX({ scaleX, scaleY, onDragAreaHover }: Props) {
             gap: vx(16),
           }}
         >
-          {LEGEND_CARDS.map((card, index) => (
+          {LEGEND_CARDS.map((card) => (
             <div
               key={card.title}
               style={{
                 flex: "1 0 0",
                 minWidth: 0,
                 backgroundColor: card.bg,
-                border: `${vs(index === legendFocus ? 2 : 1)}px solid ${card.border}`,
+                border: `${vs(1)}px solid ${card.border}`,
                 borderRadius: vs(20),
                 padding: vs(20),
                 display: "flex",
                 flexDirection: "column",
                 gap: vy(8),
                 overflow: "hidden",
-                opacity: index === legendFocus ? 1 : 0.72,
-                transition: "opacity 0.25s ease, border-width 0.2s ease",
               }}
             >
               <p

@@ -200,14 +200,12 @@ export default function App() {
   const PROXIMITY_BUFFER = 32; // px — custom cursor starts hiding before reaching element
 
   const isPointerOverDragCursorArea = (x: number, y: number) => {
-    if (currentSlide !== 2 && currentSlide !== 11 && currentSlide !== 12) return false;
+    if (currentSlide !== 2 && currentSlide !== 11) return false;
     const target = document.elementFromPoint(x, y);
     const selector =
       currentSlide === 2
         ? '[data-drag-cursor-area="slide-3-carousel"]'
-        : currentSlide === 11
-          ? '[data-drag-cursor-area="slide-12-map-carousel"]'
-          : '[data-drag-cursor-area="slide-13-ritos-carousel"]';
+        : '[data-drag-cursor-area="slide-12-map-carousel"]';
     return Boolean(target?.closest(selector));
   };
 
@@ -276,9 +274,8 @@ export default function App() {
     const clickIsLeftHalf = event.clientX < window.innerWidth / 2;
     setIsLeftHalf(clickIsLeftHalf);
 
-    if (isPointerOverDragCursorArea(event.clientX, event.clientY)) return;
-
     if (isDragAreaActive) {
+      if (isPointerOverDragCursorArea(event.clientX, event.clientY)) return;
       setIsDragAreaActive(false);
     }
 
@@ -590,7 +587,6 @@ export default function App() {
             key="slide-13"
             scaleX={scaleX}
             scaleY={scaleY}
-            onDragAreaHover={setIsDragAreaActive}
           />
         )}
 
