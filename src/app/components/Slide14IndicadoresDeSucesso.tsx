@@ -460,10 +460,10 @@ function VerticalTab({
   /** panel = aba ativa no miolo (radius 48, igual ao painel); right = aba lateral aberta (1018:1763) */
   edge?: "panel" | "right";
 }) {
-  const { vy, vl } = metrics;
+  const { vx, vy } = metrics;
   const isRightEdge = edge === "right";
   const panelR = vy(48);
-  const tabW = vl(isRightEdge ? SIDE_TAB_W : PANEL_TAB_W);
+  const tabW = vx(isRightEdge ? SIDE_TAB_W : PANEL_TAB_W);
 
   const cornerRadius: CSSProperties = isRightEdge
     ? {
@@ -484,7 +484,7 @@ function VerticalTab({
       onPointerDown={onClick ? stopPointerEvent : undefined}
       style={{
         border: 0,
-        padding: `${vy(16)}px ${vl(32)}px`,
+        padding: `${vy(16)}px ${vx(32)}px`,
         width: tabW,
         minWidth: tabW,
         height: vy(height),
@@ -512,12 +512,12 @@ function VerticalTabLabel({
   label: string;
   metrics: Metrics;
 }) {
-  const { vy, vl, vs } = metrics;
+  const { vx, vy, vs } = metrics;
 
   return (
     <div
       style={{
-        width: vl(36),
+        width: vx(36),
         height: vy(label === "Métricas operacionais" ? 321 : 219),
         display: "flex",
         alignItems: "center",
@@ -551,13 +551,13 @@ function OverviewTabsStrip({
   onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vy, vl } = metrics;
+  const { vx, vy } = metrics;
   const tabButtonStyle = (bg: string, radius: CSSProperties): CSSProperties => ({
     border: 0,
     margin: 0,
-    padding: `${vy(16)}px ${vl(32)}px`,
-    width: vl(OVERVIEW_TAB_W),
-    minWidth: vl(OVERVIEW_TAB_W),
+    padding: `${vy(16)}px ${vx(32)}px`,
+    width: vx(OVERVIEW_TAB_W),
+    minWidth: vx(OVERVIEW_TAB_W),
     height: vy(PANEL_ROW_H),
     backgroundColor: bg,
     cursor: "pointer",
@@ -579,8 +579,8 @@ function OverviewTabsStrip({
         display: "flex",
         flexDirection: "row",
         alignItems: "stretch",
-        width: vl(OVERVIEW_TABS_W),
-        minWidth: vl(OVERVIEW_TABS_W),
+        width: vx(OVERVIEW_TABS_W),
+        minWidth: vx(OVERVIEW_TABS_W),
         height: vy(PANEL_ROW_H),
         backgroundColor: NAVY,
         borderTopLeftRadius: sideR,
@@ -623,7 +623,7 @@ function PanelMainChrome({
   view: Exclude<PanelView, "overview">;
   swapDirection: number;
 }) {
-  const { vx, vy, vl } = metrics;
+  const { vx, vy } = metrics;
   const panelR = vy(48);
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
@@ -633,8 +633,8 @@ function PanelMainChrome({
       style={{
         display: "flex",
         alignItems: "stretch",
-        width: vl(PANEL_MAIN_W),
-        minWidth: vl(PANEL_MAIN_W),
+        width: vx(PANEL_MAIN_W),
+        minWidth: vx(PANEL_MAIN_W),
         height: "100%",
         flexShrink: 0,
         backgroundColor: NAVY,
@@ -713,21 +713,21 @@ function OverviewMetricsSidebar({
   onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vy, vl } = metrics;
+  const { vx, vy, vs } = metrics;
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: vl(48) }}
+      initial={{ opacity: 0, x: vx(48) }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: vl(48) }}
+      exit={{ opacity: 0, x: vx(48) }}
       transition={PANEL_TRANSITION}
       style={{
         position: "absolute",
         right: 0,
         top: vy(PANEL_SHELL_TOP),
-        width: vl(OVERVIEW_SIDEBAR_W),
-        minWidth: vl(OVERVIEW_SIDEBAR_W),
-        maxWidth: vl(OVERVIEW_SIDEBAR_W),
+        width: vx(OVERVIEW_SIDEBAR_W),
+        minWidth: vx(OVERVIEW_SIDEBAR_W),
+        maxWidth: vx(OVERVIEW_SIDEBAR_W),
         height: vy(OVERVIEW_SIDEBAR_H),
         display: "flex",
         flexDirection: "row",
@@ -742,8 +742,8 @@ function OverviewMetricsSidebar({
       <div
         style={{
           flexShrink: 0,
-          width: vl(40),
-          height: vl(40),
+          width: vs(40),
+          height: vs(40),
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -753,11 +753,11 @@ function OverviewMetricsSidebar({
         <InteractiveCircleButton
           ariaLabel="Abrir métricas operacionais"
           onClick={onOpenOperacional}
-          size={vl(40)}
+          size={vs(40)}
           background={BLUE}
           growOnHover
         >
-          <svg width={vl(24)} height={vl(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+          <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
             <path d={navSvgPaths.p90d8b80} fill="#fff" />
           </svg>
         </InteractiveCircleButton>
@@ -787,10 +787,10 @@ function OpenPanelShell({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy, vl } = metrics;
+  const { vx, vy, vs } = metrics;
   const isOperacional = view === "operacional";
-  const closeSize = vl(PANEL_CLOSE_SIZE);
-  const iconSize = vl(40);
+  const closeSize = vs(PANEL_CLOSE_SIZE);
+  const iconSize = vs(40);
   const openFromX = vx(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
 
   return (
