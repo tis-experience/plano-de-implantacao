@@ -609,8 +609,6 @@ function PanelMainChrome({
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
 
-  const rightEdgeSeal = Math.max(1, vy(1));
-
   return (
     <div
       style={{
@@ -644,7 +642,7 @@ function PanelMainChrome({
           position: "relative",
           zIndex: 1,
           isolation: "isolate",
-          boxShadow: `inset -${rightEdgeSeal}px 0 0 0 ${PANEL_BG}, 0 0 0 1px ${PANEL_BG}`,
+          boxShadow: `0 0 0 1px ${PANEL_BG}`,
         }}
       >
         <AnimatePresence mode="wait" initial={false} custom={swapDirection}>
