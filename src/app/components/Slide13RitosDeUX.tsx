@@ -803,7 +803,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         <motion.div
           animate={{ height: vy(isExpanded ? CLIP_H_EXP : CLIP_H_REST) }}
           transition={ANIM}
-          style={{ position: "relative", overflow: "visible" }}
+          style={{ position: "relative", overflow: isExpanded ? "hidden" : "visible" }}
         >
           <TableColumnHeader vx={vx} vy={vy} vs={vs} sticky={isExpanded} />
           <motion.div ref={contentRef} style={{ y: translateY }}>
@@ -823,10 +823,12 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Overlay de legenda — só visual; não bloqueia cursor/clique de navegação do slide */}
+      {/* Faixa inferior: bloqueia hover das linhas (tooltips) e deixa passar cursor/clique de slide */}
       <motion.div
+        data-slide-nav-shield="slide-13-legend"
         animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
         transition={ANIM}
+        onPointerEnter={() => updateTooltip(null)}
         style={{
           position: "absolute",
           bottom: 0,
@@ -836,8 +838,9 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           WebkitBackdropFilter: "blur(50px)",
           background: OVERLAY_GRADIENT,
           overflow: "hidden",
-          zIndex: 10,
-          pointerEvents: "none",
+          zIndex: 30,
+          pointerEvents: "auto",
+          cursor: "none",
         }}
       >
         <motion.div

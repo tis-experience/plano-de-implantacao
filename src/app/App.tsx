@@ -233,11 +233,16 @@ export default function App() {
     logoX.set(xRatio * LOGO_MOUSE_TILT_MULTIPLIER);
     logoY.set(yRatio * LOGO_MOUSE_TILT_MULTIPLIER);
 
+    const overSlideNavShield = Boolean(
+      document.elementFromPoint(e.clientX, e.clientY)?.closest("[data-slide-nav-shield]"),
+    );
+
     const els = document.querySelectorAll('button, a, input, select, textarea, [role="button"]');
     let near = false;
     let on = false;
     let nearCustomCursorTarget = false;
     for (const el of els) {
+      if (overSlideNavShield) continue;
       const r = el.getBoundingClientRect();
       const isNearElement =
         e.clientX >= r.left - PROXIMITY_BUFFER &&
