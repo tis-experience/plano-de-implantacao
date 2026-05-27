@@ -802,7 +802,7 @@ function OpenPanelShell({
       style={{
         position: "absolute",
         left: vx(PANEL_CLOSE_LEFT),
-        right: vx(24),
+        right: 0,
         top: vy(PANEL_SHELL_TOP),
         display: "flex",
         flexDirection: "column",
