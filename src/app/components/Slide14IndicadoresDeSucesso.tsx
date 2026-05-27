@@ -570,20 +570,19 @@ function OverviewTabsStrip({
     ...radius,
   });
 
+  const sideR = vy(48);
+  const innerR = vy(16);
+
   return (
     <div
       style={{
         display: "flex",
         flexDirection: "row",
-        alignItems: "stretch",
-        width: vl(OVERVIEW_TABS_W),
-        minWidth: vl(OVERVIEW_TABS_W),
-        height: vy(PANEL_ROW_H),
-        backgroundColor: NAVY,
-        borderTopLeftRadius: vy(48),
-        borderBottomLeftRadius: vy(48),
+        alignItems: "center",
         flexShrink: 0,
-        overflow: "hidden",
+        backgroundColor: NAVY,
+        borderTopLeftRadius: sideR,
+        borderBottomLeftRadius: sideR,
       }}
     >
       <button
@@ -591,7 +590,11 @@ function OverviewTabsStrip({
         aria-label="Métricas operacionais"
         onClick={onOpenOperacional}
         onPointerDown={stopPointerEvent}
-        style={tabButtonStyle(NAVY, { borderRadius: vy(16) })}
+        style={{
+          ...tabButtonStyle(NAVY, { borderRadius: innerR }),
+          position: "relative",
+          zIndex: 0,
+        }}
       >
         <VerticalTabLabel label="Métricas operacionais" metrics={metrics} />
       </button>
@@ -600,10 +603,14 @@ function OverviewTabsStrip({
         aria-label="Métricas de UX"
         onClick={onOpenUx}
         onPointerDown={stopPointerEvent}
-        style={tabButtonStyle(BLUE, {
-          borderTopLeftRadius: vy(48),
-          borderBottomLeftRadius: vy(48),
-        })}
+        style={{
+          ...tabButtonStyle(BLUE, {
+            borderTopLeftRadius: sideR,
+            borderBottomLeftRadius: sideR,
+          }),
+          position: "relative",
+          zIndex: 1,
+        }}
       >
         <VerticalTabLabel label="Métricas de UX" metrics={metrics} />
       </button>
@@ -724,28 +731,41 @@ function OverviewMetricsSidebar({
         top: vy(PANEL_SHELL_TOP),
         width: vl(OVERVIEW_SIDEBAR_W),
         minWidth: vl(OVERVIEW_SIDEBAR_W),
+        maxWidth: vl(OVERVIEW_SIDEBAR_W),
         height: vy(OVERVIEW_SIDEBAR_H),
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: vl(OVERVIEW_ARROW_GAP),
+        flexShrink: 0,
         zIndex: 5,
         pointerEvents: "auto",
         overflow: "visible",
       }}
     >
-      <InteractiveCircleButton
-        ariaLabel="Abrir métricas operacionais"
-        onClick={onOpenOperacional}
-        size={vl(40)}
-        background={BLUE}
-        growOnHover
+      <div
+        style={{
+          flexShrink: 0,
+          width: vl(40),
+          height: vl(40),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "visible",
+        }}
       >
-        <svg width={vl(24)} height={vl(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
-          <path d={navSvgPaths.p90d8b80} fill="#fff" />
-        </svg>
-      </InteractiveCircleButton>
+        <InteractiveCircleButton
+          ariaLabel="Abrir métricas operacionais"
+          onClick={onOpenOperacional}
+          size={vl(40)}
+          background={BLUE}
+          growOnHover
+        >
+          <svg width={vl(24)} height={vl(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+            <path d={navSvgPaths.p90d8b80} fill="#fff" />
+          </svg>
+        </InteractiveCircleButton>
+      </div>
       <OverviewTabsStrip metrics={metrics} onOpenOperacional={onOpenOperacional} onOpenUx={onOpenUx} />
     </motion.div>
   );
