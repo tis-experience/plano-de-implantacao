@@ -34,7 +34,19 @@ type Metrics = {
   vx: (n: number) => number;
   vy: (n: number) => number;
   vs: (n: number) => number;
+  /** min(scaleX, scaleY) — larguras de abas/chrome sem esticar em ultrawide */
+  vl: (n: number) => number;
 };
+
+function createSlide14Metrics(scaleX: number, scaleY: number): Metrics {
+  const base = createSlideMetrics(scaleX, scaleY);
+  return {
+    vx: base.vx,
+    vy: base.vy,
+    vs: base.vs,
+    vl: (n: number) => base.s * n,
+  };
+}
 
 const BLUE = "#036ef2";
 const NAVY = "#04165d";
@@ -65,6 +77,7 @@ const PANEL_CLOSE_LEFT = 32;
 const PANEL_CLOSE_SIZE = 64;
 const PANEL_MAIN_W = 1676;
 const SIDE_TAB_W = 100;
+const PANEL_TAB_W = 100;
 /** Figma 1018:1432 — coluna do painel: bloco 458px + gap 24 + setas; setas com pl=240 no slide */
 const PANEL_SHELL_TOP = 357;
 const PANEL_NAV_PL = 240;
@@ -447,9 +460,10 @@ function VerticalTab({
   /** panel = aba ativa no miolo (radius 48, igual ao painel); right = aba lateral aberta (1018:1763) */
   edge?: "panel" | "right";
 }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vl } = metrics;
   const isRightEdge = edge === "right";
   const panelR = vy(48);
+  const tabW = vl(isRightEdge ? SIDE_TAB_W : PANEL_TAB_W);
 
   const cornerRadius: CSSProperties = isRightEdge
     ? {
@@ -470,8 +484,9 @@ function VerticalTab({
       onPointerDown={onClick ? stopPointerEvent : undefined}
       style={{
         border: 0,
-        padding: `${vy(16)}px ${vx(32)}px`,
-        width: isRightEdge ? vx(SIDE_TAB_W) : undefined,
+        padding: `${vy(16)}px ${vl(32)}px`,
+        width: tabW,
+        minWidth: tabW,
         height: vy(height),
         backgroundColor: accent ? BLUE : NAVY,
         ...cornerRadius,
@@ -497,12 +512,12 @@ function VerticalTabLabel({
   label: string;
   metrics: Metrics;
 }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vl } = metrics;
 
   return (
     <div
       style={{
-        width: vx(36),
+        width: vl(36),
         height: vy(label === "Métricas operacionais" ? 321 : 219),
         display: "flex",
         alignItems: "center",
@@ -536,12 +551,13 @@ function OverviewTabsStrip({
   onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy } = metrics;
+  const { vy, vl } = metrics;
   const tabButtonStyle = (bg: string, radius: CSSProperties): CSSProperties => ({
     border: 0,
     margin: 0,
-    padding: `${vy(16)}px ${vx(32)}px`,
-    width: vx(OVERVIEW_TAB_W),
+    padding: `${vy(16)}px ${vl(32)}px`,
+    width: vl(OVERVIEW_TAB_W),
+    minWidth: vl(OVERVIEW_TAB_W),
     height: vy(PANEL_ROW_H),
     backgroundColor: bg,
     cursor: "pointer",
@@ -560,7 +576,8 @@ function OverviewTabsStrip({
         display: "flex",
         flexDirection: "row",
         alignItems: "stretch",
-        width: vx(OVERVIEW_TABS_W),
+        width: vl(OVERVIEW_TABS_W),
+        minWidth: vl(OVERVIEW_TABS_W),
         height: vy(PANEL_ROW_H),
         backgroundColor: NAVY,
         borderTopLeftRadius: vy(48),
@@ -603,7 +620,7 @@ function PanelMainChrome({
   view: Exclude<PanelView, "overview">;
   swapDirection: number;
 }) {
-  const { vx, vy } = metrics;
+  const { vx, vy, vl } = metrics;
   const panelR = vy(48);
   const isOperacional = view === "operacional";
   const swapTravel = vx(PANEL_CONTENT_SWAP_X);
@@ -613,7 +630,8 @@ function PanelMainChrome({
       style={{
         display: "flex",
         alignItems: "stretch",
-        width: vx(PANEL_MAIN_W),
+        width: vl(PANEL_MAIN_W),
+        minWidth: vl(PANEL_MAIN_W),
         height: "100%",
         flexShrink: 0,
         backgroundColor: NAVY,
@@ -692,25 +710,26 @@ function OverviewMetricsSidebar({
   onOpenOperacional: (event: MouseEvent<HTMLButtonElement>) => void;
   onOpenUx: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vl } = metrics;
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: vx(48) }}
+      initial={{ opacity: 0, x: vl(48) }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: vx(48) }}
+      exit={{ opacity: 0, x: vl(48) }}
       transition={PANEL_TRANSITION}
       style={{
         position: "absolute",
-        left: vx(OVERVIEW_SIDEBAR_LEFT),
+        right: 0,
         top: vy(PANEL_SHELL_TOP),
-        width: vx(OVERVIEW_SIDEBAR_W),
+        width: vl(OVERVIEW_SIDEBAR_W),
+        minWidth: vl(OVERVIEW_SIDEBAR_W),
         height: vy(OVERVIEW_SIDEBAR_H),
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: vx(OVERVIEW_ARROW_GAP),
+        gap: vl(OVERVIEW_ARROW_GAP),
         zIndex: 5,
         pointerEvents: "auto",
         overflow: "visible",
@@ -719,11 +738,11 @@ function OverviewMetricsSidebar({
       <InteractiveCircleButton
         ariaLabel="Abrir métricas operacionais"
         onClick={onOpenOperacional}
-        size={vs(40)}
+        size={vl(40)}
         background={BLUE}
         growOnHover
       >
-        <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
+        <svg width={vl(24)} height={vl(24)} viewBox="0 0 24 24" fill="none" aria-hidden style={{ display: "block" }}>
           <path d={navSvgPaths.p90d8b80} fill="#fff" />
         </svg>
       </InteractiveCircleButton>
@@ -752,11 +771,11 @@ function OpenPanelShell({
   onPrev: (event: MouseEvent<HTMLButtonElement>) => void;
   onNext: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const { vx, vy, vs } = metrics;
+  const { vy, vl } = metrics;
   const isOperacional = view === "operacional";
-  const closeSize = vs(PANEL_CLOSE_SIZE);
-  const iconSize = vs(40);
-  const openFromX = vx(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
+  const closeSize = vl(PANEL_CLOSE_SIZE);
+  const iconSize = vl(40);
+  const openFromX = vl(OVERVIEW_SIDEBAR_LEFT - PANEL_CLOSE_LEFT);
 
   return (
     <motion.div
@@ -766,10 +785,11 @@ function OpenPanelShell({
       transition={PANEL_TRANSITION}
       style={{
         position: "absolute",
-        left: vx(PANEL_CLOSE_LEFT),
+        right: 0,
         top: vy(PANEL_SHELL_TOP),
         display: "flex",
         flexDirection: "column",
+        alignItems: "flex-end",
         gap: vy(PANEL_ROW_GAP),
         zIndex: 6,
         pointerEvents: "auto",
@@ -785,9 +805,10 @@ function OpenPanelShell({
           display: "flex",
           flexDirection: "row",
           alignItems: "stretch",
-          gap: vx(PANEL_ROW_GAP),
+          gap: vl(PANEL_ROW_GAP),
           height: vy(PANEL_ROW_H),
           overflow: "visible",
+          flexShrink: 0,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", flexShrink: 0, overflow: "visible" }}>
@@ -827,7 +848,7 @@ function OpenPanelShell({
         )}
       </motion.div>
 
-      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} insetLeft={vx(PANEL_NAV_INSET_FROM_SHELL)} />
+      <PanelNavigation metrics={metrics} onPrev={onPrev} onNext={onNext} insetLeft={vl(PANEL_NAV_INSET_FROM_SHELL)} />
     </motion.div>
   );
 }
@@ -1061,7 +1082,7 @@ function OverviewContent({ metrics }: { metrics: Metrics }) {
 }
 
 export function Slide14IndicadoresDeSucesso({ scaleX, scaleY, onPanelViewChange }: Props) {
-  const metrics = createSlideMetrics(scaleX, scaleY);
+  const metrics = createSlide14Metrics(scaleX, scaleY);
   const [view, setView] = useState<PanelView>("overview");
   /** 1 = próximo painel vem da direita; -1 = da esquerda */
   const [panelSwapDirection, setPanelSwapDirection] = useState(1);
