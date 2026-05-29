@@ -1,8 +1,9 @@
-import { useRef, useState, type CSSProperties, type WheelEventHandler } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type MouseEvent, type WheelEventHandler } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import { createSlideMetrics } from "../scaling";
+import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
 import { resolveVerticalPage } from "../constants/verticalPageNav";
 import { VerticalPageNav } from "./VerticalPageNav";
 import {
@@ -11,6 +12,8 @@ import {
   ROADMAP_PHASES,
   ROADMAP_ROWS,
   ROADMAP_TASK_COLORS,
+  ROADMAP_TASK_TOOLTIPS,
+  ROADMAP_TOOLTIP_WIDTH,
   type RoadmapTask,
   type RoadmapTaskColor,
 } from "./slide15RoadmapData";
@@ -31,6 +34,120 @@ const ease = "easeOut" as const;
 const fade = (delay: number) => ({ duration: 0.55, delay, ease });
 
 type Metrics = ReturnType<typeof createSlideMetrics>;
+
+type ActiveRoadmapTooltip = {
+  title: string;
+  body: string;
+  color: RoadmapTaskColor;
+};
+
+function RoadmapTooltipPopover({
+  tooltip,
+  x,
+  y,
+  vs,
+}: {
+  tooltip: ActiveRoadmapTooltip | null;
+  x: number;
+  y: number;
+  vs: (n: number) => number;
+}) {
+  const width = vs(ROADMAP_TOOLTIP_WIDTH);
+  const estimatedHeight = vs(280);
+  const margin = vs(16);
+  const offset = vs(18);
+  const preferredLeft = x + offset;
+  const fallbackLeft = x - width - offset;
+  const left =
+    preferredLeft + width + margin <= window.innerWidth
+      ? preferredLeft
+      : Math.max(margin, fallbackLeft);
+  const top = Math.min(
+    window.innerHeight - estimatedHeight - margin,
+    Math.max(margin, y - estimatedHeight / 2),
+  );
+
+  return (
+    <AnimatePresence>
+      {tooltip ? (
+        <motion.div
+          key={tooltip.title}
+          initial={{ opacity: 0, scale: 0.96, y: vs(6) }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: vs(4) }}
+          transition={{ duration: 0.16, ease: "easeOut" }}
+          style={{
+            position: "fixed",
+            left,
+            top,
+            width,
+            zIndex: 5000,
+            pointerEvents: "none",
+            borderRadius: vs(28),
+            padding: vs(24),
+            boxSizing: "border-box",
+            background: "rgba(0,0,0,0.9)",
+            boxShadow: INTERACTIVE_HOVER_BOX_SHADOW,
+            backdropFilter: "blur(4px)",
+            WebkitBackdropFilter: "blur(4px)",
+            display: "flex",
+            flexDirection: "column",
+            gap: vs(16),
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: vs(8),
+              alignItems: "flex-start",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                width: vs(12),
+                height: vs(12),
+                borderRadius: "50%",
+                backgroundColor: ROADMAP_TASK_COLORS[tooltip.color],
+                border: `${vs(1)}px solid rgba(255,255,255,0.2)`,
+                flexShrink: 0,
+                marginTop: vs(5),
+              }}
+            />
+            <p
+              style={{
+                margin: 0,
+                flex: 1,
+                minWidth: 0,
+                fontFamily: "'Bronkoh-Heavy', sans-serif",
+                fontWeight: 900,
+                fontSize: vs(20),
+                lineHeight: `${vs(22)}px`,
+                color: "#fff",
+                wordBreak: "break-word",
+              }}
+            >
+              {tooltip.title}
+            </p>
+          </div>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 400,
+              fontSize: vs(16),
+              lineHeight: 1.4,
+              color: "#fff",
+              wordBreak: "break-word",
+            }}
+          >
+            {tooltip.body}
+          </p>
+        </motion.div>
+      ) : null}
+    </AnimatePresence>
+  );
+}
 
 const ROADMAP_LEGEND: { rowLabel: string; color: RoadmapTaskColor; description: string }[] = [
   {
@@ -196,12 +313,46 @@ function RowLabel({ label, gridRow, metrics }: { label: string; gridRow: number;
   );
 }
 
-function TaskCell({ task, gridRow, metrics }: { task: RoadmapTask; gridRow: number; metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
+function TaskCell({
+  task,
+  gridRow,
+  metrics,
+  onTooltipChange,
+}: {
+  task: RoadmapTask;
+  gridRow: number;
+  metrics: Metrics;
+  onTooltipChange: (tooltip: ActiveRoadmapTooltip | null, position?: { x: number; y: number }) => void;
+}) {
+  const { vy, vs } = metrics;
   const padding = task.padding ?? 20;
+  const tooltipData = ROADMAP_TASK_TOOLTIPS[task.label];
+
+  const showTooltip = (event: MouseEvent<HTMLElement>) => {
+    if (!tooltipData) return;
+    onTooltipChange(
+      { title: tooltipData.title, body: tooltipData.body, color: task.color },
+      { x: event.clientX, y: event.clientY },
+    );
+  };
 
   return (
     <div
+      role={tooltipData ? "button" : undefined}
+      tabIndex={tooltipData ? 0 : undefined}
+      aria-label={tooltipData ? `Ver detalhes de ${task.label}` : task.label}
+      onMouseEnter={showTooltip}
+      onMouseMove={showTooltip}
+      onMouseLeave={() => onTooltipChange(null)}
+      onFocus={(event) => {
+        if (!tooltipData) return;
+        const rect = event.currentTarget.getBoundingClientRect();
+        onTooltipChange(
+          { title: tooltipData.title, body: tooltipData.body, color: task.color },
+          { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 },
+        );
+      }}
+      onBlur={() => onTooltipChange(null)}
       style={{
         gridColumn: `${task.colStart} / span ${task.colSpan}`,
         gridRow,
@@ -213,6 +364,7 @@ function TaskCell({ task, gridRow, metrics }: { task: RoadmapTask; gridRow: numb
         padding: vs(padding),
         minHeight: vy(62),
         boxSizing: "border-box",
+        cursor: tooltipData ? "none" : "default",
       }}
     >
       <p
@@ -234,7 +386,13 @@ function TaskCell({ task, gridRow, metrics }: { task: RoadmapTask; gridRow: numb
   );
 }
 
-function RoadmapGrid({ metrics }: { metrics: Metrics }) {
+function RoadmapGrid({
+  metrics,
+  onTooltipChange,
+}: {
+  metrics: Metrics;
+  onTooltipChange: (tooltip: ActiveRoadmapTooltip | null, position?: { x: number; y: number }) => void;
+}) {
   const { vx, vy, vs } = metrics;
   const labelCol = vx(201);
   const monthCol = vx(201);
@@ -267,7 +425,13 @@ function RoadmapGrid({ metrics }: { metrics: Metrics }) {
           <div key={row.label} style={{ display: "contents" }}>
             <RowLabel label={row.label} gridRow={gridRow} metrics={metrics} />
             {row.tasks.map((task) => (
-              <TaskCell key={task.label} task={task} gridRow={gridRow} metrics={metrics} />
+              <TaskCell
+                key={task.label}
+                task={task}
+                gridRow={gridRow}
+                metrics={metrics}
+                onTooltipChange={onTooltipChange}
+              />
             ))}
           </div>
         );
@@ -368,6 +532,17 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   const lastWheelRef = useRef(0);
   const [page, setPageState] = useState(0);
   const [pageDirection, setPageDirection] = useState(0);
+  const [activeTooltip, setActiveTooltip] = useState<ActiveRoadmapTooltip | null>(null);
+  const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
+
+  const updateTooltip = (next: ActiveRoadmapTooltip | null, position?: { x: number; y: number }) => {
+    setActiveTooltip(next);
+    if (position) setTooltipPos(position);
+  };
+
+  useEffect(() => {
+    if (page !== 0) setActiveTooltip(null);
+  }, [page]);
 
   const setPage = (next: number) => {
     const { target, direction } = resolveVerticalPage(next, page, ROADMAP_PAGE_COUNT);
@@ -446,7 +621,11 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
             top: vy(397),
           }}
         >
-          {page === 0 ? <RoadmapGrid metrics={metrics} /> : <RoadmapLegendPage metrics={metrics} />}
+          {page === 0 ? (
+            <RoadmapGrid metrics={metrics} onTooltipChange={updateTooltip} />
+          ) : (
+            <RoadmapLegendPage metrics={metrics} />
+          )}
         </motion.div>
       </AnimatePresence>
 
@@ -491,6 +670,10 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
         metrics={metrics}
         slideLabel="roadmap de implantação"
       />
+
+      {page === 0 ? (
+        <RoadmapTooltipPopover tooltip={activeTooltip} x={tooltipPos.x} y={tooltipPos.y} vs={vs} />
+      ) : null}
     </motion.div>
   );
 }
