@@ -8,6 +8,9 @@ import {
 } from "../constants/interactiveShadow";
 import { cycleVerticalPage, resolveVerticalPage } from "../constants/verticalPageNav";
 import { createSlideMetrics } from "../scaling";
+import governanceCheckBlue from "../../assets/slide08/governance-check-blue.svg";
+import governanceCheckGreen from "../../assets/slide08/governance-check-green.svg";
+import governanceCheckPurple from "../../assets/slide08/governance-check-purple.svg";
 
 interface Slide08DesignSystemProps {
   scaleX: number;
@@ -306,12 +309,18 @@ const governanceStages = [
   },
 ];
 
+const GOVERNANCE_CHECK_ICONS = {
+  blue: governanceCheckBlue,
+  purple: governanceCheckPurple,
+  green: governanceCheckGreen,
+} as const;
+
 const governanceChecks = [
-  { label: "Necessidade comprovada", color: BLUE, width: 260 },
-  { label: "Sem duplicação funcional", color: "#6546be", width: 260 },
-  { label: "Componente criado com tokens, estados e acessibilidade", color: "#27975b", width: 540 },
-  { label: "Documentação publicada", color: BLUE, width: 260 },
-  { label: "Adopção por projecto", color: "#27975b", width: 260 },
+  { label: "Necessidade comprovada", icon: "blue" as const, width: 260 },
+  { label: "Sem duplicação funcional", icon: "purple" as const, width: 260 },
+  { label: "Componente criado com tokens, estados e acessibilidade", icon: "green" as const, width: 540 },
+  { label: "Documentação publicada", icon: "blue" as const, width: 260 },
+  { label: "Adopção por projecto", icon: "green" as const, width: 260 },
 ];
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {
@@ -1230,9 +1239,28 @@ function GovernanceCheck({ item, metrics }: { item: (typeof governanceChecks)[nu
       }}
     >
       <div style={{ display: "flex", gap: vx(8), alignItems: "center", width: "100%" }}>
-        <svg width={vs(20)} height={vs(20)} viewBox="0 0 20 20" fill="none" style={{ display: "block", flexShrink: 0 }}>
-          <path d="M5.5 10.3L8.35 13.1L14.5 6.9" stroke={item.color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <div
+          style={{
+            display: "flex",
+            height: vy(20),
+            alignItems: "center",
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src={GOVERNANCE_CHECK_ICONS[item.icon]}
+            alt=""
+            aria-hidden
+            width={vs(20)}
+            height={vs(20)}
+            style={{
+              display: "block",
+              width: vs(20),
+              height: vs(20),
+              flexShrink: 0,
+            }}
+          />
+        </div>
         <p
           style={{
             flex: "1 0 0",
