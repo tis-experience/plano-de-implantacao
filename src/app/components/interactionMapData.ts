@@ -71,3 +71,23 @@ export const INTERACTION_MAP_PANELS: InteractionAreaCard[][] = [
 ];
 
 export const INTERACTION_MAP_PANEL_COUNT = INTERACTION_MAP_PANELS.length;
+
+/** Página em 3 colunas (Figma 1101:653) — duas áreas ocupadas, terceira vazia. */
+export const INTERACTION_MAP_COLUMN_AREAS: InteractionAreaCard[] = [
+  {
+    title: "Digital Office",
+    intro: "Define a estratégia de transição para o ambiente de trabalho digital.",
+    xpRole: "garante a adoção dessas tecnologias através de um design centrado no comportamento humano.",
+    receives: "Requisitos de negócio, escopo de projetos de digitalização e regras de compliance.",
+    delivers:
+      "Visão de produto (Product Discovery), fluxos de navegação validados e protótipos de média/alta fidelidade.",
+  },
+  {
+    title: "Analytics e AI",
+    intro:
+      "Desenvolve inteligência preditiva, modelos de Inteligência Artificial (IA) e análises de dados para o negócio.",
+    xpRole: "transforma os dados em melhorias práticas na experiência do produto.",
+    receives: "Modelos de inteligência artificial aplicados e insights baseados em dados de negócio.",
+    delivers: "Experiências digitais inteligentes e interações personalizadas para o utilizador.",
+  },
+];

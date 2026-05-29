@@ -27,4 +27,4 @@ export const AREA_INTERACTIONS: AreaInteractionItem[] = [
   },
 ];
 
-export const AREA_INTERACTIONS_PAGE_COUNT = 3;
+export const AREA_INTERACTIONS_PAGE_COUNT = 4;
