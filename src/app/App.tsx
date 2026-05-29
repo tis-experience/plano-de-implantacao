@@ -18,7 +18,7 @@ import { Slide12AreaInteractions } from "./components/Slide12AreaInteractions";
 import { Slide13RitosDeUX } from "./components/Slide13RitosDeUX";
 import { Slide14IndicadoresDeSucesso } from "./components/Slide14IndicadoresDeSucesso";
 import { ClosingSlide } from "./components/ClosingSlide";
-import { StandardPlanSlide, type StandardPlanSlideData } from "./components/StandardPlanSlide";
+import { Slide15RoadmapImplantacao } from "./components/Slide15RoadmapImplantacao";
 import { createSlideMetrics } from "./scaling";
 
 const TOTAL_SLIDES = 16;
@@ -32,10 +32,6 @@ const LOGO_IDLE_X_RANGE = 0.42;
 const LOGO_IDLE_Y_RANGE = 0.36;
 const LOGO_MOUSE_TILT_MULTIPLIER = 1.32;
 const LOGO_MOUSE_IDLE_DELAY_MS = 560;
-const STANDARD_PLAN_SLIDES: StandardPlanSlideData[] = [
-  { number: "15", eyebrow: "AAAA", title: "Roadmap de implantação", body: "AAA", background: "#f4f5f7" },
-];
-
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [scaleX, setScaleX] = useState(1);
@@ -608,11 +604,10 @@ export default function App() {
 
         {/* ─────────────── SLIDE 15 ─────────────── */}
         {currentSlide === 14 && (
-          <StandardPlanSlide
+          <Slide15RoadmapImplantacao
             key="slide-15"
             scaleX={scaleX}
             scaleY={scaleY}
-            {...STANDARD_PLAN_SLIDES[0]}
           />
         )}
 
