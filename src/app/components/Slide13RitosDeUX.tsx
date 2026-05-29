@@ -557,7 +557,7 @@ function RitoRows({
             alignItems: "center",
             backgroundColor: ROW_BG[rito.tagColor],
             border: `${vs(1)}px solid ${ROW_BORDER[rito.tagColor]}`,
-            borderRadius: vs(999),
+            borderRadius: vs(28),
             paddingLeft: vx(16),
             paddingRight: vx(16),
             paddingTop: vy(16),
