@@ -49,7 +49,7 @@ export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
     body: "Design System disponível para uso por designers e desenvolvedores. Estrutura de tokens, componentes base e brand principles personalizável.",
   },
   "DS aplicado em projecto piloto": {
-    title: "DS aplicado em projectos piloto",
+    title: "DS aplicado em projecto piloto",
     body: "Aplicação do design system em projecto piloto para validação prática do sistema criado. Validar uso com Designers, Desenvolvedores e Agentes de IA.",
   },
   "Design System V1.5": {
