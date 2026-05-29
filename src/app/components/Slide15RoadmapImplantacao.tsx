@@ -364,7 +364,7 @@ function TaskCell({
         padding: vs(padding),
         minHeight: vy(62),
         boxSizing: "border-box",
-        cursor: tooltipData ? "none" : "default",
+        cursor: tooltipData ? "pointer" : "default",
       }}
     >
       <p
