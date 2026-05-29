@@ -159,37 +159,23 @@ export function Slide05({ scaleX, scaleY }: Props) {
             transition={fade(0.18 + i * 0.08)}
             style={{
               width: cardW,
-              backgroundColor: "#f5f5f5",
-              borderRadius: vs(16),
-              paddingLeft: vx(32),
-              paddingRight: vx(24),
-              paddingTop: vy(24),
-              paddingBottom: vy(24),
+              boxSizing: "border-box",
+              backgroundColor: "#fff",
+              border: `${vs(2)}px solid #036ef2`,
+              borderRadius: vs(32),
+              padding: `${vy(24)}px ${vx(32)}px`,
               display: "flex",
               flexDirection: "column",
-              gap: vy(24),
-              position: "relative",
+              gap: vy(20),
             }}
           >
-            {/* Blue left border */}
-            <div
-              aria-hidden="true"
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: vs(16),
-                boxShadow: `inset ${vs(4)}px 0 0 0 #036ef2`,
-                pointerEvents: "none",
-              }}
-            />
-
-            {/* Card header */}
+            {/* Card header — Figma 52:797 */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: vx(12),
-                lineHeight: vs(40),
+                width: "100%",
               }}
               className="font-['Bronkoh-Heavy',sans-serif] not-italic"
             >
@@ -217,15 +203,29 @@ export function Slide05({ scaleX, scaleY }: Props) {
                 </svg>
               </div>
               <p
-                style={{ fontSize: vs(24), lineHeight: vs(16) / vs(24) }}
-                className="text-[#04165d]"
+                style={{
+                  margin: 0,
+                  flex: "1 0 0",
+                  minWidth: 0,
+                  fontSize: vs(24),
+                  lineHeight: `${vs(32)}px`,
+                  color: "#04165d",
+                }}
               >
                 {card.title}
               </p>
             </div>
 
-            {/* Card items */}
-            <div style={{ display: "flex", flexDirection: "column", gap: vy(12), paddingLeft: vx(4) }}>
+            {/* Card items — Figma 52:800 */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: vy(12),
+                paddingLeft: vx(4),
+                width: "100%",
+              }}
+            >
               {card.items.map((item) => (
                 <div
                   key={item}
@@ -241,7 +241,13 @@ export function Slide05({ scaleX, scaleY }: Props) {
                     }}
                   />
                   <p
-                    style={{ fontSize: vs(18), lineHeight: vs(24) / vs(18) }}
+                    style={{
+                      margin: 0,
+                      flex: "1 0 0",
+                      minWidth: 0,
+                      fontSize: vs(18),
+                      lineHeight: `${vs(24)}px`,
+                    }}
                     className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
                   >
                     {item}
