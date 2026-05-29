@@ -572,10 +572,7 @@ function RitoRows({
                 justifyContent: "center",
                 backgroundColor: TAG_BG[rito.tagColor],
                 borderRadius: vs(12),
-                paddingLeft: vx(20),
-                paddingRight: vx(20),
-                paddingTop: vy(16),
-                paddingBottom: vy(16),
+                padding: vs(12),
               }}
             >
               <p
