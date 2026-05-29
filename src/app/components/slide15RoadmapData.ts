@@ -35,6 +35,8 @@ export const ROADMAP_TASK_COLORS: Record<RoadmapTaskColor, string> = {
   gray: "#494e5a",
 };
 
+export const ROADMAP_PAGE_COUNT = 2;
+
 export const ROADMAP_ROWS: RoadmapRow[] = [
   {
     label: "Design System",

@@ -1,14 +1,18 @@
-import { useState, type CSSProperties, type MouseEvent } from "react";
-import { motion } from "motion/react";
+import { useRef, useState, type CSSProperties, type WheelEventHandler } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import svgPaths from "../../imports/06EstruturaEProcessoIdeal/svg-qr6s1d1r3a";
 import { imgGroup } from "../../imports/06EstruturaEProcessoIdeal/svg-cceda";
 import { createSlideMetrics } from "../scaling";
+import { resolveVerticalPage } from "../constants/verticalPageNav";
+import { VerticalPageNav } from "./VerticalPageNav";
 import {
   ROADMAP_MONTHS,
+  ROADMAP_PAGE_COUNT,
   ROADMAP_PHASES,
   ROADMAP_ROWS,
   ROADMAP_TASK_COLORS,
   type RoadmapTask,
+  type RoadmapTaskColor,
 } from "./slide15RoadmapData";
 
 interface Props {
@@ -16,22 +20,40 @@ interface Props {
   scaleY: number;
 }
 
-const BLUE = "#036ef2";
 const INK = "#2f3237";
-const MUTED = "#6e7587";
 const BG = "#f4f5f7";
 const MONTH_BG = "rgba(110,117,135,0.1)";
 const PHASE_BORDER = "#6e7587";
-
-const NAV_ARROW_UP_PATH =
-  "M12.825 8.47501L7.57501 13.725L8.62501 14.775L12.825 10.575L17.025 14.775L18.075 13.725L12.825 8.47501Z";
-const NAV_ARROW_DOWN_PATH =
-  "M12.825 15.525L17.025 11.325L18.075 12.375L12.825 17.625L7.57501 12.375L8.62501 11.325L12.825 15.525Z";
+const EASE = [0.22, 1, 0.36, 1] as const;
+const PAGE_TRANSITION_SECONDS = 0.42;
 
 const ease = "easeOut" as const;
 const fade = (delay: number) => ({ duration: 0.55, delay, ease });
 
 type Metrics = ReturnType<typeof createSlideMetrics>;
+
+const ROADMAP_LEGEND: { rowLabel: string; color: RoadmapTaskColor; description: string }[] = [
+  {
+    rowLabel: "Design System",
+    color: "blue",
+    description: "Versões do sistema, aplicação no piloto e evolução contínua do DS.",
+  },
+  {
+    rowLabel: "Hub de conhecimento",
+    color: "purple",
+    description: "Playbook, hub de UX, templates de metodologias e consolidação de insights.",
+  },
+  {
+    rowLabel: "Ritos e processo",
+    color: "navy",
+    description: "Ritos iniciais, implantação no piloto e revisão dos processos.",
+  },
+  {
+    rowLabel: "Adopção e métricas",
+    color: "gray",
+    description: "Indicadores, medição no piloto e definição do ciclo seguinte.",
+  },
+];
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
@@ -254,131 +276,126 @@ function RoadmapGrid({ metrics }: { metrics: Metrics }) {
   );
 }
 
-function NavDot({ active, hovered }: { active: boolean; hovered: boolean }) {
-  const highlighted = active || hovered;
-  return (
-    <svg width={24} height={24} viewBox="0 0 24 24" fill="none" style={{ display: "block", flexShrink: 0 }}>
-      <circle cx={12} cy={12} r={highlighted ? 10 : 8} fill={highlighted ? BLUE : "rgba(43,118,193,0.4)"} />
-    </svg>
-  );
-}
-
-function VerticalNav({ metrics }: { metrics: Metrics }) {
+function RoadmapLegendPage({ metrics }: { metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
-  const [hoveredDot, setHoveredDot] = useState<number | null>(null);
-  const page = 0;
-  const pageCount = 2;
-
-  const stopEvent = (event: MouseEvent) => {
-    event.stopPropagation();
-  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={fade(0.25)}
+    <div
       style={{
-        position: "absolute",
-        left: vx(1832),
-        top: "50%",
-        transform: "translateY(-50%)",
-        width: vs(40),
+        width: vx(1664),
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        gap: vy(40),
-        zIndex: 20,
+        gap: vy(24),
       }}
-      onPointerDown={stopEvent}
-      onClick={stopEvent}
     >
-      <button
-        type="button"
-        aria-label="Secção anterior do roadmap"
+      <p
         style={{
-          width: vs(40),
-          height: vs(40),
-          border: 0,
-          padding: 0,
-          borderRadius: "50%",
-          background: "transparent",
-          color: BLUE,
-          cursor: "default",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          margin: 0,
+          fontFamily: "'Bronkoh-SemiBold', sans-serif",
+          fontSize: vs(28),
+          lineHeight: 1.4,
+          color: INK,
         }}
       >
-        <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none">
-          <path d={NAV_ARROW_UP_PATH} fill="currentColor" />
-        </svg>
-      </button>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: vy(4), alignItems: "center" }}>
-        {Array.from({ length: pageCount }).map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            aria-label={`Secção ${index + 1} do roadmap`}
-            aria-current={index === page ? "true" : undefined}
-            onPointerEnter={() => setHoveredDot(index)}
-            onPointerLeave={() => setHoveredDot(null)}
+        Frentes de trabalho e leitura das cores no roadmap
+      </p>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(2, ${vx(820)}px)`,
+          columnGap: vx(24),
+          rowGap: vy(24),
+        }}
+      >
+        {ROADMAP_LEGEND.map((item) => (
+          <div
+            key={item.rowLabel}
             style={{
-              width: vs(24),
-              height: vs(24),
-              border: 0,
-              padding: 0,
-              borderRadius: "50%",
-              background: hoveredDot === index ? BLUE : "transparent",
-              cursor: "default",
               display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
+              flexDirection: "column",
+              gap: vy(16),
+              padding: vs(32),
+              borderRadius: vs(24),
+              background: "#fff",
+              border: `${vs(2)}px solid ${ROADMAP_TASK_COLORS[item.color]}`,
+              boxSizing: "border-box",
             }}
           >
-            <NavDot active={index === page} hovered={hoveredDot === index} />
-          </button>
+            <div style={{ display: "flex", alignItems: "center", gap: vx(16) }}>
+              <div
+                style={{
+                  width: vs(16),
+                  height: vs(16),
+                  borderRadius: "50%",
+                  backgroundColor: ROADMAP_TASK_COLORS[item.color],
+                  flexShrink: 0,
+                }}
+              />
+              <p
+                style={{
+                  margin: 0,
+                  fontFamily: "'Bronkoh-Bold', sans-serif",
+                  fontSize: vs(28),
+                  lineHeight: 1.2,
+                  color: "#000",
+                }}
+              >
+                {item.rowLabel}
+              </p>
+            </div>
+            <p
+              style={{
+                margin: 0,
+                fontFamily: "'Bronkoh-Regular', sans-serif",
+                fontSize: vs(24),
+                lineHeight: 1.5,
+                color: INK,
+              }}
+            >
+              {item.description}
+            </p>
+          </div>
         ))}
       </div>
-
-      <button
-        type="button"
-        aria-label="Próxima secção do roadmap"
-        style={{
-          width: vs(40),
-          height: vs(40),
-          border: 0,
-          padding: 0,
-          borderRadius: "50%",
-          background: "transparent",
-          color: BLUE,
-          cursor: "default",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none">
-          <path d={NAV_ARROW_DOWN_PATH} fill="currentColor" />
-        </svg>
-      </button>
-    </motion.div>
+    </div>
   );
 }
 
 export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const { vx, vy, vs } = metrics;
+  const reducedMotion = useReducedMotion();
+  const lastWheelRef = useRef(0);
+  const [page, setPageState] = useState(0);
+  const [pageDirection, setPageDirection] = useState(0);
+
+  const setPage = (next: number) => {
+    const { target, direction } = resolveVerticalPage(next, page, ROADMAP_PAGE_COUNT);
+    if (direction === 0) return;
+    setPageDirection(direction);
+    setPageState(target);
+  };
+
+  const handleWheel: WheelEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation();
+    if (Math.abs(event.deltaY) < 20) return;
+
+    const now = window.performance.now();
+    if (now - lastWheelRef.current < 650) return;
+    lastWheelRef.current = now;
+    setPage(page + (event.deltaY > 0 ? 1 : -1));
+  };
+
   return (
     <motion.div
       key="slide-15"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.35 }}
+      transition={{ duration: reducedMotion ? 0 : 0.35 }}
       className="absolute inset-0 overflow-hidden"
       style={{ backgroundColor: BG }}
+      onWheel={handleWheel}
     >
       <motion.div
         initial={{ opacity: 0, y: vy(-24) }}
@@ -416,18 +433,22 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
         </p>
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: vy(20) }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={fade(0.12)}
-        style={{
-          position: "absolute",
-          left: vx(120),
-          top: vy(397),
-        }}
-      >
-        <RoadmapGrid metrics={metrics} />
-      </motion.div>
+      <AnimatePresence mode="wait" custom={pageDirection}>
+        <motion.div
+          key={page}
+          initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(-22) }}
+          transition={{ duration: reducedMotion ? 0 : PAGE_TRANSITION_SECONDS, ease: EASE }}
+          style={{
+            position: "absolute",
+            left: vx(120),
+            top: vy(397),
+          }}
+        >
+          {page === 0 ? <RoadmapGrid metrics={metrics} /> : <RoadmapLegendPage metrics={metrics} />}
+        </motion.div>
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -463,7 +484,13 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
         <TisLogo scale={vs} />
       </motion.div>
 
-      <VerticalNav metrics={metrics} />
+      <VerticalPageNav
+        page={page}
+        setPage={setPage}
+        pageCount={ROADMAP_PAGE_COUNT}
+        metrics={metrics}
+        slideLabel="roadmap de implantação"
+      />
     </motion.div>
   );
 }
