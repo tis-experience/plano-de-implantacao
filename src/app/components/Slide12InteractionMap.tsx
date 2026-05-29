@@ -1,8 +1,12 @@
-import { useRef, useState, type MouseEvent } from "react";
+import { useMemo, useRef, useState, type MouseEvent } from "react";
 import { motion } from "motion/react";
 import navSvgPaths from "../../imports/NavigationContainer/svg-p070wn3cp5";
-import { INTERACTION_MAP_PANELS, INTERACTION_MAP_PANEL_COUNT } from "./interactionMapData";
-import { InteractionAreaCardView, INTERACTION_MAP_CARD_WIDTH } from "./InteractionAreaCardView";
+import { INTERACTION_MAP_PANELS, INTERACTION_MAP_PANEL_COUNT, type InteractionMapPanel } from "./interactionMapData";
+import {
+  InteractionAreaCardView,
+  INTERACTION_COLUMN_CARD_WIDTH,
+  INTERACTION_MAP_CARD_WIDTH,
+} from "./InteractionAreaCardView";
 import {
   INTERACTIVE_HOVER_BOX_SHADOW,
   INTERACTIVE_HOVER_TRANSITION,
@@ -22,7 +26,14 @@ interface Props {
 const NAVY = "#04165d";
 const BLUE = "#036ef2";
 const CARD_GAP = 16;
-const PANEL_WIDTH = INTERACTION_MAP_CARD_WIDTH * 4 + CARD_GAP * 3;
+const VIEWPORT_WIDTH = 1328;
+
+function panelDesignWidth(panel: InteractionMapPanel) {
+  if (panel.layout === "four") {
+    return INTERACTION_MAP_CARD_WIDTH * 4 + CARD_GAP * 3;
+  }
+  return INTERACTION_COLUMN_CARD_WIDTH * 3 + CARD_GAP * 2;
+}
 
 function HorizontalNavButton({
   direction,
@@ -75,12 +86,70 @@ function cyclePanel(current: number, delta: number) {
   return (current + delta + INTERACTION_MAP_PANEL_COUNT) % INTERACTION_MAP_PANEL_COUNT;
 }
 
+function InteractionMapPanelView({ panel, metrics }: { panel: InteractionMapPanel; metrics: Metrics }) {
+  const { vx, vy } = metrics;
+  const viewportWidth = vx(VIEWPORT_WIDTH);
+
+  if (panel.layout === "four") {
+    return (
+      <motion.div
+        style={{
+          display: "flex",
+          gap: vx(CARD_GAP),
+          width: viewportWidth,
+          flexShrink: 0,
+          justifyContent: "flex-start",
+        }}
+      >
+        {panel.areas.map((area) => (
+          <InteractionAreaCardView
+            key={area.title}
+            area={area}
+            metrics={metrics}
+            cardWidth={INTERACTION_MAP_CARD_WIDTH}
+          />
+        ))}
+      </motion.div>
+    );
+  }
+
+  const columnWidth = vx(INTERACTION_COLUMN_CARD_WIDTH);
+  const gap = vx(CARD_GAP);
+
+  return (
+    <motion.div
+      style={{
+        display: "grid",
+        gridTemplateColumns: `${columnWidth}px ${columnWidth}px ${columnWidth}px`,
+        columnGap: gap,
+        width: viewportWidth,
+        flexShrink: 0,
+        height: vy(500),
+        alignItems: "start",
+      }}
+    >
+      {panel.areas.map((area) => (
+        <InteractionAreaCardView key={area.title} area={area} metrics={metrics} cardWidth="100%" />
+      ))}
+      <div aria-hidden style={{ width: columnWidth, height: vy(500) }} />
+    </motion.div>
+  );
+}
+
 export function Slide12InteractionMap({ metrics, onDragAreaHover }: Props) {
   const { vx, vy, vs } = metrics;
   const [panel, setPanel] = useState(0);
   const dragStartXRef = useRef<number | null>(null);
 
-  const getTranslateX = (panelIndex: number) => -vx(panelIndex * (PANEL_WIDTH + CARD_GAP));
+  const panelOffsets = useMemo(() => {
+    const offsets: number[] = [0];
+    for (let i = 0; i < INTERACTION_MAP_PANELS.length - 1; i++) {
+      offsets.push(offsets[i]! + panelDesignWidth(INTERACTION_MAP_PANELS[i]!) + CARD_GAP);
+    }
+    return offsets;
+  }, []);
+
+  const getTranslateX = (panelIndex: number) => -vx(panelOffsets[panelIndex] ?? 0);
 
   const goPrev = (event: MouseEvent) => {
     event.stopPropagation();
@@ -166,7 +235,7 @@ export function Slide12InteractionMap({ metrics, onDragAreaHover }: Props) {
 
       <motion.div
         style={{
-          width: vx(1328),
+          width: vx(VIEWPORT_WIDTH),
           display: "flex",
           flexDirection: "column",
           gap: vy(20),
@@ -176,7 +245,7 @@ export function Slide12InteractionMap({ metrics, onDragAreaHover }: Props) {
         <motion.div
           data-drag-cursor-area="slide-12-map-carousel"
           style={{
-            width: vx(1328),
+            width: vx(VIEWPORT_WIDTH),
             height: vy(500),
             overflow: "hidden",
             position: "relative",
@@ -228,25 +297,8 @@ export function Slide12InteractionMap({ metrics, onDragAreaHover }: Props) {
               touchAction: "none",
             }}
           >
-            {INTERACTION_MAP_PANELS.map((areas, panelIndex) => (
-              <motion.div
-                key={panelIndex}
-                style={{
-                  display: "flex",
-                  gap: vx(CARD_GAP),
-                  width: vx(PANEL_WIDTH),
-                  flexShrink: 0,
-                }}
-              >
-                {areas.map((area) => (
-                  <InteractionAreaCardView
-                    key={area.title}
-                    area={area}
-                    metrics={metrics}
-                    cardWidth={INTERACTION_MAP_CARD_WIDTH}
-                  />
-                ))}
-              </motion.div>
+            {INTERACTION_MAP_PANELS.map((panelConfig, panelIndex) => (
+              <InteractionMapPanelView key={panelIndex} panel={panelConfig} metrics={metrics} />
             ))}
           </motion.div>
         </motion.div>

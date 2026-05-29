@@ -7,7 +7,6 @@ import {
   AREA_INTERACTIONS_PAGE_COUNT,
   type AreaInteractionItem,
 } from "./areaInteractionsData";
-import { Slide12AreaExchangeColumns } from "./Slide12AreaExchangeColumns";
 import { Slide12InteractionMap } from "./Slide12InteractionMap";
 import { Slide12StageResponsibilities } from "./Slide12StageResponsibilities";
 import {
@@ -534,14 +533,12 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
     setPage(page + (event.deltaY > 0 ? 1 : -1));
   };
 
-  const header = page === 0 ? PAGE_HEADERS[0] : page === 3 ? PAGE_HEADERS[2] : PAGE_HEADERS[1];
+  const header = PAGE_HEADERS[page];
   const descriptionEnterDelay =
     reducedMotion
       ? 0
       : (page === 1 && pageDirection > 0) ||
           (page === 0 && pageDirection < 0) ||
-          (page === 3 && pageDirection > 0) ||
-          (page === 2 && pageDirection < 0) ||
           (page === 2 && pageDirection > 0) ||
           (page === 1 && pageDirection < 0)
         ? PAGE_TRANSITION_SECONDS
@@ -570,8 +567,6 @@ export function Slide12AreaInteractions({ scaleX, scaleY, onDragAreaHover }: Pro
         {page === 1 ? (
           <Slide12InteractionMap key="map" metrics={metrics} onDragAreaHover={onDragAreaHover} />
         ) : page === 2 ? (
-          <Slide12AreaExchangeColumns key="exchange-columns" metrics={metrics} />
-        ) : page === 3 ? (
           <motion.div
             key="stages"
             initial={{ opacity: 0, y: reducedMotion ? 0 : pageDirection * vy(28) }}
