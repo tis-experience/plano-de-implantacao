@@ -16,7 +16,7 @@ export const ROLES: RoleDefinition[] = [
       "Definir e evoluir o processo de design da fábrica",
       "Liderar a construção e governança do Design System",
       "Orientar a equipa em decisões de design e critérios de qualidade",
-      "Gerir alocação, desenvolvimento e rituais da equipa",
+      "Gerir alocação, desenvolvimento e ritos da equipa",
       "Estabelecer métricas de capacidade e qualidade",
       "Representar a área junto à liderança e stakeholders",
       "Actuar como designer executor em projectos estratégicos",
