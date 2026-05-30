@@ -96,7 +96,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
           style={{ fontSize: vs(28), lineHeight: 1.5 }}
           className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
         >
-          Da entrada nos projetos às consequências observáveis no resultado final.
+          Da entrada nos projectos às consequências observáveis no resultado final.
         </p>
       </motion.div>
 
@@ -197,13 +197,13 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(28), lineHeight: 1.3 }}
                   className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
                 >
-                  Projeto inicia pelo desenho
+                  Projecto inicia pelo desenho
                 </p>
                 <p
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  O ponto de partida do projeto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.
+                  O ponto de partida do projecto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.
                 </p>
               </div>
             </div>
@@ -317,13 +317,13 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(28), lineHeight: 1.3 }}
                   className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
                 >
-                  Projetos descartados
+                  Projectos descartados
                 </p>
                 <p
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  Alguns projetos são descartados por não atenderem à necessidade real, ou por disputa externa.
+                  Alguns projectos são descartados por não atenderem à necessidade real, ou por disputa externa.
                 </p>
               </div>
             </div>

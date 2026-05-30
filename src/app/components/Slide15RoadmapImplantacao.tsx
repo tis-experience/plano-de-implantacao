@@ -604,7 +604,7 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
           style={{ fontSize: vs(28), lineHeight: 1.5, margin: 0 }}
           className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
         >
-          Plano de implantação em ciclos, com entregas progressivas e validação em projetos reais.
+          Plano de implantação em ciclos, com entregas progressivas e validação em projectos reais.
         </p>
       </motion.div>
 

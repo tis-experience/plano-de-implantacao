@@ -14,7 +14,7 @@ function Header() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[24px] items-start left-[120px] not-italic top-[96px] w-[860px]" data-name="Header">
       <HeaderContainer />
-      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[1.5] min-w-full relative shrink-0 text-[#2f3237] text-[28px] w-[min-content]">Da entrada nos projetos às consequências observáveis no resultado final.</p>
+      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[1.5] min-w-full relative shrink-0 text-[#2f3237] text-[28px] w-[min-content]">Da entrada nos projectos às consequências observáveis no resultado final.</p>
     </div>
   );
 }
@@ -94,8 +94,8 @@ function Content() {
 function Content1() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
-      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Projeto inicia pelo desenho</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">O ponto de partida do projeto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.</p>
+      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Projecto inicia pelo desenho</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">O ponto de partida do projecto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.</p>
     </div>
   );
 }
@@ -200,8 +200,8 @@ function Frame1() {
 function Content5() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
-      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Projetos descartados</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">Alguns projetos são descartados por não atenderem à necessidade real, ou por disputa externa.</p>
+      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Projectos descartados</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">Alguns projectos são descartados por não atenderem à necessidade real, ou por disputa externa.</p>
     </div>
   );
 }

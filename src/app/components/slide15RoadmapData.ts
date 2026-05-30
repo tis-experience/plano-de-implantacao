@@ -94,7 +94,7 @@ export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
   },
   "Revisão / Definição ciclo seguinte": {
     title: "Revisão / Definição ciclo seguinte",
-    body: "Revisar os resultados do piloto, avaliar e registar aprendizado para correção de curso e planejamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
+    body: "Revisar os resultados do piloto, avaliar e registar aprendizado para correção de curso e planeamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
   },
 };
 
