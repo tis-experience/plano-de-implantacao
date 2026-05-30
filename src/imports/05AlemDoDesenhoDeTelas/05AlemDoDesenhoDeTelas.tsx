@@ -7,7 +7,7 @@ function HeaderContainer() {
       <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-full">Mudança de paradigma</p>
       <div className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[0] relative shrink-0 text-[#04165d] text-[80px] tracking-[-1.5px] w-full">
         <p className="leading-none mb-0">Experience Engineering</p>
-        <p className="leading-none">muito além do desenho de telas</p>
+        <p className="leading-none">muito além do desenho de ecrãs</p>
       </div>
     </div>
   );
@@ -35,7 +35,7 @@ function Page() {
     <div className="content-stretch flex gap-[20px] items-center overflow-clip relative shrink-0" data-name="Page">
       <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">05</p>
       <Spacer />
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">Além do desenho de telas</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">Além do desenho de ecrãs</p>
     </div>
   );
 }

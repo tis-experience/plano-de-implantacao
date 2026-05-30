@@ -769,7 +769,7 @@ function Icon2() {
 function Text1() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 whitespace-nowrap" data-name="Text">
-      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[28px] not-italic relative shrink-0 text-[#078207] text-[22px]">Processo contínuo de aprendizado e iteração</p>
+      <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[28px] not-italic relative shrink-0 text-[#078207] text-[22px]">Processo contínuo de aprendizagem e iteração</p>
       <p className="font-['Manrope:Medium',sans-serif] font-medium leading-[1.4] relative shrink-0 text-[#2f3237] text-[14px] tracking-[0.25px]">Cada ciclo gera evidências que realimentam o contexto e melhoram as próximas decisões</p>
     </div>
   );

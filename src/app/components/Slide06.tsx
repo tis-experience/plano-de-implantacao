@@ -254,7 +254,7 @@ const AI_PRINCIPLES = [
   { title: "Evidências antes de soluções", desc: "Decisões guiadas por evidências, não suposições", icon: "fact_check" },
   { title: "Julgamento Humano", desc: "IA amplia possibilidades, mas não substitui decisão", icon: "balance", descWidth: 190 },
   { title: "Menos é mais", desc: "Focar no que gera mais valor, não no que é mais fácil de gerar", icon: "kid_star" },
-  { title: "Iterar e evoluir sempre", desc: "Aprendizado contínuo gera vantagem sustentável", icon: "potted_plant" },
+  { title: "Iterar e evoluir sempre", desc: "Aprendizagem contínua gera vantagem sustentável", icon: "potted_plant" },
 ];
 
 function ExpandedInfographic({
@@ -432,7 +432,7 @@ function ExpandedInfographic({
               </div>
               <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                 <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(22), lineHeight: `${vs(28)}px`, color: "#078207", fontStyle: "normal", whiteSpace: "nowrap" }}>
-                  Processo contínuo de aprendizado e iteração
+                  Processo contínuo de aprendizagem e iteração
                 </p>
                 <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", letterSpacing: vs(0.25), lineHeight: 1.4, whiteSpace: "nowrap" }}>
                   Cada ciclo gera evidências que realimentam o contexto e melhoram as próximas decisões
@@ -788,7 +788,7 @@ export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange 
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                   <p style={{ fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(22), lineHeight: `${vs(28)}px`, color: "#078207", fontStyle: "normal", whiteSpace: "nowrap" }}>
-                    Processo contínuo de aprendizado e iteração
+                    Processo contínuo de aprendizagem e iteração
                   </p>
                   <p style={{ fontFamily: "'Manrope', sans-serif", fontWeight: 500, fontSize: vs(14), color: "#2f3237", letterSpacing: vs(0.25), lineHeight: 1.4, whiteSpace: "nowrap" }}>
                     Cada ciclo gera evidências que realimentam o contexto e melhoram as próximas decisões

@@ -86,7 +86,7 @@ function Content() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Entrada via proposta comercial</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">A área é acionada para produzir telas com prazo apertado e sem embasamento prévio. Quando aprovadas, vão diretamente para desenvolvimento.</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">A área é accionada para produzir ecrãs com prazo curto e sem fundamentação prévia. Quando aprovadas, vão directamente para desenvolvimento.</p>
     </div>
   );
 }
@@ -95,7 +95,7 @@ function Content1() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Projecto inicia pelo desenho</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">O ponto de partida do projecto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">O ponto de partida do projecto é o desenho de ecrãs, porque os programadores precisam de material para trabalhar. As etapas anteriores não acontecem.</p>
     </div>
   );
 }
@@ -139,7 +139,7 @@ function Content2() {
   return (
     <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-start min-w-px relative" data-name="Content">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] not-italic relative shrink-0 text-[#04165d] text-[28px] w-full">Sem etapa de Discovery</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">UX é entendido como brainstorming seguido de criação de telas. A compreensão do problema fica de fora.</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.5] relative shrink-0 text-[#2f3237] text-[20px] w-full">UX é entendido como brainstorming seguido de criação de ecrãs. A compreensão do problema fica de fora.</p>
     </div>
   );
 }

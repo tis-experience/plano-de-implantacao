@@ -46,11 +46,11 @@ export type RoadmapTaskTooltip = {
 export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
   "Design System V1": {
     title: "Design System V1",
-    body: "Design System disponível para uso por designers e desenvolvedores. Estrutura de tokens, componentes base e brand principles personalizável.",
+    body: "Design System disponível para uso por designers e programadores. Estrutura de tokens, componentes base e brand principles personalizável.",
   },
   "DS aplicado em projecto piloto": {
     title: "DS aplicado em projecto piloto",
-    body: "Aplicação do design system em projecto piloto para validação prática do sistema criado. Validar uso com Designers, Desenvolvedores e Agentes de IA.",
+    body: "Aplicação do design system em projecto piloto para validação prática do sistema criado. Validar uso com Designers, Programadores e Agentes de IA.",
   },
   "Design System V1.5": {
     title: "Design System V1.5",
@@ -94,7 +94,7 @@ export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
   },
   "Revisão / Definição ciclo seguinte": {
     title: "Revisão / Definição ciclo seguinte",
-    body: "Revisar os resultados do piloto, avaliar e registar aprendizado para correção de curso e planeamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
+    body: "Revisar os resultados do piloto, avaliar e registar aprendizagem para correção de curso e planeamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
   },
 };
 
@@ -127,7 +127,7 @@ export const ROADMAP_ROWS: RoadmapRow[] = [
     ],
   },
   {
-    label: "Adopção e métricas",
+    label: "Adoção e métricas",
     tasks: [
       { label: "Primeiros indicadores definidos", colStart: 2, colSpan: 2, color: "gray", padding: 20 },
       { label: "Medição com o projecto piloto", colStart: 4, colSpan: 3, color: "gray", padding: 20 },

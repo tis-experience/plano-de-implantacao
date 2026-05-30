@@ -17,7 +17,7 @@ export const INTERACTION_MAP_PANELS: InteractionMapPanel[] = [
       {
         title: "Produto (PM/PO)",
         intro: "Recebe a demanda, enquadra e prioriza o backlog.",
-        xpRole: "investiga o problema real e desenha a solução que atende o utilizador final.",
+        xpRole: "investiga o problema real e desenha a solução que serve o utilizador final.",
         receives: "Demanda priorizada, contexto de negócio e expectativas de resultado.",
         delivers: "Fluxos validados, protótipos e especificações de handoff.",
       },

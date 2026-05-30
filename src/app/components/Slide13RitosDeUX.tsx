@@ -154,7 +154,7 @@ const RITOS: Rito[] = [
     who: "XP Engineering, Desenvolvimento DS e Produto quando houver impacto no roadmap.",
     output: "Componentes, padrões, exceções, dívidas técnicas e backlog do Design System.",
     tooltip: {
-      body: "Espaço de decisão sobre evolução do Design System: novos componentes, padrões, exceções, dívida, documentação e prioridades. Durante a construção, tende a ser recorrente; depois, passa a ser acionado por necessidade.",
+      body: "Espaço de decisão sobre evolução do Design System: novos componentes, padrões, exceções, dívida, documentação e prioridades. Durante a construção, tende a ser recorrente; depois, passa a ser accionado por necessidade.",
       width: TOOLTIP_WIDTH,
     },
   },
@@ -218,7 +218,7 @@ const RITOS: Rito[] = [
     tagColor: "green",
     whens: [{ label: "Assíncrono", color: "green" }],
     who: "XP Engineering, Desenvolvimento, Produto e QA.",
-    output: "Solicitações qualificadas, problemas recorrentes identificados e itens candidatos ao backlog.",
+    output: "Pedidos qualificados, problemas recorrentes identificados e itens candidatos ao backlog.",
     tooltip: {
       body: "Entrada assíncrona para pedidos, problemas recorrentes, exceções e necessidades identificadas no uso do Design System. O objetivo é qualificar sinais e transformar o que fizer sentido em backlog.",
       width: TOOLTIP_WIDTH,
@@ -277,7 +277,7 @@ const LEGEND_CARDS = [
     border: GREEN,
     titleColor: "#1b4b1b",
     title: "Canais contínuos",
-    desc: "Suporte assíncrono para dúvidas, solicitações e registo de aprendizados.",
+    desc: "Suporte assíncrono para dúvidas, pedidos e registo de aprendizagens.",
   },
 ];
 

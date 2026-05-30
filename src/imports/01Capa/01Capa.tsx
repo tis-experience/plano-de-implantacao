@@ -7,7 +7,7 @@ function Frame() {
 function Hero() {
   return (
     <div className="-translate-y-1/2 absolute content-stretch flex flex-col items-start left-[120px] top-[calc(50%-151px)]" data-name="hero">
-      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[24px] tracking-[1px] uppercase whitespace-nowrap">Planejamento da área</p>
+      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[24px] tracking-[1px] uppercase whitespace-nowrap">Planeamento da área</p>
       <Frame />
       <div className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[0] not-italic relative shrink-0 text-[168px] text-white tracking-[-5px] whitespace-nowrap">
         <p className="leading-[0.92] mb-0">Experience</p>

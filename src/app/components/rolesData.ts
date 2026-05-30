@@ -25,7 +25,7 @@ export const ROLES: RoleDefinition[] = [
   {
     title: "Designer Sênior",
     summary:
-      "Executa projectos de maior complexidade com autonomia, desde o discovery até ao handoff com desenvolvedores, apoia tecnicamente os outros designers no dia-a-dia e contribui para a evolução do Design System.",
+      "Executa projectos de maior complexidade com autonomia, desde o discovery até ao handoff com programadores, apoia tecnicamente os outros designers no dia-a-dia e contribui para a evolução do Design System.",
     quote:
       "Experiência sólida em design de produto em contextos complexos e multidisciplinares, com capacidade de comunicação técnica com equipa e desenvolvimento.",
     responsibilities: [

@@ -123,7 +123,7 @@ export function Slide05({ scaleX, scaleY }: Props) {
             className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
           >
             <p style={{ lineHeight: 1, marginBottom: 0 }}>Experience Engineering</p>
-            <p style={{ lineHeight: 1 }}>muito além do desenho de telas</p>
+            <p style={{ lineHeight: 1 }}>muito além do desenho de ecrãs</p>
           </div>
         </div>
 

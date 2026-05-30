@@ -189,7 +189,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  A área é acionada para produzir telas com prazo apertado e sem embasamento prévio. Quando aprovadas, vão diretamente para desenvolvimento.
+                  A área é accionada para produzir ecrãs com prazo curto e sem fundamentação prévia. Quando aprovadas, vão directamente para desenvolvimento.
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: vs(12), flex: 1, minWidth: 0 }}>
@@ -203,7 +203,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  O ponto de partida do projecto é o desenho de telas, porque os desenvolvedores precisam de material para trabalhar. As etapas anteriores não acontecem.
+                  O ponto de partida do projecto é o desenho de ecrãs, porque os programadores precisam de material para trabalhar. As etapas anteriores não acontecem.
                 </p>
               </div>
             </div>
@@ -249,7 +249,7 @@ export function Slide03({ scaleX, scaleY, onDragAreaHover }: Props) {
                   style={{ fontSize: vs(20), lineHeight: 1.5 }}
                   className="font-['Manrope',sans-serif] font-normal text-[#2f3237]"
                 >
-                  UX é entendido como brainstorming seguido de criação de telas. A compreensão do problema fica de fora.
+                  UX é entendido como brainstorming seguido de criação de ecrãs. A compreensão do problema fica de fora.
                 </p>
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: vs(12), flex: 1, minWidth: 0 }}>

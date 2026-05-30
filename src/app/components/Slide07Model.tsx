@@ -75,7 +75,7 @@ const maturityCards = [
   },
   {
     title: "2. Produtos em escala (Growth)",
-    body: "Produtos já validados parcialmente, com base activa e sinais de uso. O foco passa a ser escalar, medir adopção, retenção, satisfação, qualidade e operação em produção.",
+    body: "Produtos já validados parcialmente, com base activa e sinais de uso. O foco passa a ser escalar, medir adoção, retenção, satisfação, qualidade e operação em produção.",
     variant: "growth" as const,
   },
   {
@@ -455,8 +455,8 @@ function Header({ page, metrics }: { page: number; metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
   const subtitle =
     page === 0
-      ? "Da criação pontual de telas para um modelo operacional de experiência."
-      : "Da criação pontual de telas para um modelo operacional de experiência.";
+      ? "Da criação pontual de ecrãs para um modelo operacional de experiência."
+      : "Da criação pontual de ecrãs para um modelo operacional de experiência.";
 
   return (
     <motion.div
@@ -1305,7 +1305,7 @@ function EarlyDiagram({ metrics }: { metrics: Metrics }) {
         <FlowLabel metrics={metrics} width={177} scaleMode="uniform">
           Testes com público alvo
           <br />
-          <span style={{ fontWeight: 400 }}>(gerar aprendizado)</span>
+          <span style={{ fontWeight: 400 }}>(gerar aprendizagem)</span>
         </FlowLabel>
       </div>
       <SvgAsset
@@ -1531,7 +1531,7 @@ function CoreDiagram({ metrics }: { metrics: Metrics }) {
         <FlowLabel metrics={metrics} width={147} scaleMode="uniform">
           Testes com clientes
           <br />
-          <span style={{ fontWeight: 400 }}>(Gerar aprendizado)</span>
+          <span style={{ fontWeight: 400 }}>(Gerar aprendizagem)</span>
         </FlowLabel>
       </div>
       <CoreFlowArrow metrics={metrics} style={{ position: "absolute", left: ix(552.5), top: vy(arrowTop(bottomRowTop + 40)) }} />

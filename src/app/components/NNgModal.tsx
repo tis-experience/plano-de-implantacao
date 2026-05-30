@@ -92,7 +92,7 @@ const LEVELS: {
     body: (vs) => (
       <p style={{ fontSize: vs(20), letterSpacing: vs(0.25), lineHeight: 1.4 }}
          className="font-['Manrope',sans-serif] font-normal text-[rgba(255,255,255,0.6)]">
-        Nas organizações de estágio 6, todos estão plenamente conscientes do valor do design centrado no utilizador. A investigação com utilizadores e o design centrado no utilizador são a força motriz por trás de tudo o que estas organizações fazem, desde o mais alto nível da estratégia organizacional até ao menor elemento de design dentro de um sistema de design. As operações de desenvolvimento adotam um design iterativo orientado pelo utilizador. Tanto indivíduos como equipas planejam para a mudança e inovação, e a investigação com utilizadores impulsiona novos investimentos ao responder a necessidades não satisfeitas no mercado.
+        Nas organizações de estágio 6, todos estão plenamente conscientes do valor do design centrado no utilizador. A investigação com utilizadores e o design centrado no utilizador são a força motriz por trás de tudo o que estas organizações fazem, desde o mais alto nível da estratégia organizacional até ao menor elemento de design dentro de um sistema de design. As operações de desenvolvimento adoptam um design iterativo orientado pelo utilizador. Tanto indivíduos como equipas planeiam para a mudança e inovação, e a investigação com utilizadores impulsiona novos investimentos ao responder a necessidades não satisfeitas no mercado.
       </p>
     ),
   },

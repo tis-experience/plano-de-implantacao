@@ -78,7 +78,7 @@ const metricsRows = [
 const benefits = [
   {
     title: "Escalabilidade:",
-    body: "Permite criar novas telas e funcionalidades muito mais rápido.",
+    body: "Permite criar novos ecrãs e funcionalidades muito mais rápido.",
   },
   {
     title: "Consistência:",
@@ -86,7 +86,7 @@ const benefits = [
   },
   {
     title: "Eficiência de Custos:",
-    body: "Reduz o retrabalho de designers e desenvolvedores ao evitar que criem o mesmo componente do zero várias vezes.",
+    body: "Reduz o retrabalho de designers e programadores ao evitar que criem o mesmo componente do zero várias vezes.",
   },
   {
     title: "Melhor Comunicação:",
@@ -253,7 +253,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
 const designSystemBottomCards = [
   {
     title: "Uso por agentes de IA",
-    body: "AGENTS.md define regras operacionais para agentes, enquanto documentação, inventários e APIs tornam o repositório legível para auditoria, manutenção e planejamento apoiados por IA.",
+    body: "AGENTS.md define regras operacionais para agentes, enquanto documentação, inventários e APIs tornam o repositório legível para auditoria, manutenção e planeamento apoiados por IA.",
   },
   {
     title: "Acessibilidade como premissa",
@@ -301,11 +301,11 @@ const governanceStages = [
     ai: "IA apoia implementação e documentação. Engenharia valida qualidade e testes.",
   },
   {
-    title: "Release e adopção",
+    title: "Release e adoção",
     color: "#27975b",
     tint: "rgba(39,151,91,0.05)",
     bullets: ["Publicar em Figma, código e documentação.", "Comunicar uso recomendado e substituições."],
-    ai: "IA identifica desvios de uso. A equipa ajusta documentação e adopção.",
+    ai: "IA identifica desvios de uso. A equipa ajusta documentação e adoção.",
   },
 ];
 
@@ -320,7 +320,7 @@ const governanceChecks = [
   { label: "Sem duplicação funcional", icon: "purple" as const, width: 260 },
   { label: "Componente criado com tokens, estados e acessibilidade", icon: "green" as const, width: 540 },
   { label: "Documentação publicada", icon: "blue" as const, width: 260 },
-  { label: "Adopção por projecto", icon: "green" as const, width: 260 },
+  { label: "Adoção por projecto", icon: "green" as const, width: 260 },
 ];
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {
