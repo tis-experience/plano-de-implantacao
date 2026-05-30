@@ -55,7 +55,7 @@ const classificationPages = [
   },
   {
     title: "2. Melhoria (Alguma certeza + Risco médio)",
-    body: "Possui um maior risco por se tratar de mudança em funcionalidade existente, sendo necessário alinhamento com os stakeholders e análise de métricas. Neste caso, a execução de desk research e benchmark podem ajudar na exploração de ideias, e também teste A/B (idealmente), em um ciclo mais curto.",
+    body: "Possui um maior risco por se tratar de mudança em funcionalidade existente, sendo necessário alinhamento com os stakeholders e análise de métricas. Neste caso, a execução de desk research e benchmark podem ajudar na exploração de ideias, e também teste A/B (idealmente), num ciclo mais curto.",
   },
   {
     title: "3. Nova funcionalidade (Pouca certeza + Risco alto)",
@@ -75,7 +75,7 @@ const maturityCards = [
   },
   {
     title: "2. Produtos em escala (Growth)",
-    body: "Produtos já validados parcialmente, com base activa e sinais de uso. O foco passa a ser escalar, medir adoção, retenção, satisfação, qualidade e operação em produção.",
+    body: "Produtos já validados parcialmente, com base activa e sinais de uso. O foco passa a ser escalar, medir adopção, retenção, satisfação, qualidade e operação em produção.",
     variant: "growth" as const,
   },
   {
@@ -747,7 +747,7 @@ function PageOne({ metrics }: { metrics: Metrics }) {
           color: NAVY,
         }}
       >
-        A área passa a atuar com critério de triagem e priorização. Reduzindo entrada tardia, retrabalho e decisões baseadas apenas em percepção
+        A área passa a actuar com critério de triagem e priorização. Reduzindo entrada tardia, retrabalho e decisões baseadas apenas em percepção
         visual.
       </p>
 

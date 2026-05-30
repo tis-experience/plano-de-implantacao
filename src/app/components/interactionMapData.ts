@@ -84,7 +84,7 @@ export const INTERACTION_MAP_PANELS: InteractionMapPanel[] = [
       {
         title: "Digital Office",
         intro: "Define a estratégia de transição para o ambiente de trabalho digital.",
-        xpRole: "garante a adoção dessas tecnologias através de um design centrado no comportamento humano.",
+        xpRole: "garante a adopção dessas tecnologias através de um design centrado no comportamento humano.",
         receives: "Requisitos de negócio, escopo de projectos de digitalização e regras de compliance.",
         delivers:
           "Visão de produto (Product Discovery), fluxos de navegação validados e protótipos de média/alta fidelidade.",

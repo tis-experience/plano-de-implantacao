@@ -165,7 +165,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
         kind: "parts",
         parts: [
           { text: "ADRs", bold: true },
-          { text: " registram decisões arquiteturais, trade-offs e mudanças de direção." },
+          { text: " registam decisões arquitecturais, trade-offs e mudanças de direcção." },
         ],
       },
       {
@@ -301,11 +301,11 @@ const governanceStages = [
     ai: "IA apoia implementação e documentação. Engenharia valida qualidade e testes.",
   },
   {
-    title: "Release e adoção",
+    title: "Release e adopção",
     color: "#27975b",
     tint: "rgba(39,151,91,0.05)",
     bullets: ["Publicar em Figma, código e documentação.", "Comunicar uso recomendado e substituições."],
-    ai: "IA identifica desvios de uso. A equipa ajusta documentação e adoção.",
+    ai: "IA identifica desvios de uso. A equipa ajusta documentação e adopção.",
   },
 ];
 
@@ -320,7 +320,7 @@ const governanceChecks = [
   { label: "Sem duplicação funcional", icon: "purple" as const, width: 260 },
   { label: "Componente criado com tokens, estados e acessibilidade", icon: "green" as const, width: 540 },
   { label: "Documentação publicada", icon: "blue" as const, width: 260 },
-  { label: "Adoção por projecto", icon: "green" as const, width: 260 },
+  { label: "Adopção por projecto", icon: "green" as const, width: 260 },
 ];
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {

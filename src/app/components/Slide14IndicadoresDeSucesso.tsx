@@ -181,7 +181,7 @@ function SlideHeader({ metrics }: { metrics: Metrics }) {
         style={{ fontSize: vs(28), lineHeight: 1.5 }}
         className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
       >
-        Começar com poucas perguntas. Decidir o que manter, corrigir, investigar e registrar.
+        Começar com poucas perguntas. Decidir o que manter, corrigir, investigar e registar.
       </p>
     </motion.div>
   );

@@ -28,7 +28,7 @@ export type MetricColumn = {
 
 export const OPERACIONAL_COLUMNS: MetricColumn[] = [
   {
-    title: "Maturidade e adoção",
+    title: "Maturidade e adopção",
     items: [
       "Nível de Maturidade (NN/g)",
       "% de projectos com UX desde o kickoff",
@@ -45,7 +45,7 @@ export const OPERACIONAL_COLUMNS: MetricColumn[] = [
       "Tempo de resposta",
       "Contribuição das áreas",
       "Componentes activos",
-      "Adoção por projecto",
+      "Adopção por projecto",
       "Itens deprecated",
       "Cobertura de componentes, templates e padrões",
     ],

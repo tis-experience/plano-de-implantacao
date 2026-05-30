@@ -166,7 +166,7 @@ const ROADMAP_LEGEND: { rowLabel: string; color: RoadmapTaskColor; description: 
     description: "Ritos iniciais, implantação no piloto e revisão dos processos.",
   },
   {
-    rowLabel: "Adoção e métricas",
+    rowLabel: "Adopção e métricas",
     color: "gray",
     description: "Indicadores, medição no piloto e definição do ciclo seguinte.",
   },

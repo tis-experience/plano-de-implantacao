@@ -29,7 +29,7 @@ const CARDS = [
   {
     num: "02",
     iconKey: "p1c0e6c00",
-    title: "Design de Interface e Interação",
+    title: "Design de Interface e Interacção",
     items: [
       "Wireframes, fluxos e protótipos",
       "Design de alta fidelidade",

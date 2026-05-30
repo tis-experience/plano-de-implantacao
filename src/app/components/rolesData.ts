@@ -40,7 +40,7 @@ export const ROLES: RoleDefinition[] = [
   {
     title: "Designer Pleno",
     summary:
-      "Executa projectos de ponta a ponta, apoia e atua em discovery, desenvolve trabalhos diversos do fluxo de design, consumindo o Design System e contribuindo pontualmente para a sua evolução.",
+      "Executa projectos de ponta a ponta, apoia e actua em discovery, desenvolve trabalhos diversos do fluxo de design, consumindo o Design System e contribuindo pontualmente para a sua evolução.",
     quote:
       "Profissional com experiência em design de produto digital, domínio de ferramentas e processos, com capacidade de execução autónoma em projectos.",
     responsibilities: [

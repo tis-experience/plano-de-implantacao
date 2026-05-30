@@ -105,9 +105,9 @@ const RITOS: Rito[] = [
     tagColor: "orange",
     whens: [{ label: "Sob demanda", color: "orange" }],
     who: "XP Engineering, Produto/solicitante e Desenvolvimento quando houver risco técnico.",
-    output: "Tipo de atuação, prioridade, esforço, risco e próximos passos.",
+    output: "Tipo de actuação, prioridade, esforço, risco e próximos passos.",
     tooltip: {
-      body: "Avaliação de novas demandas para entender contexto, urgência, risco e profundidade necessária de atuação. Define se o trabalho segue para discovery, design, apoio consultivo, backlog ou redirecionamento.",
+      body: "Avaliação de novas demandas para entender contexto, urgência, risco e profundidade necessária de actuação. Define se o trabalho segue para discovery, design, apoio consultivo, backlog ou redireccionamento.",
       width: TOOLTIP_WIDTH,
     },
   },
@@ -185,9 +185,9 @@ const RITOS: Rito[] = [
     tagColor: "orange",
     whens: [{ label: "Sob demanda", color: "orange" }],
     who: "XP Engineering, Produto, Desenvolvimento (se necessário), Gestão e áreas-chave conforme pauta.",
-    output: "Achados sintetizados, evidências compartilhadas, recomendações e implicações direcionadas.",
+    output: "Achados sintetizados, evidências partilhadas, recomendações e implicações direccionadas.",
     tooltip: {
-      body: "Compartilhamento dos principais achados de pesquisa, discovery, testes ou análise de comportamento. O foco é transformar evidências em recomendações claras para orientar decisões de produto e experiência.",
+      body: "Partilha dos principais achados de pesquisa, discovery, testes ou análise de comportamento. O foco é transformar evidências em recomendações claras para orientar decisões de produto e experiência.",
       width: TOOLTIP_WIDTH,
     },
   },
@@ -198,7 +198,7 @@ const RITOS: Rito[] = [
     who: "XP Engineering, Produto, Desenvolvimento (se necessário), Gestão e áreas-chave conforme pauta.",
     output: "Gargalos identificados, métricas analisadas, decisões de melhoria e responsáveis definidos.",
     tooltip: {
-      body: "Revisão da saúde da operação de UX, olhando gargalos, métricas, qualidade das entregas, adoção do Design System e ajustes necessários no processo.",
+      body: "Revisão da saúde da operação de UX, olhando gargalos, métricas, qualidade das entregas, adopção do Design System e ajustes necessários no processo.",
       width: TOOLTIP_WIDTH,
     },
   },
@@ -207,7 +207,7 @@ const RITOS: Rito[] = [
     tagColor: "green",
     whens: [{ label: "Assíncrono", color: "green" }],
     who: "XP Engineering, Desenvolvimento, Produto e QA.",
-    output: "Dúvidas respondidas, orientações registradas, padrões esclarecidos e conhecimento compartilhado com o time.",
+    output: "Dúvidas respondidas, orientações registadas, padrões esclarecidos e conhecimento partilhado com a equipa.",
     tooltip: {
       body: "Canal assíncrono para dúvidas rápidas, orientação de uso do Design System, alinhamento de padrões e partilha de referências. Serve para resolver temas operacionais sem criar reunião.",
       width: TOOLTIP_WIDTH,

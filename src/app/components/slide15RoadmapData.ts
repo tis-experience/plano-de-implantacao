@@ -54,7 +54,7 @@ export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
   },
   "Design System V1.5": {
     title: "Design System V1.5",
-    body: "Evolução natural com incrementos e correções do Design System, pós-validação inicial. Novos itens de maior complexidade entram em backlog para V2.",
+    body: "Evolução natural com incrementos e correcções do Design System, pós-validação inicial. Novos itens de maior complexidade entram em backlog para V2.",
   },
   Playbook: {
     title: "Kickoff",
@@ -94,7 +94,7 @@ export const ROADMAP_TASK_TOOLTIPS: Record<string, RoadmapTaskTooltip> = {
   },
   "Revisão / Definição ciclo seguinte": {
     title: "Revisão / Definição ciclo seguinte",
-    body: "Revisar os resultados do piloto, avaliar e registar aprendizagem para correção de curso e planeamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
+    body: "Revisar os resultados do piloto, avaliar e registar aprendizagem para correcção de curso e planeamento para o próximo ciclo. Além de expandir e replicar processos para os outros projectos.",
   },
 };
 
@@ -127,7 +127,7 @@ export const ROADMAP_ROWS: RoadmapRow[] = [
     ],
   },
   {
-    label: "Adoção e métricas",
+    label: "Adopção e métricas",
     tasks: [
       { label: "Primeiros indicadores definidos", colStart: 2, colSpan: 2, color: "gray", padding: 20 },
       { label: "Medição com o projecto piloto", colStart: 4, colSpan: 3, color: "gray", padding: 20 },

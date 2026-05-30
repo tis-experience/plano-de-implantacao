@@ -593,7 +593,7 @@ export function Slide06({ scaleX, scaleY, onExpandedChange, onExpandHoverChange 
           </p>
         </div>
         <p style={{ fontFamily: "'Bronkoh-Regular', sans-serif", fontSize: vs(28), color: "#2f3237", lineHeight: 1.5, fontStyle: "normal" }}>
-          Etapas com profundidade ajustada ao problema, onde a IA atua como suporte para acelerar o processo.
+          Etapas com profundidade ajustada ao problema, onde a IA actua como suporte para acelerar o processo.
         </p>
       </motion.div>
 

@@ -17,7 +17,7 @@ export const AREA_INTERACTIONS: AreaInteractionItem[] = [
   },
   {
     number: "03",
-    title: "Responsabilidade compartilhada",
+    title: "Responsabilidade partilhada",
     body: "Uma boa experiência não é responsabilidade exclusiva de uma área, e cada equipa que toca o projecto carrega a sua parte do compromisso com o utilizador, dentro daquilo que a sua competência permite entregar.",
   },
   {

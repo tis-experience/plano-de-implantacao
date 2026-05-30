@@ -170,7 +170,7 @@ const tooltipByLabel: Record<string, TooltipData> = {
   },
   "Card Sorting": {
     title: "Card Sorting",
-    body: "Validar agrupamentos, nomenclaturas e arquitetura da informação.",
+    body: "Validar agrupamentos, nomenclaturas e arquitectura da informação.",
     tools: [primaryTool("Jira"), primaryTool("Office"), secondaryTool("Jira Product Discovery")],
     ai: "Apoio para criar categorias, interpretar agrupamentos e sugerir taxonomias.",
   },
@@ -214,7 +214,7 @@ const tooltipByLabel: Record<string, TooltipData> = {
     title: "Testes de usabilidade",
     body: "Avaliar se utilizadores conseguem entender e completar tarefas com eficiência.",
     tools: [primaryTool("Teams"), primaryTool("Google Meet"), secondaryTool("Maze"), secondaryTool("Lookback"), secondaryTool("UserTesting"), secondaryTool("Useberry")],
-    ai: "Apoio na criação de roteiro, análise dos achados, severidade e plano de ação.",
+    ai: "Apoio na criação de roteiro, análise dos achados, severidade e plano de acção.",
   },
   Implementação: {
     title: "Implementação",
@@ -272,7 +272,7 @@ const tooltipByLabel: Record<string, TooltipData> = {
   },
   "Coleta de dados": {
     title: "Coleta de dados",
-    body: "Medir adoção, retenção, conversão, eventos, funis e impacto da solução.",
+    body: "Medir adopção, retenção, conversão, eventos, funis e impacto da solução.",
     tools: [primaryTool("Google Analytics"), primaryTool("Data Studio"), primaryTool("Power BI"), secondaryTool("Amplitude"), secondaryTool("Mixpanel")],
     ai: "Gerar leitura executiva, identificar anomalias e propor próximos ciclos.",
   },

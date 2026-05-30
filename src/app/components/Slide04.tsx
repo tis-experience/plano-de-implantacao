@@ -105,7 +105,7 @@ const LABELS = [
     y: 391,
     w: 277,
     name: "ESTRUTURA",
-    desc: "Fluxos, arquitetura de informação e design de interação",
+    desc: "Fluxos, arquitectura de informação e design de interacção",
   },
   {
     x: 201.25,
