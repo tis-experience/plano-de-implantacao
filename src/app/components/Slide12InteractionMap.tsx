@@ -27,10 +27,19 @@ const NAVY = "#04165d";
 const BLUE = "#036ef2";
 const CARD_GAP = 16;
 const VIEWPORT_WIDTH = 1328;
+const DEFAULT_PANEL_CARD_WIDTHS = [320, 320, 320, 320];
+const AREA_PARTNERS_PANEL_CARD_WIDTHS = [318, 318, 318, 326];
+
+function getFourColumnCardWidths(panel: InteractionMapPanel) {
+  if (panel.layout !== "four") return [];
+
+  const hasSecurityCard = panel.areas.some((area) => area.title === "Segurança/Compliance");
+  return hasSecurityCard ? AREA_PARTNERS_PANEL_CARD_WIDTHS : DEFAULT_PANEL_CARD_WIDTHS;
+}
 
 function panelDesignWidth(panel: InteractionMapPanel) {
   if (panel.layout === "four") {
-    return INTERACTION_MAP_CARD_WIDTH * 4 + CARD_GAP * 3;
+    return getFourColumnCardWidths(panel).reduce((total, width) => total + width, 0) + CARD_GAP * 3;
   }
   return INTERACTION_COLUMN_CARD_WIDTH * 3 + CARD_GAP * 2;
 }
@@ -101,12 +110,12 @@ function InteractionMapPanelView({ panel, metrics }: { panel: InteractionMapPane
           justifyContent: "flex-start",
         }}
       >
-        {panel.areas.map((area) => (
+        {panel.areas.map((area, index) => (
           <InteractionAreaCardView
             key={area.title}
             area={area}
             metrics={metrics}
-            cardWidth={INTERACTION_MAP_CARD_WIDTH}
+            cardWidth={getFourColumnCardWidths(panel)[index] ?? INTERACTION_MAP_CARD_WIDTH}
           />
         ))}
       </motion.div>
