@@ -115,7 +115,7 @@ function RoleRow({
         padding: `${vy(20)}px ${vx(active ? 20 : 40)}px ${vy(20)}px ${vx(40)}px`,
         border: "none",
         borderLeft: `${vs(4)}px solid ${BLUE}`,
-        borderRadius: vs(16),
+        borderRadius: vs(24),
         backgroundColor: active ? BLUE : SNOW,
         display: "flex",
         alignItems: "center",
