@@ -115,7 +115,7 @@ function NavigationContainer() {
 export default function Container() {
   return (
     <div className="content-stretch flex flex-col gap-[40px] items-start px-[56px] py-[48px] relative rounded-[40px] size-full" style={{ backgroundImage: "linear-gradient(90deg, rgba(3, 110, 242, 0.06) 0%, rgba(3, 110, 242, 0.06) 100%), linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%)" }} data-name="Container">
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Inquérito interno (NOV/2024) · 143 respoSTAs</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Inquérito interno (NOV/2024) · 143 respostas</p>
       <ContentContainer />
       <NavigationContainer />
     </div>

@@ -14,7 +14,7 @@ function Page() {
     <div className="content-stretch flex gap-[20px] items-center overflow-clip relative shrink-0" data-name="Page">
       <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">06</p>
       <Spacer />
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">Estrutura e processo ideal</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING</p>
     </div>
   );
 }
@@ -68,7 +68,7 @@ function Header() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[24px] items-start left-[120px] not-italic top-[96px] w-[1680px]" data-name="Header">
       <HeaderContainer />
-      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[1.5] relative shrink-0 text-[#2f3237] text-[28px] w-full">Etapas com profundidade ajustada ao problema, onde a IA atua como suporte para acelerar o processo.</p>
+      <p className="font-['Bronkoh-Regular:Regular',sans-serif] leading-[1.5] relative shrink-0 text-[#2f3237] text-[28px] w-full">Etapas com profundidade ajustada ao problema, onde a IA actua como suporte para acelerar o processo.</p>
     </div>
   );
 }

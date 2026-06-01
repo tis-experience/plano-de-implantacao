@@ -14,7 +14,7 @@ function Page() {
     <div className="content-stretch flex gap-[20px] items-center overflow-clip relative shrink-0" data-name="Page">
       <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">04</p>
       <Spacer />
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">Camadas da experiência</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING</p>
     </div>
   );
 }
@@ -49,7 +49,7 @@ function LayerContainer2() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[8px] items-center left-[982px] text-center top-[571px] w-[277px]" data-name="Layer container">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-none not-italic relative shrink-0 text-[26px] text-white w-full">ESTRUTURA</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.3] relative shrink-0 text-[18px] text-[rgba(255,255,255,0.85)] w-full">Fluxos, arquitetura de informação e design de interação</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.3] relative shrink-0 text-[18px] text-[rgba(255,255,255,0.85)] w-full">Fluxos, arquitectura de informação e design de interacção</p>
     </div>
   );
 }

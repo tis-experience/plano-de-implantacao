@@ -240,6 +240,7 @@ export default function App() {
     let on = false;
     let nearCustomCursorTarget = false;
     for (const el of els) {
+      if (pointerOverShield) continue;
       const r = el.getBoundingClientRect();
       const isNearElement =
         e.clientX >= r.left - PROXIMITY_BUFFER &&

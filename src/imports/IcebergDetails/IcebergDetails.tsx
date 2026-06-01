@@ -113,7 +113,7 @@ function LayerContainer2() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[8px] items-center left-[173.25px] text-center top-[391px] w-[277px]" data-name="Layer container">
       <p className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-none not-italic relative shrink-0 text-[26px] text-white w-full">ESTRUTURA</p>
-      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.3] relative shrink-0 text-[18px] text-[rgba(255,255,255,0.85)] w-full">Fluxos, arquitetura de informação e design de interação</p>
+      <p className="font-['Manrope:Regular',sans-serif] font-normal leading-[1.3] relative shrink-0 text-[18px] text-[rgba(255,255,255,0.85)] w-full">Fluxos, arquitectura de informação e design de interacção</p>
     </div>
   );
 }

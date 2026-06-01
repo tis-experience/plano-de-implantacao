@@ -817,7 +817,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
         </motion.div>
       </motion.div>
 
-      {/* Faixa inferior: captura o ponteiro para bloquear hover nas linhas atrás */}
+      {/* Faixa inferior: bloqueia hover das linhas (tooltips) e deixa passar cursor/clique de slide */}
       <motion.div
         data-slide-nav-shield="slide-13-legend"
         animate={{ height: vy(isExpanded ? OVERLAY_H_EXP : OVERLAY_H_REST) }}
@@ -832,7 +832,7 @@ export function Slide13RitosDeUX({ scaleX, scaleY }: Props) {
           WebkitBackdropFilter: "blur(50px)",
           background: OVERLAY_GRADIENT,
           overflow: "hidden",
-          zIndex: 10,
+          zIndex: 30,
           pointerEvents: "auto",
           cursor: "none",
         }}
