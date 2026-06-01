@@ -61,7 +61,7 @@ export const ROLES: RoleDefinition[] = [
       "Desenhar interfaces e fluxos de menor complexidade",
       "Adaptar padrões e componentes existentes a novos contextos",
       "Atender pedidos de ajuste e evolução em projectos entregues",
-      "Apoiar Plenos e Sênior em entregas de projectos maiores",
+      "Auxiliar Plenos e Sêniors nas entregas do dia-a-dia",
       "Preparar e organizar assets para handoff",
       "Participar em revisões e incorporar feedbacks",
     ],
