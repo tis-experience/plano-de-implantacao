@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useState } from "react";
+import { motion } from "motion/react";
 import svgPaths from "../../imports/02UxNaTisAtualmente/svg-pfywxk28k6";
 import { imgGroup } from "../../imports/02UxNaTisAtualmente/svg-5kz7o";
 import { NNgModal } from "./NNgModal";
@@ -22,43 +22,15 @@ const stagger = (i: number) => ({
 export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props) {
   const { vx, vy, vs } = createSlideMetrics(scaleX, scaleY);
 
-  const [statsPage, setStatsPage] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [linkHovered, setLinkHovered] = useState(false);
-  const directionRef = useRef(1);
 
-  const STATS_PAGES = [
-    [
-      { num: "83",  suffix: "%", desc: "acredita que um profissional de UX seria útil para a sua área", dw: 337 },
-      { num: "72",  suffix: "%", desc: "considera que UX impacta muito o sucesso dos produtos", dw: 307 },
-      { num: "138", suffix: "",  desc: "pessoas querem saber mais sobre UX (workshops, formações, conteúdos)", dw: 351 },
-      { num: "69",  suffix: "",  desc: "pessoas pediram envolvimento da área desde o início dos projectos", dw: 334 },
-    ],
-    [
-      { num: "53", suffix: "%", desc: "não conhecem bem o conceito de User Experience", dw: 292 },
-      { num: "34", suffix: "%", desc: "acham que UX é responsabilidade apenas dos designers", dw: 280 },
-      { num: "31", suffix: "%", desc: "não sabem exatamente o que a área (Gabinete Criativo) faz", dw: 351 },
-      { num: "23", suffix: "%", desc: `dizem que UX "impacta bastante mas não é tratada como prioridade"`, dw: 334 },
-    ],
+  const STATS_ITEMS = [
+    { num: "83", suffix: "%", desc: "acredita que um profissional de UX seria útil para a sua equipa" },
+    { num: "72", suffix: "%", desc: "considera que UX impacta muito o sucesso dos produtos" },
+    { num: "53", suffix: "%", desc: "não conhecem bem o conceito de User Experience" },
+    { num: "34", suffix: "%", desc: "acham que UX é responsabilidade apenas dos designers" },
   ];
-
-  const statsVariants = {
-    enter: (dir: number) => ({ x: dir * vx(32), opacity: 0 }),
-    center: { x: 0, opacity: 1, transition: { duration: 0.3, ease: "easeOut" as const } },
-    exit: (dir: number) => ({ x: dir * vx(-32), opacity: 0, transition: { duration: 0.2, ease: "easeIn" as const } }),
-  };
-
-  const handleStatsPrev = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    directionRef.current = -1;
-    setStatsPage(p => (p - 1 + STATS_PAGES.length) % STATS_PAGES.length);
-  };
-
-  const handleStatsNext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    directionRef.current = 1;
-    setStatsPage(p => (p + 1) % STATS_PAGES.length);
-  };
 
   const BULLETS = [
     {
@@ -334,70 +306,24 @@ export function Slide02({ scaleX, scaleY, onPrev, onNext, onModalChange }: Props
           Inquérito interno (NOV/2024) · 143 respostas
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%", overflow: "hidden", position: "relative", minHeight: vy(220) }}>
-          <AnimatePresence mode="wait" custom={directionRef.current}>
-            <motion.div
-              key={statsPage}
-              custom={directionRef.current}
-              variants={statsVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%" }}
-            >
-              {STATS_PAGES[statsPage].map((row, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: vx(24), width: "100%" }}>
-                  <p
-                    style={{ width: vx(120), letterSpacing: vs(-1), flexShrink: 0, fontSize: 0, lineHeight: 0 }}
-                    className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#036ef2]"
-                  >
-                    <span style={{ fontSize: vs(64), lineHeight: "normal" }}>{row.num}</span>
-                    {row.suffix && <span style={{ fontSize: vs(48), lineHeight: "normal" }}>{row.suffix}</span>}
-                  </p>
-                  <p
-                    style={{ flex: 1, minWidth: 0, fontSize: vs(20) }}
-                    className="font-['Manrope',sans-serif] font-normal leading-[1.5] text-[#04165d]"
-                  >
-                    {row.desc}
-                  </p>
-                </div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
-        </div>
-
-        {/* Navigation arrows */}
-        <div
-          style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: vx(32), width: "100%" }}
-        >
-          <button
-            onClick={handleStatsPrev}
-            style={{ width: vs(40), height: vs(40) }}
-            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-[background-color,color,box-shadow] duration-[240ms] ease hover:shadow-[0_8px_24px_0_rgba(5,28,117,0.16),0_2px_4px_0_rgba(5,28,117,0.24)] cursor-pointer"
-          >
-            <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" className="transition-colors">
-              <mask id="s2-back" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                <rect width="24" height="24" fill="#D9D9D9" />
-              </mask>
-              <g mask="url(#s2-back)">
-                <path d={svgPaths.p90d8b80} className="fill-[#036EF2] group-hover:fill-white transition-colors" />
-              </g>
-            </svg>
-          </button>
-          <button
-            onClick={handleStatsNext}
-            style={{ width: vs(40), height: vs(40) }}
-            className="group flex items-center justify-center rounded-full hover:bg-[#036ef2] transition-[background-color,color,box-shadow] duration-[240ms] ease hover:shadow-[0_8px_24px_0_rgba(5,28,117,0.16),0_2px_4px_0_rgba(5,28,117,0.24)] cursor-pointer"
-          >
-            <svg width={vs(24)} height={vs(24)} viewBox="0 0 24 24" fill="none" className="transition-colors">
-              <mask id="s2-fwd" maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24" style={{ maskType: "alpha" }}>
-                <rect width="24" height="24" fill="#D9D9D9" />
-              </mask>
-              <g mask="url(#s2-fwd)">
-                <path d={svgPaths.p23cbb200} className="fill-[#036EF2] group-hover:fill-white transition-colors" />
-              </g>
-            </svg>
-          </button>
+        <div style={{ display: "flex", flexDirection: "column", gap: vy(12), width: "100%" }}>
+          {STATS_ITEMS.map((row, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: vx(24), width: "100%" }}>
+              <p
+                style={{ width: vx(120), letterSpacing: vs(-1), flexShrink: 0, fontSize: 0, lineHeight: 0 }}
+                className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#036ef2]"
+              >
+                <span style={{ fontSize: vs(64), lineHeight: "normal" }}>{row.num}</span>
+                <span style={{ fontSize: vs(48), lineHeight: "normal" }}>{row.suffix}</span>
+              </p>
+              <p
+                style={{ flex: 1, minWidth: 0, fontSize: vs(20) }}
+                className="font-['Manrope',sans-serif] font-normal leading-[1.5] text-[#04165d]"
+              >
+                {row.desc}
+              </p>
+            </div>
+          ))}
         </div>
       </motion.div>
 
