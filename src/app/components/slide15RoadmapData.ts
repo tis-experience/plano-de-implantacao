@@ -9,8 +9,9 @@ export const ROADMAP_MONTHS = [
 ] as const;
 
 export const ROADMAP_PHASES = [
-  { label: "Fundação", colStart: 2, colSpan: 3 },
-  { label: "Escala", colStart: 5, colSpan: 4 },
+  { label: "Fundação", colStart: 2, colSpan: 2 },
+  { label: "Piloto", colStart: 4, colSpan: 3 },
+  { label: "Escala", colStart: 7, colSpan: 2 },
 ] as const;
 
 export type RoadmapTaskColor = "blue" | "purple" | "navy" | "gray";
