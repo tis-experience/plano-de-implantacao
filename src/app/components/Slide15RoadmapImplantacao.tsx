@@ -480,13 +480,11 @@ function RoadmapGrid({
 }
 
 function RoadmapHeader({
-  page,
   pageCopy,
   metrics,
   reducedMotion,
   descriptionEnterDelay,
 }: {
-  page: number;
   pageCopy: (typeof ROADMAP_PAGE_COPY)[number];
   metrics: Metrics;
   reducedMotion: boolean;
@@ -507,20 +505,9 @@ function RoadmapHeader({
         display: "flex",
         flexDirection: "column",
         gap: vy(24),
-        zIndex: 2,
-        pointerEvents: "none",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: vy(16),
-          width: "100%",
-          position: "relative",
-          minHeight: vy(176),
-        }}
-      >
+      <motion.div style={{ display: "flex", flexDirection: "column", gap: vy(16), width: "100%" }}>
         <p
           style={{
             margin: 0,
@@ -536,7 +523,7 @@ function RoadmapHeader({
         </p>
         <AnimatePresence initial={false} mode="wait">
           <motion.p
-            key={`roadmap-title-${page}`}
+            key={pageCopy.title}
             initial={{ opacity: 0, y: reducedMotion ? 0 : vy(8) }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
@@ -546,17 +533,17 @@ function RoadmapHeader({
               fontFamily: "'Bronkoh-Heavy', sans-serif",
               fontSize: vs(80),
               letterSpacing: vs(-1.5),
-              lineHeight: 1.1,
+              lineHeight: 1,
               color: NAVY,
             }}
           >
             {pageCopy.title}
           </motion.p>
         </AnimatePresence>
-      </div>
+      </motion.div>
       <AnimatePresence initial={false} mode="wait">
         <motion.p
-          key={`roadmap-subtitle-${page}`}
+          key={pageCopy.subtitle}
           initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
           animate={{
             opacity: 1,
@@ -590,10 +577,10 @@ function RoadmapHeader({
 export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const { vx, vy, vs } = metrics;
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = useReducedMotion() ?? false;
   const lastWheelRef = useRef(0);
   const [page, setPageState] = useState(0);
-  const [pageDirection, setPageDirection] = useState(0);
+  const [pageDirection, setPageDirection] = useState(1);
   const [activeTooltip, setActiveTooltip] = useState<ActiveRoadmapTooltip | null>(null);
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
@@ -643,10 +630,9 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
       onWheel={handleWheel}
     >
       <RoadmapHeader
-        page={page}
         pageCopy={pageCopy}
         metrics={metrics}
-        reducedMotion={!!reducedMotion}
+        reducedMotion={reducedMotion}
         descriptionEnterDelay={descriptionEnterDelay}
       />
 
