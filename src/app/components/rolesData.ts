@@ -29,11 +29,10 @@ export const ROLES: RoleDefinition[] = [
     quote:
       "Experiência sólida em design de produto em contextos complexos e multidisciplinares, com capacidade de comunicação técnica com equipa e desenvolvimento.",
     responsibilities: [
-      "Conduzir projectos de maior complexidade do discovery ao handoff",
-      "Apoiar o Lead na orientação diária da equipa",
-      "Rever entregas dos Plenos antes de avançarem para desenvolvimento",
-      "Garantir que o processo de handoff é seguido nas entregas da equipa",
-      "Orientar Plenos e Júniors no dia-a-dia",
+      "Executar projectos de maior complexidade do discovery ao handoff",
+      "Apoiar na orientação de Plenos e Júniors no dia-a-dia",
+      "Contribuir para a evolução da maturidade da equipa",
+      "Garantir que o processo de handoff é seguido nas entregas",
       "Contribuir para a evolução do Design System",
     ],
   },
