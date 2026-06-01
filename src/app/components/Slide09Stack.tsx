@@ -468,8 +468,8 @@ function ItemTag({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const measureRef = useRef<HTMLSpanElement>(null);
   const [compactShouldWrap, setCompactShouldWrap] = useState(false);
-  const labelFontSize = vs(22);
-  const labelLineHeight = vs(22);
+  const labelFontSize = vs(20);
+  const labelLineHeight = vs(20);
   const labelGap = item.compact ? vx(4) : vx(12);
   const preferredBreak = item.compact ? preferredLabelBreaks[item.label] : undefined;
 
@@ -608,7 +608,7 @@ function StageTag({ column, vx, vy, vs }: { column: StackColumn; vx: (n: number)
       }}
     >
       <img src={column.icon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
-      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(28), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(26), lineHeight: `${vs(28)}px`, color: "#fff", whiteSpace: "nowrap" }}>
         {column.stage}
       </p>
     </div>
@@ -804,7 +804,7 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
           }}
         >
           <img src={statIcon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
-          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(28), lineHeight: `${vs(32)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(26), lineHeight: `${vs(28)}px`, color: "#fff", whiteSpace: "nowrap" }}>
             Aceleração com IA
           </p>
         </button>
