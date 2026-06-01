@@ -110,6 +110,7 @@ type BulletContent =
 type FeatureCardContent = {
   title: string;
   bullets: BulletContent[];
+  width: number | "flex";
 };
 
 type Slide08HeaderContent = {
@@ -122,6 +123,7 @@ type Slide08HeaderContent = {
 
 const designSystemFeatureCards: FeatureCardContent[] = [
   {
+    width: 394,
     title: "Arquitetura",
     bullets: [
       {
@@ -150,6 +152,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
     ],
   },
   {
+    width: 390,
     title: "Governança e documentação",
     bullets: [
       {
@@ -191,6 +194,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
     ],
   },
   {
+    width: "flex",
     title: "Integração com o desenvolvimento",
     bullets: [
       {
@@ -236,6 +240,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
     ],
   },
   {
+    width: 382,
     title: "Operação e métricas",
     bullets: [
       { kind: "parts", parts: [{ text: "% de projectos consumindo o DS." }] },
@@ -970,8 +975,10 @@ function FeatureCard({ card, metrics }: { card: FeatureCardContent; metrics: Met
   return (
     <div
       style={{
-        width: vx(404),
-        height: vy(481),
+        width: card.width === "flex" ? undefined : vx(card.width),
+        flex: card.width === "flex" ? "1 1 0" : "0 0 auto",
+        minWidth: card.width === "flex" ? 0 : undefined,
+        height: vy(484),
         boxSizing: "border-box",
         border: `${vs(2)}px solid ${BLUE}`,
         borderRadius: vs(40),
@@ -1006,11 +1013,14 @@ function FeatureCard({ card, metrics }: { card: FeatureCardContent; metrics: Met
 
 function BottomInfoCard({ title, body, metrics }: { title: string; body: string; metrics: Metrics }) {
   const { vx, vy, vs } = metrics;
+  const isAgentCard = title === "Uso por agentes de IA";
 
   return (
     <div
       style={{
-        width: vx(824),
+        width: isAgentCard ? vx(800) : undefined,
+        flex: isAgentCard ? "0 0 auto" : "1 1 0",
+        minWidth: 0,
         height: vy(138),
         boxSizing: "border-box",
         border: `${vs(2)}px solid ${BLUE}`,
@@ -1036,7 +1046,7 @@ function BottomInfoCard({ title, body, metrics }: { title: string; body: string;
       </p>
       <p
         style={{
-          width: vx(776),
+          width: "100%",
           margin: 0,
           fontFamily: "'Inter', 'Manrope', sans-serif",
           fontWeight: 400,
@@ -1325,13 +1335,13 @@ function PageTwo({ metrics }: { metrics: Metrics }) {
           left: vx(120),
           top: vy(267),
           width: vx(1664),
-          height: vy(635),
+          height: vy(638),
           display: "flex",
           flexDirection: "column",
           gap: vy(16),
         }}
       >
-        <div style={{ display: "flex", gap: vx(16), width: "100%", height: vy(481), alignItems: "stretch" }}>
+        <div style={{ display: "flex", gap: vx(16), width: "100%", height: vy(484), alignItems: "stretch" }}>
           {designSystemFeatureCards.map((card) => (
             <FeatureCard key={card.title} card={card} metrics={metrics} />
           ))}
