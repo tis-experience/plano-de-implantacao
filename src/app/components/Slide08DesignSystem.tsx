@@ -39,7 +39,7 @@ const NAV_ARROW_DOWN_PATH = "M2 8.025L3.775 6.25L12 14.475L20.225 6.25L22 8.025L
 const SLIDE_08_DEFAULT_HEADER = {
   eyebrow: "Em construção",
   title: "Design System TIS",
-  description: "Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com engenharia.",
+  description: "Design System como infraestrutura operacional para consistência, velocidade, acessibilidade e integração com o desenvolvimento.",
   width: 820,
   descriptionWidth: 760,
 };
@@ -191,7 +191,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
     ],
   },
   {
-    title: "Integração com engenharia",
+    title: "Integração com o desenvolvimento",
     bullets: [
       {
         kind: "parts",
