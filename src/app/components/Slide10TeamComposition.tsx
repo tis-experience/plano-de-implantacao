@@ -37,11 +37,11 @@ const PHASES: PhaseCard[] = [
       { bold: "1 Designer Lead" },
       { bold: "2 Designers", suffix: "(1 Pleno e 1 Júnior)" },
     ],
-    focus: "Foco em processo mínimo, Design System v1, pilotos, templates e handoff padronizado.",
+    focus: "Foco em processo mínimo, Design System v1, templates, piloto e handoff padronizado.",
   },
   {
     phase: "EXPANSÃO",
-    title: "+6 meses",
+    title: "6 meses",
     roles: [
       { bold: "1 Designer Lead" },
       { bold: "4 Designers", suffix: "(3 Plenos e 1 Júnior)" },
@@ -51,7 +51,7 @@ const PHASES: PhaseCard[] = [
   },
   {
     phase: "ESCALA",
-    title: "+12 meses",
+    title: "12 meses",
     roles: [
       { bold: "1 Designer Lead" },
       { bold: "7 Designers", suffix: "(1 Sênior, 4 Plenos e 2 Júniors)" },
