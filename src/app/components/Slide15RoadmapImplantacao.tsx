@@ -26,7 +26,7 @@ interface Props {
 }
 
 const INK = "#2f3237";
-const BG = "#f4f5f7";
+const BG = "#ffffff";
 const MONTH_BG = "rgba(110,117,135,0.1)";
 const PHASE_BORDER = "#6e7587";
 const EASE = [0.22, 1, 0.36, 1] as const;
