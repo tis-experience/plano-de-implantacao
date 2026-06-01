@@ -61,7 +61,7 @@ const CARDS = [
     iconKey: "p1fba0a80",
     title: "Acessibilidade e Compliance",
     items: [
-      "Auditoria WCAG 2.2",
+      "Auditoria WCAG",
       "Documentação de boas práticas",
       "Testes com utilizadores diversos",
     ],

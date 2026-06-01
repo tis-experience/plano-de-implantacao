@@ -320,7 +320,7 @@ function Item12() {
   return (
     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Item">
       <div className="bg-[#036ef2] shrink-0 size-[12px]" data-name="Rectangle" />
-      <p className="flex-[1_0_0] font-['Bronkoh-Regular:Regular',sans-serif] leading-[24px] min-w-px not-italic relative text-[#2f3237] text-[18px]">Auditoria WCAG 2.2</p>
+      <p className="flex-[1_0_0] font-['Bronkoh-Regular:Regular',sans-serif] leading-[24px] min-w-px not-italic relative text-[#2f3237] text-[18px]">Auditoria WCAG</p>
     </div>
   );
 }

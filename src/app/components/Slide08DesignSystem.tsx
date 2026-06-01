@@ -243,7 +243,7 @@ const designSystemFeatureCards: FeatureCardContent[] = [
       { kind: "parts", parts: [{ text: "Tempo design → dev." }] },
       { kind: "parts", parts: [{ text: "Redução de retrabalho." }] },
       { kind: "parts", parts: [{ text: "Cobertura de templates e playbooks." }] },
-      { kind: "parts", parts: [{ text: "Conformidade WCAG 2.2 AA." }] },
+      { kind: "parts", parts: [{ text: "Conformidade WCAG AA." }] },
       { kind: "parts", parts: [{ text: "Bugs de UI por release." }] },
       { kind: "parts", parts: [{ text: "Componentes ativos, deprecated e backlog crítico." }] },
     ],
@@ -257,7 +257,7 @@ const designSystemBottomCards = [
   },
   {
     title: "Acessibilidade como premissa",
-    body: "WCAG 2.2 AA como referência de qualidade. Tokens, componentes e documentação consideram contraste, foco visível, estados, ARIA e padrões acessíveis de interação.",
+    body: "WCAG AA como referência de qualidade. Tokens, componentes e documentação consideram contraste, foco visível, estados, ARIA e padrões acessíveis de interação.",
   },
 ];
 

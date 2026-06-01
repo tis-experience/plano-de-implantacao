@@ -58,7 +58,7 @@ export const OPERACIONAL_COLUMNS: MetricColumn[] = [
       "Taxa de bugs de UX/UI",
       "Satisfação interna do time",
       "Consistência visual",
-      "Conformidade com a WCAG 2.2 AA",
+      "Conformidade com a WCAG AA",
     ],
   },
   {
