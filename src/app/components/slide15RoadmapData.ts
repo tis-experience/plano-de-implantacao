@@ -54,7 +54,7 @@ export const ROADMAP_PAGE_COPY = [
 export const ROADMAP_ADOPTION_ITEMS = [
   {
     title: "Fundação",
-    body: "Fundação depende de papéis claros, sponsor executivo, comunicação para as demais áreas, tempo protegido para DS e adopção de produto e engenharia.",
+    body: "Fundação depende de alinhamento de expectativas, papéis claros, sponsor executivo, comunicação para as demais áreas com adesão de produto e desenvolvimento.",
   },
   {
     title: "Piloto",
