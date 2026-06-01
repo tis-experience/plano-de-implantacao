@@ -608,7 +608,7 @@ function StageTag({ column, vx, vy, vs }: { column: StackColumn; vx: (n: number)
       }}
     >
       <img src={column.icon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
-      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(26), lineHeight: `${vs(28)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+      <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(26)}px`, color: "#fff", whiteSpace: "nowrap" }}>
         {column.stage}
       </p>
     </div>
@@ -804,7 +804,7 @@ export function Slide09Stack({ scaleX, scaleY }: Props) {
           }}
         >
           <img src={statIcon} alt="" style={{ width: vs(32), height: vs(32), display: "block", flexShrink: 0 }} />
-          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(26), lineHeight: `${vs(28)}px`, color: "#fff", whiteSpace: "nowrap" }}>
+          <p style={{ margin: 0, fontFamily: "'Bronkoh-Heavy', sans-serif", fontSize: vs(24), lineHeight: `${vs(26)}px`, color: "#fff", whiteSpace: "nowrap" }}>
             Aceleração com IA
           </p>
         </button>
