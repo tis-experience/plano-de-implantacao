@@ -27,6 +27,8 @@ interface Props {
 
 const INK = "#2f3237";
 const BG = "#ffffff";
+const BLUE = "#036ef2";
+const NAVY = "#04165d";
 const MONTH_BG = "rgba(110,117,135,0.1)";
 const PHASE_BORDER = "#6e7587";
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -477,6 +479,114 @@ function RoadmapGrid({
   );
 }
 
+function RoadmapHeader({
+  page,
+  pageCopy,
+  metrics,
+  reducedMotion,
+  descriptionEnterDelay,
+}: {
+  page: number;
+  pageCopy: (typeof ROADMAP_PAGE_COPY)[number];
+  metrics: Metrics;
+  reducedMotion: boolean;
+  descriptionEnterDelay: number;
+}) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: vy(-24) }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={fade(0.08)}
+      style={{
+        position: "absolute",
+        left: vx(120),
+        top: vy(96),
+        width: vx(1680),
+        display: "flex",
+        flexDirection: "column",
+        gap: vy(24),
+        zIndex: 2,
+        pointerEvents: "none",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: vy(16),
+          width: "100%",
+          position: "relative",
+          minHeight: vy(176),
+        }}
+      >
+        <p
+          style={{
+            margin: 0,
+            fontFamily: "'Bronkoh-SemiBold', sans-serif",
+            fontSize: vs(16),
+            letterSpacing: vs(2),
+            lineHeight: "normal",
+            color: BLUE,
+            textTransform: "uppercase",
+          }}
+        >
+          PRÓXIMOS PASSOS
+        </p>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.p
+            key={`roadmap-title-${page}`}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : vy(8) }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
+            transition={{ duration: reducedMotion ? 0 : 0.28, ease: EASE }}
+            style={{
+              margin: 0,
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontSize: vs(80),
+              letterSpacing: vs(-1.5),
+              lineHeight: 1.1,
+              color: NAVY,
+            }}
+          >
+            {pageCopy.title}
+          </motion.p>
+        </AnimatePresence>
+      </div>
+      <AnimatePresence initial={false} mode="wait">
+        <motion.p
+          key={`roadmap-subtitle-${page}`}
+          initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            transition: {
+              duration: reducedMotion ? 0 : 0.34,
+              delay: reducedMotion ? 0 : descriptionEnterDelay,
+              ease: EASE,
+            },
+          }}
+          exit={{
+            opacity: 0,
+            y: reducedMotion ? 0 : vy(-8),
+            transition: { duration: reducedMotion ? 0 : 0.18, ease: EASE },
+          }}
+          style={{
+            margin: 0,
+            fontFamily: "'Bronkoh-Regular', sans-serif",
+            fontSize: vs(28),
+            lineHeight: 1.5,
+            color: INK,
+          }}
+        >
+          {pageCopy.subtitle}
+        </motion.p>
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const { vx, vy, vs } = metrics;
@@ -514,6 +624,12 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   };
 
   const pageCopy = ROADMAP_PAGE_COPY[page];
+  const descriptionEnterDelay =
+    reducedMotion
+      ? 0
+      : (page === 1 && pageDirection > 0) || (page === 0 && pageDirection < 0)
+        ? PAGE_TRANSITION_SECONDS
+        : 0;
 
   return (
     <motion.div
@@ -526,66 +642,13 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
       style={{ backgroundColor: BG }}
       onWheel={handleWheel}
     >
-      <motion.div
-        initial={{ opacity: 0, y: vy(-24) }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={fade(0.08)}
-        style={{
-          position: "absolute",
-          left: vx(120),
-          top: vy(96),
-          width: vx(1680),
-          display: "flex",
-          flexDirection: "column",
-          gap: vy(24),
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: vy(16), width: "100%" }}>
-          <p
-            style={{ fontSize: vs(16), letterSpacing: vs(2), lineHeight: "normal", margin: 0 }}
-            className="font-['Bronkoh-SemiBold',sans-serif] not-italic text-[#036ef2] uppercase"
-          >
-            PRÓXIMOS PASSOS
-          </p>
-          <AnimatePresence initial={false} mode="wait">
-            <motion.p
-              key={pageCopy.title}
-              initial={{ opacity: 0, y: reducedMotion ? 0 : vy(8) }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
-              transition={{ duration: reducedMotion ? 0 : 0.28, ease: EASE }}
-              style={{ fontSize: vs(80), letterSpacing: vs(-1.5), lineHeight: 1, margin: 0 }}
-              className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
-            >
-              {pageCopy.title}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-        <AnimatePresence initial={false} mode="wait">
-          <motion.p
-            key={pageCopy.subtitle}
-            initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              transition: {
-                duration: reducedMotion ? 0 : 0.34,
-                delay: reducedMotion ? 0 : pageDirection !== 0 ? PAGE_TRANSITION_SECONDS : 0,
-                ease: EASE,
-              },
-            }}
-            exit={{
-              opacity: 0,
-              y: reducedMotion ? 0 : vy(-8),
-              transition: { duration: reducedMotion ? 0 : 0.18, ease: EASE },
-            }}
-            style={{ fontSize: vs(28), lineHeight: 1.5, margin: 0 }}
-            className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
-          >
-            {pageCopy.subtitle}
-          </motion.p>
-        </AnimatePresence>
-      </motion.div>
+      <RoadmapHeader
+        page={page}
+        pageCopy={pageCopy}
+        metrics={metrics}
+        reducedMotion={!!reducedMotion}
+        descriptionEnterDelay={descriptionEnterDelay}
+      />
 
       <AnimatePresence mode="wait" custom={pageDirection}>
         <motion.div
