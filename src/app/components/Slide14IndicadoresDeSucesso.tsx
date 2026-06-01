@@ -1045,12 +1045,14 @@ function OverviewContent({ metrics }: { metrics: Metrics }) {
         <div
           style={{
             width: vx(624),
+            height: vy(460),
             border: `1px solid ${STROKE_BLUE}`,
             borderRadius: vy(32),
             padding: `${vy(40)}px ${vx(40)}px`,
+            boxSizing: "border-box",
             display: "flex",
             flexDirection: "column",
-            gap: vy(32),
+            gap: vy(40),
             alignItems: "center",
           }}
         >
@@ -1070,13 +1072,6 @@ function OverviewContent({ metrics }: { metrics: Metrics }) {
           </div>
 
           <MonthlyReadingCycle metrics={metrics} />
-
-          <p
-            style={{ fontSize: vs(18), lineHeight: `${vy(22)}px`, letterSpacing: vs(-0.25), margin: 0, textAlign: "center" }}
-            className="font-['Manrope',sans-serif] font-bold text-[#04165d] whitespace-nowrap"
-          >
-            Consolidar padrões em 90 dias, sem esperar para agir.
-          </p>
         </div>
       </div>
 
