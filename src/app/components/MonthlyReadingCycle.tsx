@@ -1,8 +1,8 @@
 import type { CSSProperties } from "react";
 import monthlyReadingCycleImage from "../../assets/slide14/monthly-reading-cycle.svg";
 
-const DESIGN_W = 344;
-const DESIGN_H = 226;
+const DESIGN_W = 320;
+const DESIGN_H = 210;
 
 type Metrics = {
   vs: (n: number) => number;
