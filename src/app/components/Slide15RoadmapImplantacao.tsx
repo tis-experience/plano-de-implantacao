@@ -7,7 +7,9 @@ import { INTERACTIVE_HOVER_BOX_SHADOW } from "../constants/interactiveShadow";
 import { resolveVerticalPage } from "../constants/verticalPageNav";
 import { VerticalPageNav } from "./VerticalPageNav";
 import {
+  ROADMAP_ADOPTION_ITEMS,
   ROADMAP_MONTHS,
+  ROADMAP_PAGE_COPY,
   ROADMAP_PAGE_COUNT,
   ROADMAP_PHASES,
   ROADMAP_ROWS,
@@ -149,28 +151,63 @@ function RoadmapTooltipPopover({
   );
 }
 
-const ROADMAP_LEGEND: { rowLabel: string; color: RoadmapTaskColor; description: string }[] = [
-  {
-    rowLabel: "Design System",
-    color: "blue",
-    description: "Versões do sistema, aplicação no piloto e evolução contínua do DS.",
-  },
-  {
-    rowLabel: "Hub de conhecimento",
-    color: "purple",
-    description: "Playbook, hub de UX, templates de metodologias e consolidação de insights.",
-  },
-  {
-    rowLabel: "Ritos e processo",
-    color: "navy",
-    description: "Ritos iniciais, implantação no piloto e revisão dos processos.",
-  },
-  {
-    rowLabel: "Adopção e métricas",
-    color: "gray",
-    description: "Indicadores, medição no piloto e definição do ciclo seguinte.",
-  },
-];
+const CARD_TINT =
+  "linear-gradient(90deg, rgba(3, 110, 242, 0.06) 0%, rgba(3, 110, 242, 0.06) 100%), linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%)";
+
+function RoadmapAdoptionPage({ metrics }: { metrics: Metrics }) {
+  const { vx, vy, vs } = metrics;
+
+  return (
+    <div
+      style={{
+        width: vx(1664),
+        display: "flex",
+        flexDirection: "column",
+        gap: vy(10),
+      }}
+    >
+      {ROADMAP_ADOPTION_ITEMS.map((item) => (
+        <div
+          key={item.title}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: vy(4),
+            width: "100%",
+            padding: `${vy(24)}px ${vx(32)}px`,
+            borderRadius: vs(28),
+            backgroundImage: CARD_TINT,
+            boxSizing: "border-box",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Bronkoh-Heavy', sans-serif",
+              fontSize: vs(28),
+              lineHeight: 1.2,
+              color: "#04165d",
+            }}
+          >
+            {item.title}
+          </p>
+          <p
+            style={{
+              margin: 0,
+              fontFamily: "'Manrope', sans-serif",
+              fontWeight: 400,
+              fontSize: vs(20),
+              lineHeight: 1.4,
+              color: INK,
+            }}
+          >
+            {item.body}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function TisLogo({ scale }: { scale: (n: number) => number }) {
   return (
@@ -440,91 +477,6 @@ function RoadmapGrid({
   );
 }
 
-function RoadmapLegendPage({ metrics }: { metrics: Metrics }) {
-  const { vx, vy, vs } = metrics;
-
-  return (
-    <div
-      style={{
-        width: vx(1664),
-        display: "flex",
-        flexDirection: "column",
-        gap: vy(24),
-      }}
-    >
-      <p
-        style={{
-          margin: 0,
-          fontFamily: "'Bronkoh-SemiBold', sans-serif",
-          fontSize: vs(28),
-          lineHeight: 1.4,
-          color: INK,
-        }}
-      >
-        Frentes de trabalho e leitura das cores no roadmap
-      </p>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: `repeat(2, ${vx(820)}px)`,
-          columnGap: vx(24),
-          rowGap: vy(24),
-        }}
-      >
-        {ROADMAP_LEGEND.map((item) => (
-          <div
-            key={item.rowLabel}
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: vy(16),
-              padding: vs(32),
-              borderRadius: vs(24),
-              background: "#fff",
-              border: `${vs(2)}px solid ${ROADMAP_TASK_COLORS[item.color]}`,
-              boxSizing: "border-box",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: vx(16) }}>
-              <div
-                style={{
-                  width: vs(16),
-                  height: vs(16),
-                  borderRadius: "50%",
-                  backgroundColor: ROADMAP_TASK_COLORS[item.color],
-                  flexShrink: 0,
-                }}
-              />
-              <p
-                style={{
-                  margin: 0,
-                  fontFamily: "'Bronkoh-Bold', sans-serif",
-                  fontSize: vs(28),
-                  lineHeight: 1.2,
-                  color: "#000",
-                }}
-              >
-                {item.rowLabel}
-              </p>
-            </div>
-            <p
-              style={{
-                margin: 0,
-                fontFamily: "'Bronkoh-Regular', sans-serif",
-                fontSize: vs(24),
-                lineHeight: 1.5,
-                color: INK,
-              }}
-            >
-              {item.description}
-            </p>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
   const metrics = createSlideMetrics(scaleX, scaleY);
   const { vx, vy, vs } = metrics;
@@ -560,6 +512,8 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
     lastWheelRef.current = now;
     setPage(page + (event.deltaY > 0 ? 1 : -1));
   };
+
+  const pageCopy = ROADMAP_PAGE_COPY[page];
 
   return (
     <motion.div
@@ -597,14 +551,14 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
             style={{ fontSize: vs(80), letterSpacing: vs(-1.5), lineHeight: 1, margin: 0 }}
             className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
           >
-            Roadmap de implantação
+            {pageCopy.title}
           </p>
         </div>
         <p
           style={{ fontSize: vs(28), lineHeight: 1.5, margin: 0 }}
           className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
         >
-          Plano de implantação em ciclos, com entregas progressivas e validação em projectos reais.
+          {pageCopy.subtitle}
         </p>
       </motion.div>
 
@@ -618,13 +572,13 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
           style={{
             position: "absolute",
             left: vx(120),
-            top: vy(397),
+            top: vy(pageCopy.contentTop),
           }}
         >
           {page === 0 ? (
             <RoadmapGrid metrics={metrics} onTooltipChange={updateTooltip} />
           ) : (
-            <RoadmapLegendPage metrics={metrics} />
+            <RoadmapAdoptionPage metrics={metrics} />
           )}
         </motion.div>
       </AnimatePresence>

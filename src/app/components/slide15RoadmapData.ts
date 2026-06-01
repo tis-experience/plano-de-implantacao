@@ -38,6 +38,38 @@ export const ROADMAP_TASK_COLORS: Record<RoadmapTaskColor, string> = {
 
 export const ROADMAP_PAGE_COUNT = 2;
 
+export const ROADMAP_PAGE_COPY = [
+  {
+    title: "Roadmap de implantação",
+    subtitle: "Plano de implantação em ciclos, com entregas progressivas e validação em projectos reais.",
+    contentTop: 397,
+  },
+  {
+    title: "Dependências e estratégia de adopção",
+    subtitle: "O que é necessário para a área sair do plano e entrar em operação.",
+    contentTop: 358,
+  },
+] as const;
+
+export const ROADMAP_ADOPTION_ITEMS = [
+  {
+    title: "Fundação",
+    body: "Fundação depende de papéis claros, sponsor executivo, comunicação para as demais áreas, tempo protegido para DS e adopção de produto e engenharia.",
+  },
+  {
+    title: "Piloto",
+    body: "Piloto depende de Playbook publicado, Design System V1 disponível para uso, definição do projecto e ritos e processos iniciais implantados.",
+  },
+  {
+    title: "Escala",
+    body: "Escala depende de Hub de conhecimento publicado, ritos em funcionamento, processo testado em projecto real e backlog do DS priorizado.",
+  },
+  {
+    title: "Maturidade",
+    body: "Maturidade depende de métricas consistentes, repositório de insights, expansão da equipa e integração entre as áreas.",
+  },
+] as const;
+
 export type RoadmapTaskTooltip = {
   title: string;
   body: string;
