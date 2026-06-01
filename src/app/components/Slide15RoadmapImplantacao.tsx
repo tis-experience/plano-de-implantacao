@@ -547,19 +547,44 @@ export function Slide15RoadmapImplantacao({ scaleX, scaleY }: Props) {
           >
             PRÓXIMOS PASSOS
           </p>
-          <p
-            style={{ fontSize: vs(80), letterSpacing: vs(-1.5), lineHeight: 1, margin: 0 }}
-            className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
-          >
-            {pageCopy.title}
-          </p>
+          <AnimatePresence initial={false} mode="wait">
+            <motion.p
+              key={pageCopy.title}
+              initial={{ opacity: 0, y: reducedMotion ? 0 : vy(8) }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: reducedMotion ? 0 : vy(-8) }}
+              transition={{ duration: reducedMotion ? 0 : 0.28, ease: EASE }}
+              style={{ fontSize: vs(80), letterSpacing: vs(-1.5), lineHeight: 1, margin: 0 }}
+              className="font-['Bronkoh-Heavy',sans-serif] not-italic text-[#04165d]"
+            >
+              {pageCopy.title}
+            </motion.p>
+          </AnimatePresence>
         </div>
-        <p
-          style={{ fontSize: vs(28), lineHeight: 1.5, margin: 0 }}
-          className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
-        >
-          {pageCopy.subtitle}
-        </p>
+        <AnimatePresence initial={false} mode="wait">
+          <motion.p
+            key={pageCopy.subtitle}
+            initial={{ opacity: 0, y: reducedMotion ? 0 : vy(-6) }}
+            animate={{
+              opacity: 1,
+              y: 0,
+              transition: {
+                duration: reducedMotion ? 0 : 0.34,
+                delay: reducedMotion ? 0 : pageDirection !== 0 ? PAGE_TRANSITION_SECONDS : 0,
+                ease: EASE,
+              },
+            }}
+            exit={{
+              opacity: 0,
+              y: reducedMotion ? 0 : vy(-8),
+              transition: { duration: reducedMotion ? 0 : 0.18, ease: EASE },
+            }}
+            style={{ fontSize: vs(28), lineHeight: 1.5, margin: 0 }}
+            className="font-['Bronkoh-Regular',sans-serif] not-italic text-[#2f3237]"
+          >
+            {pageCopy.subtitle}
+          </motion.p>
+        </AnimatePresence>
       </motion.div>
 
       <AnimatePresence mode="wait" custom={pageDirection}>
