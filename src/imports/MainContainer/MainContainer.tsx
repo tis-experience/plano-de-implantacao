@@ -95,7 +95,7 @@ function Header1() {
   return (
     <div className="content-stretch flex gap-[12px] items-center relative shrink-0 w-full" data-name="Header">
       <ViewComfy />
-      <p className="flex-[1_0_0] font-['Bronkoh-Heavy:Regular',sans-serif] leading-[32px] min-w-px not-italic relative text-[#04165d] text-[24px]">Design de Interface e Interação</p>
+      <p className="flex-[1_0_0] font-['Bronkoh-Heavy:Regular',sans-serif] leading-[32px] min-w-px not-italic relative text-[#04165d] text-[24px]">Design de Interface e Interacção</p>
     </div>
   );
 }

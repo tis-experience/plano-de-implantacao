@@ -89,7 +89,7 @@ function Container() {
 function MainContainer() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[40px] items-start left-[120px] top-[437px]" data-name="Main Container">
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Como a área opera Até hoje</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Como a área opera até hoje</p>
       <Container />
     </div>
   );
@@ -108,7 +108,7 @@ function Page() {
     <div className="content-stretch flex gap-[20px] items-center overflow-clip relative shrink-0" data-name="Page">
       <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#036ef2] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">02</p>
       <Spacer />
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">UX na TIS</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] not-italic relative shrink-0 text-[#6e7587] text-[14px] tracking-[1.5px] uppercase whitespace-nowrap">PLANO DE IMPLANTAÇÃO  -  EXPERIENCE ENGINEERING</p>
     </div>
   );
 }
@@ -264,7 +264,7 @@ function NavigationContainer() {
 function Container7() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[40px] items-start left-[1100px] px-[56px] py-[48px] rounded-[40px] top-[220px] w-[620px]" style={{ backgroundImage: "linear-gradient(90deg, rgba(3, 110, 242, 0.06) 0%, rgba(3, 110, 242, 0.06) 100%), linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%)" }} data-name="Container">
-      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Inquérito interno (NOV/2024) · 143 respoSTAs</p>
+      <p className="font-['Bronkoh-SemiBold:Regular',sans-serif] leading-[normal] min-w-full not-italic relative shrink-0 text-[#036ef2] text-[16px] tracking-[2px] uppercase w-[min-content]">Inquérito interno (NOV/2024) · 143 respostas</p>
       <ContentContainer />
       <NavigationContainer />
     </div>
@@ -276,10 +276,7 @@ export default function Component02UxNaTisAtualmente() {
     <div className="bg-white relative size-full" data-name="02 · UX na TIS atualmente">
       <Header />
       <MainContainer />
-      <p className="absolute font-['Manrope:ExtraBold',sans-serif] font-extrabold leading-[0] left-[120px] not-italic text-[#04165d] text-[26px] top-[860px] whitespace-nowrap">
-        <span className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3]">Há demanda. M</span>
-        <span className="font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3]">as o modo como ela é tratada hoje produz fricção.</span>
-      </p>
+      <p className="absolute font-['Bronkoh-Heavy:Regular',sans-serif] leading-[1.3] left-[120px] not-italic text-[#04165d] text-[26px] top-[860px] whitespace-nowrap">Há demanda. Mas o modo como ela é tratada hoje produz fricção.</p>
       <Footer />
       <Container7 />
     </div>
